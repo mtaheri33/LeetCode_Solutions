@@ -64,3 +64,29 @@ def maxProfit(prices):
     # value of 0.  In this case, 0 is returned.  Otherwise, the maximum
     # profit is returned.
     return max_profit
+
+
+def containsDuplicate(nums):
+    """
+    217. Contains Duplicate
+    This takes in a list of integers, nums.  It returns True if any
+    value is present more than once.  Otherwise, it returns False.
+    """
+    # The format of the dictionary is number: 1.
+    mydict = {}
+
+    # This iterates through each number.  It utilizes a dictoinary that
+    # stores numbers from the list.  If the current number is a key in
+    # the dictionary, it was present in the list the previously.  So,
+    # true is returned.  If it is not a key, then it is a new number
+    # and it is added to the dictionary.
+    for num in nums:
+        if num in mydict:
+            return True
+        else:
+            mydict[num] = 1
+
+    # The iteration completed and never exited prematurely by returning
+    # True.  This means each value was only present once.  So, false is
+    # returned.
+    return False
