@@ -90,3 +90,44 @@ def containsDuplicate(nums):
     # True.  This means each value was only present once.  So, false is
     # returned.
     return False
+
+
+def productExceptSelf(nums):
+    """
+    238. Product of Array Except Self
+    This takes in a list of integers, nums.  It returns a list of
+    integers, answer, where answer[i] is equal to the product of every
+    element in nums except nums[i].
+    """
+    # This creates a list, left_to_right_products, where
+    # left_to_right_products[i] is equal to the product of every
+    # element in nums up to and including nums[i].
+    left_to_right_products = [nums[0]]
+    for i in range(1, len(nums)):
+        left_to_right_products.append(left_to_right_products[i - 1] * nums[i])
+
+    # This creates a list, right_to_left_products, where
+    # right_to_left_products[i] is equal to the product of every
+    # element in nums after and including nums[i].
+    nums_reverse = nums[::]
+    nums_reverse.reverse()
+    right_to_left_products = [nums_reverse[0]]
+    for i in range(1, len(nums_reverse)):
+        right_to_left_products.append(right_to_left_products[i - 1] * nums_reverse[i])
+    right_to_left_products.reverse()
+
+    # This creates the result list, answer.  It calculates the value
+    # at index i by multiplying left_to_right_products[i-1] with
+    # right_to_left_products[i+1].  This is equivalent to multiplying
+    # the product of all elements before nums[i] with the product of
+    # all elements after nums[i].
+    # The first element in answer is the product of all elements after
+    # nums[0].
+    answer = [right_to_left_products[1]]
+    for i in range(1, len(nums)-1):
+        answer.append(left_to_right_products[i - 1] * right_to_left_products[i + 1])
+    # The last element in answer is the product of all elements before
+    # the last element of nums.
+    answer.append(left_to_right_products[-2])
+
+    return answer
