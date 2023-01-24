@@ -77,9 +77,9 @@ def containsDuplicate(nums):
 
     # This iterates through each number.  It utilizes a dictoinary that
     # stores numbers from the list.  If the current number is a key in
-    # the dictionary, it was present in the list the previously.  So,
-    # true is returned.  If it is not a key, then it is a new number
-    # and it is added to the dictionary.
+    # the dictionary, it was present in the list previously.  So, true
+    # is returned.  If it is not a key, then it is a new number and it
+    # is added to the dictionary.
     for num in nums:
         if num in mydict:
             return True
@@ -131,3 +131,36 @@ def productExceptSelf(nums):
     answer.append(left_to_right_products[-2])
 
     return answer
+
+
+def maxSubArray(nums):
+    """
+    53. Maximum Subarray
+    This takes in a list of integers, nums.  It returns an integer of
+    the sum of the subarray with the largest sum.
+    """
+    # max_sum is updated to store the largest sum as nums is iterated
+    # through.  It is initially set to the first element instead of 0
+    # for cases when all of the elements are negative.  If every
+    # element is negative, the sum of the current subarray will always
+    # be less than max_sum and its value of 0 will never change.  Then,
+    # 0 will be returned, when the true largest sum is the value of the
+    # greatest negative element.
+    max_sum = nums[0]
+    # current_sum stores the sum of the current subarray as nums is
+    # iterated through.
+    current_sum = 0
+
+    # This iterates through nums.  For each element, it adds it to the
+    # sum of the current subarray.  That sum is compared to max_sum to
+    # check if there is a new largest sum.  If the current sum is ever
+    # negative, the current subarray is cleared, because adding those
+    # elements to a future subarray will decrease its sum.
+    for num in nums:
+        current_sum += num
+        if current_sum > max_sum:
+            max_sum = current_sum
+        if current_sum < 0:
+            current_sum = 0
+
+    return max_sum
