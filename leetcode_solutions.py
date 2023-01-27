@@ -140,12 +140,7 @@ def maxSubArray(nums):
     the sum of the subarray with the largest sum.
     """
     # max_sum is updated to store the largest sum as nums is iterated
-    # through.  It is initially set to the first element instead of 0
-    # for cases when all of the elements are negative.  If every
-    # element is negative, the sum of the current subarray will always
-    # be less than max_sum and its value of 0 will never change.  Then,
-    # 0 will be returned, when the true largest sum is the value of the
-    # greatest negative element.
+    # through.
     max_sum = nums[0]
     # current_sum stores the sum of the current subarray as nums is
     # iterated through.
@@ -164,3 +159,43 @@ def maxSubArray(nums):
             current_sum = 0
 
     return max_sum
+
+
+def maxProduct(nums):
+    """
+    152. Maximum Product Subarray
+    This takes in a list of integers, nums.  It returns an integer of
+    the product of the subarray with the largest product.
+    """
+    # max_product is updated to store the largest product as nums is
+    # iterated through.
+    max_product = nums[0]
+    # current_max and current_min store the product of the current
+    # maximum and minimum subarrays as nums is iterated through.
+    current_max = 1
+    current_min = 1
+
+    # This iterates through nums and keeps track of the product of two
+    # current subarrays, one for the maximum and one for the minimum.
+    # For each iteration, there are three possible values:
+    # current_max * the element, current_min * the element, and the
+    # element itself.  The current max and min are updated each time
+    # based on these values.
+    # The current max is needed to check if there is a new max product.
+    # The current min is needed in case the next element in the
+    # iteration is negative, which results in the value becoming
+    # positive and possibly greater than the max product.
+    # If the element is ever 0, the current subarrays are cleared and
+    # max and min are reset to 1, because the product of a subarray
+    # containing 0 will always be 0.
+    for num in nums:
+        current_product = current_max * num
+        current_max = max(current_product, current_min*num, num)
+        current_min = min(current_product, current_min*num, num)
+        if current_max > max_product:
+            max_product = current_max
+        if num == 0:
+            current_max = 1
+            current_min = 1
+
+    return max_product
