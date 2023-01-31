@@ -199,3 +199,49 @@ def maxProduct(nums):
             current_min = 1
 
     return max_product
+
+
+def findMin(nums):
+    """
+    153. Find Minimum in Rotated Sorted Array
+    This takes in a rotated sorted array of integers with unique
+    values.  It returns an integer of the minimum value in the array.
+    It runs in O(log n) time.
+    """
+    # This stores the current subarray.
+    current_nums = nums[::]
+
+    # This continues to loop until the minimum value is found.  Each
+    # iteration, it reduces the size of the current subarray by half.
+    while True:
+        # This checks the base cases where the current subarray only
+        # has 1 or 2 elements.
+        if len(current_nums) == 1:
+            return current_nums[0]
+        if len(current_nums) == 2:
+            if current_nums[0] < current_nums[1]:
+                return current_nums[0]
+            return current_nums[1]
+        # This checks if the current subarray is sorted, so the minimum
+        # value is the first element.
+        if current_nums[0] < current_nums[-1]:
+            return current_nums[0]
+        # The current subarray has 3 or more elements and is not
+        # sorted.  So, the min has to be somewhere after the first
+        # element.  This divides the current subarray in half,
+        # resulting in a left subarray and right subarray.
+        # The min is in the left subarray if its first element is
+        # greater than its last element, because that means the values
+        # are increasing and then drop to a lower value once it reaches
+        # the min element.  On the other hand, the min is in the right
+        # subarray if the left subarray's first element is less than
+        # its last element, because that means the left subarray is
+        # always increasing and never drops to a lower value by
+        # reaching the min element.
+        middle_index = int(len(current_nums) / 2)
+        if current_nums[0] > current_nums[middle_index]:
+            # The min is in the left subarray.
+            current_nums = current_nums[:middle_index+1]
+        else:
+            # The min is in the right subarray.
+            current_nums = current_nums[middle_index+1:]
