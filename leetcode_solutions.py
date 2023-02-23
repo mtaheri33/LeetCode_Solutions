@@ -204,9 +204,9 @@ def maxProduct(nums):
 def findMin(nums):
     """
     153. Find Minimum in Rotated Sorted Array
-    This takes in a rotated sorted array of integers with unique
-    values.  It returns an integer of the minimum value in the array.
-    It runs in O(log n) time.
+    This takes in a rotated sorted array of integers with unique values
+    It returns an integer of the minimum value in the array. It runs in
+    O(log n) time.
     """
     # This stores the current subarray.
     current_nums = nums[::]
@@ -245,3 +245,56 @@ def findMin(nums):
         else:
             # The min is in the right subarray.
             current_nums = current_nums[middle_index+1:]
+
+
+def search(nums, target):
+    """
+    33. Search in Rotated Sorted Array
+    This takes in a rotated sorted array of integers with unique
+    values, nums, and a single integer, target.  If the target is in
+    nums, it returns its index.  Otherwise, it returns -1.  It runs in
+    O(log n) time.
+    """
+    # This stores the indices of the current subarray.
+    start_index = 0
+    end_index = len(nums) - 1
+
+    # This continues to loop until the target value is found or a base
+    # case is reached.  Each iteration, it reduces the size of the
+    # current subarray by half.
+    while True:
+        # This checks the base cases where the current subarray only
+        # has 1 or 2 elements.
+        if start_index == end_index:
+            if nums[start_index] == target:
+                return start_index
+            return -1
+        if start_index == (end_index - 1):
+            if nums[start_index] == target:
+                return start_index
+            if nums[end_index] == target:
+                return end_index
+            return -1
+        # The current subarray has 3 or more elements.  This divides
+        # the current subarray in half, resulting in left and right
+        # subarrays.  Only one subarray will be sorted, where the first
+        # element is less than the last element.  So, it checks if the
+        # target value can be within the side that is sorted.  If it
+        # can be, the current subarray is updated.  Otherwise, the
+        # current subarray is updated to the other side.
+        middle_index = int((start_index + end_index) / 2)
+        # This checks if the middle element is the target.
+        if nums[middle_index] == target:
+            return middle_index
+        if nums[start_index] < nums[middle_index]:
+            # The left subarray is sorted.
+            if nums[start_index] <= target < nums[middle_index]:
+                end_index = middle_index - 1
+            else:
+                start_index = middle_index + 1
+        else:
+            # The right subarray is sorted.
+            if nums[middle_index] < target <= nums[end_index]:
+                start_index = middle_index + 1
+            else:
+                end_index = middle_index - 1
