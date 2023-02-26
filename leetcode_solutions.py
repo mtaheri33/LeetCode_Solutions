@@ -327,3 +327,48 @@ def twoSum(numbers, target):
             left_index += 1
         else:
             right_index -= 1
+
+
+def threeSum(nums):
+    """
+    15. 3Sum
+    This takes in a list of integers, nums.  It returns a list where
+    each element is a list of three different elements from nums that
+    sum to 0.  The result list does not contain duplicate triplets.
+    """
+    result = []
+    nums.sort()
+
+    # For each element of nums, this uses a subarray of every element
+    # after the current element.  It finds all pairs of elements that
+    # when combined with the current element sum to 0.  If this triplet
+    # is not already in the result list, it is added.
+    for i in range(len(nums)-2):
+        left_index = i + 1
+        right_index = len(nums) - 1
+        target = -1 * nums[i]
+        pairs_that_sum_to_target = []
+        # This finds all pairs that sum to the opposite of the current
+        # element.  It uses the method from 167. Two Sum II - Input
+        # Array Is Sorted.  However, since it needs to find all pairs,
+        # when a solution is found it continues to iterate.
+        while left_index != right_index:
+            sum = nums[left_index] + nums[right_index]
+            if sum == target:
+                pairs_that_sum_to_target.append([nums[left_index],
+                                                nums[right_index]])
+                left_index += 1
+            elif sum < target:
+                left_index += 1
+            else:
+                right_index -= 1
+        # This combines the current element with all of the pairs.  It
+        # adds the triplet to the result list if it is not already in
+        # the list.
+        for pair in pairs_that_sum_to_target:
+            triplet = pair + [nums[i]]
+            triplet.sort()
+            if triplet not in result:
+                result.append(triplet)
+
+    return result
