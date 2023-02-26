@@ -298,3 +298,32 @@ def search(nums, target):
                 start_index = middle_index + 1
             else:
                 end_index = middle_index - 1
+
+
+def twoSum(numbers, target):
+    """
+    167. Two Sum II - Input Array Is Sorted
+    This takes in an sorted ascending array of integers, numbers, and a
+    single integer, target.  It returns a list of two integers that are
+    the indices plus 1 of values in numbers which sum to target.  The
+    lesser index is the first element, and the greater index is the
+    second element.  The same index cannot be used twice.
+    """
+    left_index = 0
+    right_index = len(numbers) - 1
+
+    # This continues to iterate until the target is found.  It adds the
+    # left and right elements of the array.  It checks if the value
+    # equals target, and if so the indices plus 1 are returned.  If the
+    # sum is less than the target, the value needs to increase.  So,
+    # the left element is updated to the element to the right.  If the
+    # sum is greater than the target, the value needs to decrease.  So,
+    # the right element is updated to the element to the left.
+    while True:
+        sum = numbers[left_index] + numbers[right_index]
+        if sum == target:
+            return [left_index+1, right_index+1]
+        if sum < target:
+            left_index += 1
+        else:
+            right_index -= 1
