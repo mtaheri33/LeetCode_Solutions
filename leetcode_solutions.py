@@ -372,3 +372,36 @@ def threeSum(nums):
                 result.append(triplet)
 
     return result
+
+
+def maxArea(height):
+    """
+    11. Container With Most Water
+    This takes in a list of integers.  The values represent heights of
+    vertical lines.  This returns an integer that is the maximum area
+    which can be created by connecting two heights with a horizontal
+    line.
+    """
+    left_index = 0
+    right_index = len(height) - 1
+    max_area = 0
+
+    # This starts with the lines at each end.  It calculates the area
+    # to determine if there is a new max.  It then moves inward by
+    # going to the next line left or right of the smaller line and
+    # continues to iterate until the ends meet.
+    while left_index != right_index:
+        # This calculates the current area and compares it to the past
+        # max.
+        width = right_index - left_index
+        smaller_height = min(height[left_index], height[right_index])
+        area = width * smaller_height
+        if area > max_area:
+            max_area = area
+        # This moves one end inward.
+        if height[right_index] < height[left_index]:
+            right_index -= 1
+        else:
+            left_index += 1
+
+    return max_area
