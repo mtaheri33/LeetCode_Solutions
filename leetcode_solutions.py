@@ -341,13 +341,18 @@ def threeSum(nums):
 
     # For each element of nums, this uses a subarray of every element
     # after the current element.  It finds all pairs of elements that
-    # when combined with the current element sum to 0.  If this triplet
-    # is not already in the result list, it is added.
+    # when combined with the current element sum to 0.  This triplet is
+    # then added to the result list.
     for i in range(len(nums)-2):
         left_index = i + 1
+        # If the new current element equals the previous current
+        # element, it will result in duplicate triplets.  So, this
+        # continues to iterate until a different current element is
+        # found.
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
         right_index = len(nums) - 1
         target = -1 * nums[i]
-        pairs_that_sum_to_target = []
         # This finds all pairs that sum to the opposite of the current
         # element.  It uses the method from 167. Two Sum II - Input
         # Array Is Sorted.  However, since it needs to find all pairs,
@@ -355,21 +360,25 @@ def threeSum(nums):
         while left_index != right_index:
             sum = nums[left_index] + nums[right_index]
             if sum == target:
-                pairs_that_sum_to_target.append([nums[left_index],
-                                                nums[right_index]])
+                result.append([nums[i], nums[left_index], nums[right_index]])
                 left_index += 1
+                # If the new left element equals the previous left
+                # element, it will result in a duplicate pair.  So,
+                # this continues to iterate until a different left
+                # element is found.
+                while (
+                    nums[left_index] == nums[left_index - 1]
+                    and left_index != right_index
+                ):
+                    left_index += 1
             elif sum < target:
+                # The sum of the pair is too small.  So, to increase
+                # the value this moves one end to a larger value.
                 left_index += 1
             else:
+                # The sum of the pair is too large.  So, to decrease
+                # the value this moves one end to a smaller value.
                 right_index -= 1
-        # This combines the current element with all of the pairs.  It
-        # adds the triplet to the result list if it is not already in
-        # the list.
-        for pair in pairs_that_sum_to_target:
-            triplet = pair + [nums[i]]
-            triplet.sort()
-            if triplet not in result:
-                result.append(triplet)
 
     return result
 
