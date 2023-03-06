@@ -442,3 +442,21 @@ def getSum(a, b):
     return a;
     """
     pass
+
+
+def hammingWeight(n):
+    """
+    191. Number of 1 Bits
+    This takes in the binary representation of an integer.  It returns
+    the number of 1 bits.
+    """
+    count = 0
+
+    # This iterates through the bits by shifting it to the right by 1
+    # bit each loop.  It calculates whether n is even or odd.  If it is
+    # odd, the rightmost bit (current bit element) is 1.
+    while n > 0:
+        if n % 2 == 1:
+            count += 1
+        n = n >> 1
+    return count
