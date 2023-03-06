@@ -414,3 +414,31 @@ def maxArea(height):
             left_index += 1
 
     return max_area
+
+
+def getSum(a, b):
+    """
+    371. Sum of Two Integers
+    This takes in two integers, a and b.  It returns an integer that is
+    the sum of a and b without using + or -.
+
+    This calculates the exclusive or of a and b to handle bit addition
+    1 + 0 = 1 and 0 + 1 = 1.
+    It also calculates the and of a and b then shifts the bits to the
+    left by 1 bit to handle bit addition 1 + 1 = 0 carry over a 1.
+    No calculation is needed for bit addition 0 + 0 = 0 since the
+    result is 0 in both calculations.
+    The sum of these two integers is equal to the sum of a and b.
+    However, since + cannot be used, this continues to perform the
+    calculations on the two new integers until the and value is 0.
+    The solution code is written in Java because of how Python
+    represents the bits of negative integers:
+    while (b != 0) {
+        int xor = a ^ b;
+        b = (a & b) << 1;
+        a = xor;
+    }
+
+    return a;
+    """
+    pass
