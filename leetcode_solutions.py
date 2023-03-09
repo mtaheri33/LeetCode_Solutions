@@ -459,4 +459,56 @@ def hammingWeight(n):
         if n % 2 == 1:
             count += 1
         n = n >> 1
+
     return count
+
+
+def countBits(n):
+    """
+    338. Counting Bits
+    This takes in an integer.  It returns an array of integers of
+    length n + 1.  The elements of the array are the number of 1 bits
+    in the integers from 0 to n.
+    """
+    result = []
+
+    # offset is used to index the result array by subtracting it from
+    # the current element.
+    offset = 0
+    # The offset value needs to change whenever the current element is
+    # the result of 2 to the power of a number.
+    next_offset = 1
+    # This iterates through the integers from 0 to n (including n).  It
+    # uses dynamic programming to find the number of 1 bits in each
+    # element.
+    for num in range(n+1):
+        # This is the base case.
+        if num == 0:
+            result.append(0)
+            continue
+        # This runs whenever the current offset reaches the new offset
+        # and needs to be updated.
+        if num == next_offset:
+            offset = next_offset
+            next_offset = offset * 2
+        # Whenever the current element is the result of 2 to the power
+        # of a number (1, 2, 4, 8, 16, ...), the leftmost bit (without
+        # padding) is 1 and all of the remaining bits are 0 (1, 10,
+        # 100, 1000, 10000, ...).  All of these elements have a single
+        # 1 bit.  They are the offset values, because all of the
+        # elements between them can be made by adding the offset value
+        # bits with the bits of the previous elements starting from 0
+        # (4 100 = 4 100 + 0 0, 5 101 = 4 100 + 1 1, 6 110 = 4 100 + 2
+        # 10, 7 111 = 4 100 + 3 11, 8 1000 = 8 1000 + 0 0, 9 1001 = 8
+        # 1000 + 1 1, 10 1010 = 8 1000 + 2 10, 11 1011 = 8 1000 + 3 11,
+        # ...).  This means the number of 1 bits for an integer = 1 +
+        # number of 1 bits in the integer current element - current
+        # offset.  These were calculated in previous elements, so it is
+        # the same as 1 + result[current element - current offset].
+        # The current offset is updated in the if block above whenever
+        # the current element is the result of 2 to the power of a
+        # number (offset 2 for elements 2-3; offset 4 for elements 4-7,
+        # offset 8 for elements 8-15, ...).
+        result.append(1+result[num-offset])
+
+    return result
