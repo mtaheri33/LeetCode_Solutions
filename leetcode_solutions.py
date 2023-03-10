@@ -1,3 +1,20 @@
+# TOC:
+# Arrays
+# Bits
+
+# Arrays
+def missingNumber(nums):
+    """
+    268. Missing Number
+    This takes in an array of distinct integers in the range [0, length
+    of nums] (both inclusive).  It returns the integer in the range
+    that is not included in nums.
+    """
+    # The sum of the range [0, n] minus the sum of nums will be equal
+    # to the value that is missing.
+    return sum(range(len(nums)+1)) - sum(nums)
+
+
 def twoSum(nums, target):
     """
     1. Two Sum
@@ -416,6 +433,7 @@ def maxArea(height):
     return max_area
 
 
+# Bits
 def getSum(a, b):
     """
     371. Sum of Two Integers
