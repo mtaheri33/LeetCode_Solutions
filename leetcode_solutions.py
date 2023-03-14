@@ -530,3 +530,22 @@ def countBits(n):
         result.append(1+result[num-offset])
 
     return result
+
+
+def reverseBits(n):
+    """
+    190. Reverse Bits
+    This reverses the bits in a 32 bit unsigned integer.
+    """
+    result = 0
+
+    # This finds the bits of n from right to left by shifting n to the
+    # right by the current loop number (i) and then calculating and (&)
+    # 1.  To put each bit in the correct spot of the result, it is
+    # shifted to the left by 31 - i and then added to the result.
+    for i in range(32):
+        bit = (n >> i) & 1
+        bit = bit << (31 - i)
+        result += bit
+
+    return result
