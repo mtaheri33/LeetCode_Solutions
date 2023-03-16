@@ -1,6 +1,7 @@
 # TOC:
 # Arrays
 # Bits
+# Dynamic Programming
 
 # Arrays
 def missingNumber(nums):
@@ -549,3 +550,31 @@ def reverseBits(n):
         result += bit
 
     return result
+
+
+# Dynamic Programming
+def climbStairs(n):
+    """
+    70. Climbing Stairs
+    There is a staircase with n steps.  You can move up 1 or 2 steps.
+    This calculates how many different ways there are to climb the
+    staircase and returns the integer.
+    """
+    # This is a base case.
+    if n == 1:
+        return 1
+
+    # This uses the bottom up approach and tabulation.
+    different_ways_list = [0] * (n+1)
+    # For 1 step, there is 1 way to climb to the top.
+    different_ways_list[1] = 1
+    # For 2 steps, there are 2 ways to climb to the top.
+    different_ways_list[2] = 2
+    # To reach the i step, there are only two options.  You take a one
+    # step from the i-1 step or you take a two step from the i-2 step.
+    # So, the ways to reach the i step is the sum of the ways to reach
+    # the i-1 and i-2 steps.
+    for i in range(3, n+1):
+        different_ways_list[i] = different_ways_list[i-1] + different_ways_list[i-2]
+
+    return different_ways_list[n]
