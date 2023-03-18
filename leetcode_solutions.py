@@ -578,3 +578,37 @@ def climbStairs(n):
         different_ways_list[i] = different_ways_list[i-1] + different_ways_list[i-2]
 
     return different_ways_list[n]
+
+
+def coinChange(coins, amount):
+    """
+    322. Coin Change
+    This takes in a list of integers, coins.  It also takes in a single
+    integer, amount.  It calculates and returns the integer that is the
+    least number of coins to make up the amount.  If the amount cannot
+    be made from the coins, it returns -1.
+    """
+    # This uses the bottom up approach and tabulation.
+    least_coins_list = [amount + 1] * (amount+1)
+
+    # For 0 amount, it takes 0 coins.
+    least_coins_list[0] = 0
+    # Each iteration, it uses the coins less than or equal to the
+    # current amount.  For each coin, it calculates 1 (the coin) plus
+    # the number of coins to make the current amount minus the coin.
+    # If this is a new minimum, it is put in the list.
+    # If the current amount cannot be formed from the coins, its value
+    # in the list stays as the initialized value, amount + 1.
+    for current_amount in range(1, amount+1):
+        for coin in coins:
+            if current_amount - coin >= 0:
+                least_coins_list[current_amount] = min(
+                    least_coins_list[current_amount],
+                    1 + least_coins_list[current_amount - coin]
+                )
+
+    if least_coins_list[amount] == (amount + 1):
+        # The amount cannot be formed from the coins.
+        return -1
+
+    return least_coins_list[amount]
