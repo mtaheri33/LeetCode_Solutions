@@ -612,3 +612,39 @@ def coinChange(coins, amount):
         return -1
 
     return least_coins_list[amount]
+
+
+def lengthOfLIS(nums):
+    """
+    300. Longest Increasing Subsequence
+    This takes in a list of integers.  It returns an integer that is
+    the length of the longest increasing subsequence (an array that can
+    be derived from another array by deleting some or no elements
+    without changing the order of the remaining elements).
+    """
+    # This uses the bottom up approach and tabulation.
+    longest_lengths = [0] * len(nums)
+
+    # For the last element in nums, the length of the longest possible
+    # subsequence is just the element itself, so 1.
+    longest_lengths[-1] = 1
+    # This iterates through the elements of nums in reverse order.  For
+    # each element, it calculates the length of the longest subsequence
+    # that can be made starting with the element.
+    for i in range(len(nums)-2, -1, -1):
+        # The longest subsequence length may be just the element itself.
+        max_length = 1
+        # The second element of the subsequence can be any of the
+        # elements after the current element, as long as it is greater.
+        # The subsequence length is the current element (1) plus the
+        # longest length starting with the second element.  So, the
+        # longest length for the current element is the max of all the
+        # subsequence lengths.
+        for j in range(i+1, len(nums)):
+            if nums[j] > nums[i] and (1 + longest_lengths[j]) > max_length:
+                max_length = 1 + longest_lengths[j]
+        longest_lengths[i] = max_length
+
+    # Out of all the longest subsequence lengths, the result is the
+    # highest one.
+    return max(longest_lengths)
