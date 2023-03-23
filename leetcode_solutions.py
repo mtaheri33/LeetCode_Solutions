@@ -648,3 +648,47 @@ def lengthOfLIS(nums):
     # Out of all the longest subsequence lengths, the result is the
     # highest one.
     return max(longest_lengths)
+
+
+def longestCommonSubsequence(text1, text2):
+    """
+    1143. Longest Common Subsequence
+    This takes in two strings of all lowercase letters.  It returns an
+    integer of the length of the longest subsequence that can be formed
+    out of both strings.  If there is no common subsequence, it returns
+    0.
+    """
+    # This uses the bottom up approach and tabulation with a 2D matrix
+    # (each element of the list is an inner list that is one of the
+    # rows).  The rows of the matrix represent 0 (empty string) and
+    # then the letters of the first string, text1.  The columns
+    # represent 0 and then the letters of the other string, text2.
+    matrix = []
+    for _ in range(len(text1)+1):
+        matrix.append([None] * (len(text2)+1))
+
+    # This iterates through the first string, text1.  For each of these
+    # iterations, it then iterates through the second string, text2.
+    # For both iterations, the substring is the current character and
+    # everything before it.  If the current characters equal each
+    # other, the length of the common subsequence is 1 + the length of
+    # the common subsequence for the substrings before the current
+    # characters.  This is 1 + matrix[row-1][col-1].  If the characters
+    # do not equal each other, there are two options.  It can be the
+    # length of the common subsequence between the substring before
+    # text1's current character and the current text2 substring.  Or,
+    # it can be the length of the common subsequence between the
+    # current text1 substring and the substring before text2's current
+    # character.  This is the max of matrix[row-1][col] and
+    # matrix[row][col-1].
+    for row in range(len(matrix)):
+        for col in range(len(matrix[0])):
+            if row == 0 or col == 0:
+                # Any string and an empty string has no common subsequence.
+                matrix[row][col] = 0
+            elif text1[row - 1] == text2[col - 1]:
+                matrix[row][col] = 1 + matrix[row - 1][col - 1]
+            else:
+                matrix[row][col] = max(matrix[row - 1][col], matrix[row][col - 1])
+
+    return matrix[-1][-1]
