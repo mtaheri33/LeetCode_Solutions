@@ -692,3 +692,34 @@ def longestCommonSubsequence(text1, text2):
                 matrix[row][col] = max(matrix[row - 1][col], matrix[row][col - 1])
 
     return matrix[-1][-1]
+
+
+def wordBreak(s, wordDict):
+    """
+    139. Word Break
+    This takes in a string, s, and a list of strings, wordDict.  It
+    returns true if the string can be made by joining together elements
+    from wordDict.  Otherwise, it returns false.
+    """
+    # This uses the bottom up approach and tabulation.
+    result = [False] * (len(s)+1)
+    result[len(s)] = True
+
+    # This iterates through the characters of s in reverse order.  For
+    # each character, it then iterates through the strings of wordDict.
+    # If it does not cause an index out of bounds error, it checks if
+    # the string equals the same length of characters starting at the
+    # current character.  If they are equal, those characters in s can
+    # be made from an element in wordDict.  In addition, if the
+    # characters after those characters can also be made
+    # (result[current index + len(word)] is True), then it is still
+    # possible for the string to be made and the value for that spot
+    # needs to be set to True for later iterations
+    # (result[current index] is set to True).
+    for i in range(len(s)-1, -1, -1):
+        for word in wordDict:
+            if (i + len(word)) <= len(s) and word == s[i: i + len(word)]:
+                if result[i + len(word)]:
+                    result[i] = True
+
+    return result[0]
