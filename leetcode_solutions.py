@@ -723,3 +723,31 @@ def wordBreak(s, wordDict):
                     result[i] = True
 
     return result[0]
+
+
+def combinationSum4(nums, target):
+    """
+    377. Combination Sum IV
+    This takes in a list of unique integers, nums, and an integer,
+    target.  It  returns an integer that is the number of combinations
+    made up of elements from nums that sum to target.
+    """
+    # This uses the bottom up approach and tabulation.
+    result = [0] * (target+1)
+    result[0] = 1
+
+    # This iterates from 1 to the target (inclusive).  For each value,
+    # it then iterates through nums.  If the num is less than or equal
+    # to the value, new combinations will be the num added to all of
+    # the combinations that sum to the value minus the num.  This is
+    # result[value - num].  This applies to every element of nums, so
+    # all of those combinations are added together to get the total
+    # number of combinations for the current value.
+    for i in range(1, target+1):
+        counter = 0
+        for num in nums:
+            if num <= i:
+                counter += result[i - num]
+        result[i] = counter
+
+    return result[-1]
