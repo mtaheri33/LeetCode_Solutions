@@ -751,3 +751,32 @@ def combinationSum4(nums, target):
         result[i] = counter
 
     return result[-1]
+
+
+def rob(nums):
+    """
+    198. House Robber
+    This takes in a list of integers, nums, that represent the amount
+    of money in houses on a street.  Two adjacent houses cannot be
+    robbed.  This returns an integer of the max amount of money that
+    can be stolen from the street.
+    """
+    # This uses the bottom up approach and tabulation.
+    result = [0] * (len(nums)+1)
+    result[0] = 0
+    result[1] = nums[0]
+
+    # This iterates through nums.  For each current num, there are two
+    # options.  One option is to rob the house, so the thief gets the
+    # money from the house plus the max amount of money from robbing
+    # houses up to the previous house (not inclusive).  This is
+    # result[current index - 2].  The other option is to not rob the
+    # house, so the thief gets the max amount of money from robbing
+    # houses up to the previous house (inclusive).  This is
+    # result[current index - 1].  The larger amount of money is the max
+    # amount of money from robbing houses up to that point.
+    for i in range(2, len(nums)+1):
+        money = max(nums[i-1]+result[i-2], result[i-1])
+        result[i] = money
+
+    return result[-1]
