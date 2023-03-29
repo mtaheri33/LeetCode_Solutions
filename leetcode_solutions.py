@@ -780,3 +780,45 @@ def rob(nums):
         result[i] = money
 
     return result[-1]
+
+
+def rob(nums):
+    """
+    213. House Robber II
+    This takes in a list of integers, nums, that represent the amount
+    of money in houses on a circular street.  Two adjacent houses
+    cannot be robbed, and the last house in nums is adjacent with the
+    first house.  This returns an integer of the max amount of money
+    that can be stolen from the street.
+    """
+    def inner_rob(nums):
+        # This uses the bottom up approach and tabulation.
+        result = [0] * (len(nums)+1)
+        result[0] = 0
+        result[1] = nums[0]
+
+        # This iterates through nums.  For each current num, there are two
+        # options.  One option is to rob the house, so the thief gets the
+        # money from the house plus the max amount of money from robbing
+        # houses up to the previous house (not inclusive).  This is
+        # result[current index - 2].  The other option is to not rob the
+        # house, so the thief gets the max amount of money from robbing
+        # houses up to the previous house (inclusive).  This is
+        # result[current index - 1].  The larger amount of money is the max
+        # amount of money from robbing houses up to that point.
+        for i in range(2, len(nums)+1):
+            money = max(nums[i-1]+result[i-2], result[i-1])
+            result[i] = money
+
+        return result[-1]
+
+    # This is the base case.
+    if len(nums) == 1:
+        return nums[0]
+
+    # To ensure the first and last house are not both robbed, this runs
+    # the house robber function on two subarrays.  The first subarray
+    # is all of the elements of nums except the last.  The second
+    # subarray is all of the elements except the first.  The max amount
+    # that can be robbed is the larger value.
+    return max(inner_rob(nums[:len(nums)-1]), inner_rob(nums[1:]))
