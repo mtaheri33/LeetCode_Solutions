@@ -822,3 +822,64 @@ def rob(nums):
     # subarray is all of the elements except the first.  The max amount
     # that can be robbed is the larger value.
     return max(inner_rob(nums[:len(nums)-1]), inner_rob(nums[1:]))
+
+
+def numDecodings(s):
+    """
+    91. Decode Ways
+    This takes in a string, s, of digits.  Using the coding 1=A, 2=B,
+    and so on, it returns an integer that is the number of different
+    ways to decode the string.
+    """
+    # These are the base cases.
+    if s[0] == '0':
+        return 0
+    if len(s) == 1:
+        return 1
+
+    # This uses the bottom up approach and tabulation.  results[i]
+    # represents the number of ways to decode the substring of s
+    # starting at s[i] and going to the end of the string.
+    results = [0] * len(s)
+    # This sets the number of ways for the last index.
+    if s[-1] == '0':
+        results[-1] = 0
+    else:
+        results[-1] = 1
+    # This sets the number of ways for the second to last index.
+    if s[-2] == '0':
+        results[-2] = 0
+    elif int(s[-2]+s[-1]) <= 26:
+        # The last two characters are numbers from 10-26 inclusive.
+        # If it is 10 or 20, the number of ways is 1 + 0 = 0.  For the
+        # other numbers, it is 1 + 1 = 2.
+        results[-2] = 1 + results[-1]
+    else:
+        # The last two characters is a number 27 or greater.  For
+        # multiples of 10, the number of ways is 0 since it is greater
+        # than 26 and the two characters cannot be decoded
+        # individually.  Otherwise, the number of ways is 1.
+        results[-2] = results[-1]
+
+    # To start to decode a string, you can start with either the first
+    # character if it is not 0 or the first two characters if it is
+    # less than 27 since either option may be the first letter.  So,
+    # the number of ways to decode a string is the number of ways to
+    # decode the substring coming after the first character plus the
+    # number of ways to decode the substring coming after the first
+    # two characters.  This is results[i + 1] + results[i + 2].
+    for i in range(len(s)-3, -1, -1):
+        if s[i] == '0':
+            results[i] = 0
+        else:
+            # This gets the number of ways to decode the substring
+            # coming after the first character.
+            result = results[i + 1]
+            # This adds the number of ways to decode the substring
+            # coming after the first two characters if it is less than
+            # 27.
+            if int(s[i]+s[i+1]) <= 26:
+                result += results[i + 2]
+            results[i] = result
+
+    return results[0]
