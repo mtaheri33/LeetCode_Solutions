@@ -2,6 +2,7 @@
 # Arrays
 # Bits
 # Dynamic Programming
+# Strings
 
 # Arrays
 def missingNumber(nums):
@@ -883,3 +884,28 @@ def numDecodings(s):
             results[i] = result
 
     return results[0]
+
+
+# Strings
+def reverseString(s):
+    """
+    344. Reverse String
+    This takes in a string and reverses it in-place.  It returns None.
+    """
+    left_index = 0
+    right_index = len(s) - 1
+
+    # This starts at the ends of the string.  It swaps the elements and
+    # then moves inward.  It repeats this process until all of the
+    # elements have been swapped (length of s is even) or it reaches
+    # the middle character (length of s is odd).
+    while left_index < right_index:
+        # This swaps the elements.
+        left_element = s[left_index]
+        s[left_index] = s[right_index]
+        s[right_index] = left_element
+        # This moves the indexes inward.
+        left_index += 1
+        right_index -= 1
+
+    return None
