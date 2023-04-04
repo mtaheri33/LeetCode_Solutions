@@ -335,9 +335,9 @@ def twoSum(numbers, target):
     # left and right elements of the array.  It checks if the value
     # equals target, and if so the indices plus 1 are returned.  If the
     # sum is less than the target, the value needs to increase.  So,
-    # the left element is updated to the element to the right.  If the
+    # the left element is updated to the element to its right.  If the
     # sum is greater than the target, the value needs to decrease.  So,
-    # the right element is updated to the element to the left.
+    # the right element is updated to the element to its left.
     while True:
         sum = numbers[left_index] + numbers[right_index]
         if sum == target:
@@ -433,6 +433,56 @@ def maxArea(height):
             left_index += 1
 
     return max_area
+
+
+def countFairPairs(nums, lower, upper):
+    """
+    2563. Count the Number of Fair Pairs
+    This takes in a list of integers, nums, and two integers, lower and
+    upper.  It returns an integer that is the number of pairs of
+    different elements whose sum is in the range [lower, upper] both
+    inclusive.
+    """
+    # This takes in a sorted list of integers, sorted_list, and an
+    # integer, value.  It returns an integer that is the number of
+    # pairs of different elements whose sum is lower than value.
+    def countPairsLessThan(sorted_list, value):
+        count = 0
+        left_index = 0
+        right_index = len(sorted_list) - 1
+        # This starts at the ends of the list.  It moves inward and
+        # adds the difference between the indices whose elements sum to
+        # less than value to count.
+        while left_index < right_index:
+            # This keeps shifting the right pointer to the left until
+            # the left plus right elements are less than value.
+            while (
+                    left_index < right_index
+                    and sorted_list[left_index] + sorted_list[right_index] >= value
+            ):
+                right_index -= 1
+            # This adds the right minus left indices to count, because
+            # if you keep the left element constant then you can make
+            # pairs whose sum is less than value with every element
+            # from the right element (inclusive) to the left element
+            # (not inclusive since you can't use the same element in a
+            # pair).
+            count += right_index - left_index
+            # This shifts the left pointer to the right by one element
+            # and repeats the process.
+            left_index += 1
+        return count
+
+    # nums can be sorted, because the count of pairs will be the same.
+    nums.sort()
+    # This finds the number of pairs whose sum is less than upper plus 1.
+    pairs_less_than_or_equal_to_upper = countPairsLessThan(nums, upper+1)
+    # This finds the number of pairs whose sum is less than lower.
+    pairs_less_than_lower = countPairsLessThan(nums, lower)
+    # The pairs less than or equal to upper include the correct pairs
+    # as well as incorrect pairs that sum to less than lower.  So, this
+    # subtracts the number of incorrect pairs to get the result.
+    return pairs_less_than_or_equal_to_upper - pairs_less_than_lower
 
 
 # Bits
@@ -904,7 +954,7 @@ def reverseString(s):
         left_element = s[left_index]
         s[left_index] = s[right_index]
         s[right_index] = left_element
-        # This moves the indexes inward.
+        # This moves the indices inward.
         left_index += 1
         right_index -= 1
 
