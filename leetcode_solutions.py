@@ -985,12 +985,7 @@ def mergeTwoLists(list1, list2):
     current_node = None
     list1_current_node = list1
     list2_current_node = list2
-    # if both nodes are None, return head
-    # if list1 node is none, add list 2 cur val and increment
-    # elif list2 node is none, add list 1 cur val and increment
-    # elif list1 cur val < list2 cur val: add list 1 cur val, else add list 2 cur val
-    # move to next node of one that added
-    # move result to result.next
+
     # This iterates through the two linked lists.  Each iteration, it
     # adds the smaller value to the result linked list.
     while True:
@@ -998,6 +993,7 @@ def mergeTwoLists(list1, list2):
             # The loop has iterated through both of the linked lists,
             # so the merging is finished.
             return head_node
+
         if list1_current_node is None:
             # The loop has iterated through list1, but list2 still has
             # remaining values.
@@ -1018,6 +1014,7 @@ def mergeTwoLists(list1, list2):
             # so it should be added to the result linked list.
             new_node = ListNode(val=list2_current_node.val)
             list2_current_node = list2_current_node.next
+
         if head_node is None:
             # This runs for the first element added to the result
             # linked list.
@@ -1028,3 +1025,61 @@ def mergeTwoLists(list1, list2):
             # added to the result linked list.
             current_node.next = new_node
             current_node = current_node.next
+
+
+def addTwoNumbers(l1, l2):
+    """
+    2. Add Two Numbers
+    This takes in two non-empty linked lists.  Each list represents the
+    digits of a non-negative integer in reverse order.  This adds the
+    integers together and stores the digits in reverse order in a new
+    linked list.  It returns the head of the new list.
+    """
+    head_node = None
+    current_node = None
+    l1_current_node = l1
+    l2_current_node = l2
+    remainder = 0
+
+    # This iterates through the digits of the integers in reverse
+    # order.  It performs addition, carries over any remainder, and
+    # adds the sum digit to the result linked list.
+    while True:
+        # This sets the l1 and 2 digits.
+        if l1_current_node is None:
+            l1_digit = 0
+        else:
+            l1_digit = l1_current_node.val
+            l1_current_node = l1_current_node.next
+        if l2_current_node is None:
+            l2_digit = 0
+        else:
+            l2_digit = l2_current_node.val
+            l2_current_node = l2_current_node.next
+
+        # This performs the addition to get the sum digit and carries
+        # over any remainder.
+        current_digit = l1_digit + l2_digit + remainder
+        if current_digit >= 10:
+            new_node = ListNode(val=current_digit-10)
+            remainder = 1
+        else:
+            new_node = ListNode(val=current_digit)
+            remainder = 0
+
+        # This sets the digit as a new node in the result linked list.
+        if head_node is None:
+            head_node = new_node
+            current_node = head_node
+        else:
+            current_node.next = new_node
+            current_node = current_node.next
+
+        # The loop has iterated through both l1 and l2, and there is no
+        # remainder to add as the last digit.
+        if (
+                l1_current_node is None
+                and l2_current_node is None
+                and remainder == 0
+        ):
+            return head_node
