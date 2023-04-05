@@ -3,6 +3,7 @@
 # Bits
 # Dynamic Programming
 # Strings
+# Linked Lists
 
 # Arrays
 def missingNumber(nums):
@@ -959,3 +960,71 @@ def reverseString(s):
         right_index -= 1
 
     return None
+
+
+# Linked Lists
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+def mergeTwoLists(list1, list2):
+    """
+    21. Merge Two Sorted Lists
+    This takes in the head nodes of two sorted linked lists.  It merges
+    them into a single sorted linked list and returns the head node.
+    """
+    # These are the base cases.
+    if list1 is None:
+        return list2
+    if list2 is None:
+        return list1
+
+    head_node = None
+    current_node = None
+    list1_current_node = list1
+    list2_current_node = list2
+    # if both nodes are None, return head
+    # if list1 node is none, add list 2 cur val and increment
+    # elif list2 node is none, add list 1 cur val and increment
+    # elif list1 cur val < list2 cur val: add list 1 cur val, else add list 2 cur val
+    # move to next node of one that added
+    # move result to result.next
+    # This iterates through the two linked lists.  Each iteration, it
+    # adds the smaller value to the result linked list.
+    while True:
+        if list1_current_node is None and list2_current_node is None:
+            # The loop has iterated through both of the linked lists,
+            # so the merging is finished.
+            return head_node
+        if list1_current_node is None:
+            # The loop has iterated through list1, but list2 still has
+            # remaining values.
+            new_node = ListNode(val=list2_current_node.val)
+            list2_current_node = list2_current_node.next
+        elif list2_current_node is None:
+            # The loop has iterated through list2, but list1 still has
+            # remaining values.
+            new_node = ListNode(val=list1_current_node.val)
+            list1_current_node = list1_current_node.next
+        elif list1_current_node.val < list2_current_node.val:
+            # The list1 value is less than the list2 value, so it
+            # should be added to the result linked list.
+            new_node = ListNode(val=list1_current_node.val)
+            list1_current_node = list1_current_node.next
+        else:
+            # The list2 value is less than or equal to the list1 value,
+            # so it should be added to the result linked list.
+            new_node = ListNode(val=list2_current_node.val)
+            list2_current_node = list2_current_node.next
+        if head_node is None:
+            # This runs for the first element added to the result
+            # linked list.
+            head_node = new_node
+            current_node = head_node
+        else:
+            # This runs every time after the first element has been
+            # added to the result linked list.
+            current_node.next = new_node
+            current_node = current_node.next
