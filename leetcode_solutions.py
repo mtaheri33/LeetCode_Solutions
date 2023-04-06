@@ -962,6 +962,33 @@ def reverseString(s):
     return None
 
 
+def lengthOfLongestSubstring(s):
+    """
+    3. Longest Substring Without Repeating Characters
+    This takes in a string.  It returns an integer that is the length
+    of the longest substring that does not contain duplicate
+    characters.
+    """
+    max_length = 0
+    left_index = 0
+    char_set = set()
+
+    # This uses a window of a substring that does not contain
+    # duplicates.  It also uses a set of the characters in the window.
+    # It then iterates through the characters of s.  If the character
+    # is already in the window, it slides the left side of the window
+    # until the duplicate character is gone.  Based on the new window,
+    # it checks if there is a new longest length.
+    for right_index in range(len(s)):
+        while s[right_index] in char_set:
+            char_set.remove(s[left_index])
+            left_index += 1
+        char_set.add(s[right_index])
+        max_length = max(max_length, right_index - left_index + 1)
+
+    return max_length
+
+
 # Linked Lists
 class ListNode:
     def __init__(self, val=0, next=None):
