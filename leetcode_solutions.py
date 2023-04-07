@@ -989,6 +989,53 @@ def lengthOfLongestSubstring(s):
     return max_length
 
 
+def longestPalindrome(s):
+    """
+    5. Longest Palindromic Substring
+    This takes in a string.  It returns a string of the longest
+    substring of s that is a palindrome.
+    """
+    result = ''
+
+    # This iterates through each character in the string.  It starts
+    # with the character and expands outward by one character in both
+    # directions.  If the substring is a palindrome, it checks if it is
+    # a new longest substring.  It then continues to expand until the
+    # substring is not a palindrome.
+    # This loop handles cases when the longest substring is an odd
+    # length.
+    for i in range(len(s)):
+        left_index = i
+        right_index = i
+        while (
+                left_index >= 0
+                and right_index < len(s)
+                and s[left_index] == s[right_index]
+        ):
+            if len(s[left_index:right_index+1]) > len(result):
+                result = s[left_index: right_index + 1]
+            left_index -= 1
+            right_index += 1
+
+    # This loop handles cases when the longest substring is an even
+    # length.  It uses the same process as above, except it starts with
+    # both the character and the character to the right.
+    for i in range(len(s)):
+        left_index = i
+        right_index = i + 1
+        while (
+                left_index >= 0
+                and right_index < len(s)
+                and s[left_index] == s[right_index]
+        ):
+            if len(s[left_index:right_index+1]) > len(result):
+                result = s[left_index: right_index + 1]
+            left_index -= 1
+            right_index += 1
+
+    return result
+
+
 # Linked Lists
 class ListNode:
     def __init__(self, val=0, next=None):
