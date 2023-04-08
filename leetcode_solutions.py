@@ -4,6 +4,7 @@
 # Dynamic Programming
 # Strings
 # Linked Lists
+# Math
 
 # Arrays
 def missingNumber(nums):
@@ -1157,3 +1158,37 @@ def addTwoNumbers(l1, l2):
                 and remainder == 0
         ):
             return head_node
+
+
+# Math
+def reverse(x):
+    """
+    7. Reverse Integer
+    This takes in an integer in the range [-2^31, 2^31 - 1] both
+    inclusive.  It reverses the digits and returns the new integer if
+    it is also within the range, otherwise it returns 0.
+    """
+    number = str(abs(x))
+    result = 0
+    multiplier = 1
+
+    # This iterates through the digits of x from left to right.  Each
+    # iteration, it adds the digit times its place in the new integer
+    # (ones, tens, hundreds, ...) as long as the sum does not go over
+    # the max range.
+    for digit in number:
+        remaining_space = (2**31 - 1) - result
+        amount_to_add = int(digit) * multiplier
+        if amount_to_add > remaining_space:
+            # Reversing the digits results in an integer greater than
+            # then max range.
+            return 0
+        result += amount_to_add
+        multiplier *= 10
+    
+    # x is negative, so the new integer also needs to be negative.
+    if x < 0:
+        return result * -1
+    # x is positive.
+    return result
+    
