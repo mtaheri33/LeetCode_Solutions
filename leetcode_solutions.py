@@ -487,6 +487,56 @@ def countFairPairs(nums, lower, upper):
     return pairs_less_than_or_equal_to_upper - pairs_less_than_lower
 
 
+def runningSum(nums):
+    """
+    1480. Running Sum of 1d Array
+    This takes in a list of integers.  It returns a list of integers
+    where each element is the sum of the corresponding element and all
+    elements before it in nums.
+    """
+    result = [nums[0]]
+
+    # This iterates through the elements of nums.  It adds the current
+    # element and the previous sum then stores the result.
+    for i in range(1, len(nums)):
+        result.append(result[i-1]+nums[i])
+    
+    return result
+
+
+def pivotIndex(nums):
+    """
+    724. Find Pivot Index
+    This takes in a list of integers.  It returns an integer that is
+    the leftmost index where the sum of all the elements to the left is
+    equal to the sum of all the elements to the right.  For the first
+    and last indices, the left and right sums are 0 respectively.  If
+    there is no index that satisfies the conditions, it returns -1.
+    """
+    # This creates a dictionary where dictionary[i] is the sum of
+    # nums[i] and every element to its right.
+    dictionary = dict()
+    # The right sum for the last index is 0.
+    dictionary[len(nums)] = 0
+    # The value for dictionary[0] does not need to be calculated,
+    # because the leftmost index that can be returned is 0, and the
+    # right sum for this index starts at index 1.
+    for i in range(len(nums)-1, 0, -1):
+        dictionary[i] = nums[i] + dictionary[i + 1]
+
+    # This iterates through nums and keeps track of the left sum.  If
+    # the left sum is equal to the right sum of an index, it returns
+    # that index.
+    left_sum = 0
+    for i in range(len(nums)):
+        if left_sum == dictionary[i + 1]:
+            return i
+        left_sum += nums[i]
+
+    # There is no index that satisfies the conditions.
+    return -1
+
+
 # Bits
 def getSum(a, b):
     """
