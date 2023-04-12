@@ -1087,6 +1087,68 @@ def longestPalindrome(s):
     return result
 
 
+def isIsomorphic(s, t):
+    """
+    205. Isomorphic Strings
+    This takes in two strings.  It returns True if the characters in s
+    can be replaced to form t.  All occurrences of the character must
+    be replaced with the same character.  Also, multiple characters
+    cannot be replaced with the same character.  If t cannot be formed,
+    it returns False.
+    """
+    mapping = dict()
+    replacement_characters = dict()
+
+    # This iterates through the characters of s.  It either creates or
+    # checks the mapping to the corresponding character in t.
+    for i in range(len(s)):
+        if s[i] not in mapping:
+            # It is a new character.
+            if t[i] in replacement_characters:
+                # The character is new, but the replacement character has
+                # already been used.
+                return False
+            # The replacement character has not been used, so this
+            # creates the mapping between s and t.  It also stores the
+            # character from t in order for future iterations to check
+            # if multiple characters are being replaced by the same
+            # character.
+            mapping[s[i]] = t[i]
+            replacement_characters[t[i]] = 1
+        elif mapping[s[i]] != t[i]:
+            # It is not a new character, so the character from s must be
+            # replaced by the mapped character from t.
+            return False
+    
+    return True
+
+
+def isSubsequence(s, t):
+    """
+    392. Is Subsequence
+    This takes in two strings.  It returns True if s is a subsequence
+    (a string that can be derived from another string by deleting some
+    or no elements without changing the order of the remaining
+    elements) of t.  Otherwise, it returns False.
+    """
+    s_index = 0
+    t_index = 0
+
+    # This continues to iterate through t and sometimes s until it
+    # reaches the end of either string.
+    while s_index < len(s) and t_index < len(t):
+        # The current character of s has been found in t.  So, this
+        # iterates to the next character of s.
+        if s[s_index] == t[t_index]:
+            s_index += 1
+        t_index += 1
+    
+    if s_index == len(s):
+        # All of the characters of s were found in t.
+        return True
+    return False
+
+
 # Linked Lists
 class ListNode:
     def __init__(self, val=0, next=None):
