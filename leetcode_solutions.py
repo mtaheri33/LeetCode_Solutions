@@ -1272,6 +1272,34 @@ def addTwoNumbers(l1, l2):
             return head_node
 
 
+def reverseList(head):
+    """
+    206. Reverse Linked List
+    This takes in the head node of a linked list.  It creates a new
+    linked list with the elements in reverse order and returns the head
+    node of this list.
+    """
+    current_node = head
+    previous_node = None
+    if head is not None:
+        next_node = head.next
+    # This iterates through the list.  It keeps track of the current,
+    # previous, and next nodes.  Each iteration, it sets the previous
+    # node as the element after the current node.
+    while current_node is not None:
+        # This saves a reference to the next element in the iteration.
+        next_node = current_node.next
+        # This sets the previous node as the element after the current
+        # node and updates the node variables for the next iteration.
+        current_node.next = previous_node
+        previous_node = current_node
+        current_node = next_node
+        if current_node is not None:
+            next_node = current_node.next
+
+    return previous_node
+
+
 # Math
 def reverse(x):
     """
