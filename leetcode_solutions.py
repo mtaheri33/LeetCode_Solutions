@@ -1300,6 +1300,60 @@ def reverseList(head):
     return previous_node
 
 
+def middleNode(head):
+    """
+    876. Middle of the Linked List
+    This takes in the head node of a linked list.  It returns the
+    middle node of the list.  If the list has an even number of
+    elements, it returns the second middle node.
+    """
+    # This determines the index of the middle element.
+    count = 1
+    current_node = head
+    # This counts how many elements are in the list.
+    while current_node.next is not None:
+        current_node = current_node.next
+        count += 1
+    middle_index = int(count/2)
+    
+    # This iterates until it reaches the middle element.
+    current_node = head
+    for _ in range(middle_index):
+        current_node = current_node.next
+    
+    return current_node
+
+
+def detectCycle(head):
+    """
+    142. Linked List Cycle II
+    This takes in the head node of a linked list.  If there is a cycle
+    in the list, where the tail node is connected to a previous node in
+    the list, it returns the start node of the cycle.  Otherwise, it
+    returns None.
+    """
+    # This is the base case.
+    if head is None:
+        return None
+    
+    dictionary = dict()
+    current_node = head
+    # This iterates until it determines there is a cycle or it reaches
+    # the end of the list.
+    while current_node.next is not None:
+        if current_node in dictionary:
+            # The start of the cycle has been found, since the current
+            # node has already been iterated over.
+            return current_node
+        # The current node has not been iterated over, so it is stored.
+        dictionary[current_node] = 1
+        current_node = current_node.next
+    
+    # The iteration reached the tail of the list and there is no next
+    # node, which means there is no cycle.
+    return None
+
+
 # Math
 def reverse(x):
     """
