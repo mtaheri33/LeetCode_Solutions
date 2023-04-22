@@ -1149,6 +1149,43 @@ def isSubsequence(s, t):
     return False
 
 
+def longestPalindrome(s):
+    """
+    409. Longest Palindrome
+    This takes in a string.  It returns an integer that is the length
+    of the longest palindrome that can be formed using the characters
+    (case sensitive) in s.
+    """
+    dictionary = dict()
+    # This creates a dictionary out of the characters in s in the
+    # format char: count of char.
+    for char in s:
+        if char in dictionary:
+            dictionary[char] += 1
+        else:
+            dictionary[char] = 1
+
+    result = 0
+    # This is a flag that is set if there is at least one count that is
+    # odd.
+    contains_odd_count = False
+    # This iterates through the character dictionary.  If the count is
+    # even, it is added to the result length.  If the count is odd, the
+    # count minus 1 is added to the result.
+    for char in dictionary:
+        if dictionary[char] % 2 == 0:
+            result += dictionary[char]
+        else:
+            result += dictionary[char] - 1
+            contains_odd_count = True
+    
+    if contains_odd_count:
+        # There is at least one character with an odd count.  So, one more
+        # character can be added in the middle of the palindrome.
+        return result + 1
+    return result
+
+
 # Linked Lists
 class ListNode:
     def __init__(self, val=0, next=None):
