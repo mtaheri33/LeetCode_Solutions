@@ -5,6 +5,10 @@
 # Strings
 # Linked Lists
 # Math
+# Trees
+
+import collections
+
 
 # Arrays
 def missingNumber(nums):
@@ -500,7 +504,7 @@ def runningSum(nums):
     # element and the previous sum then stores the result.
     for i in range(1, len(nums)):
         result.append(result[i-1]+nums[i])
-    
+
     return result
 
 
@@ -1119,7 +1123,7 @@ def isIsomorphic(s, t):
             # It is not a new character, so the character from s must be
             # replaced by the mapped character from t.
             return False
-    
+
     return True
 
 
@@ -1142,7 +1146,7 @@ def isSubsequence(s, t):
         if s[s_index] == t[t_index]:
             s_index += 1
         t_index += 1
-    
+
     if s_index == len(s):
         # All of the characters of s were found in t.
         return True
@@ -1178,7 +1182,7 @@ def longestPalindrome(s):
         else:
             result += dictionary[char] - 1
             contains_odd_count = True
-    
+
     if contains_odd_count:
         # There is at least one character with an odd count.  So, one more
         # character can be added in the middle of the palindrome.
@@ -1352,12 +1356,12 @@ def middleNode(head):
         current_node = current_node.next
         count += 1
     middle_index = int(count/2)
-    
+
     # This iterates until it reaches the middle element.
     current_node = head
     for _ in range(middle_index):
         current_node = current_node.next
-    
+
     return current_node
 
 
@@ -1372,7 +1376,7 @@ def detectCycle(head):
     # This is the base case.
     if head is None:
         return None
-    
+
     dictionary = dict()
     current_node = head
     # This iterates until it determines there is a cycle or it reaches
@@ -1385,7 +1389,7 @@ def detectCycle(head):
         # The current node has not been iterated over, so it is stored.
         dictionary[current_node] = 1
         current_node = current_node.next
-    
+
     # The iteration reached the tail of the list and there is no next
     # node, which means there is no cycle.
     return None
@@ -1416,10 +1420,99 @@ def reverse(x):
             return 0
         result += amount_to_add
         multiplier *= 10
-    
+
     # x is negative, so the new integer also needs to be negative.
     if x < 0:
         return result * -1
     # x is positive.
     return result
-    
+
+
+# Trees
+class Node:
+    def __init__(self, val=None, children=None):
+        self.val = val
+        self.children = children
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def preorder(root):
+    """
+    589. N-ary Tree Preorder Traversal
+    This takes in the root node of a tree.  It returns a list of
+    integers that are the values of the nodes in the tree.  The order
+    of the elements is based on pre-order traversal (perform the
+    operation on the node, then traverse to the left subtree, then to
+    the right subtree).
+    """
+    def pre_order_traversal(node, result):
+        """
+        This takes in the root node of a tree, node, and an empty list,
+        result.  It traverses through the tree using pre-order
+        traversal, and for each node it adds the value to the end of
+        the list.
+        """
+        if node is not None:
+            result.append(node.val)
+            for child in node.children:
+                pre_order_traversal(child, result)
+
+    # This performs the pre-order traversal on the root node.
+    result = []
+    pre_order_traversal(root, result)
+
+    return result
+
+
+def levelOrder(root):
+    """
+    102. Binary Tree Level Order Traversal
+    This takes in the root node of a binary tree.  It returns a 2D list
+    of integers that are the values of the nodes in the tree.  The
+    order of the elements is based on level-order traversal (start at
+    the root and perform the operation on it, then go to the next level
+    and perform the operation on each node from left to right).  Each
+    nested list contains the values from each level in the tree.
+    """
+    def level_order_traversal(tree_node, result):
+        """
+        This takes in the root node of a binary tree, tree_node, and an
+        empty list, result.  It traverses through the tree using
+        level-order traversal, and for each node in a level it adds it
+        to a temporary list.  Once the end of a level is reached, it
+        adds the tempoary list to the end of result.
+        """
+        queue = collections.deque()
+        queue.append(tree_node)
+        # This uses a queue and iterates through entire levels of the
+        # tree.
+        while len(queue) != 0:
+            nested_list = []
+            level_length = len(queue)
+            # level_length is the number of nodes in a level.  This
+            # iterates through each node in the level by dequeueing
+            # level_length number of times.  For each node, it adds the
+            # value to the tempoary list, nested_list, and then
+            # enqueues the left and right nodes for the next level
+            # iteration.
+            for _ in range(level_length):
+                current_tree_node = queue.popleft()
+                if current_tree_node is not None:
+                    nested_list.append(current_tree_node.val)
+                    queue.append(current_tree_node.left)
+                    queue.append(current_tree_node.right)
+            # The entire level has been traversed.
+            if len(nested_list) > 0:
+                result.append(nested_list)
+
+    # This performs the level-order traversal on the root node.
+    result = []
+    level_order_traversal(root, result)
+
+    return result
