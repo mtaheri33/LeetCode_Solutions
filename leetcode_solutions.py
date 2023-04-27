@@ -6,6 +6,7 @@
 # Linked Lists
 # Math
 # Trees
+# Algorithms
 
 import collections
 
@@ -1516,3 +1517,72 @@ def levelOrder(root):
     level_order_traversal(root, result)
 
     return result
+
+
+# Algorithms
+def search(nums, target):
+    """
+    704. Binary Search
+    This takes in a sorted ascending list of integers, nums, and an
+    integer, target.  If target is in nums, it returns an integer that
+    is the index, otherwise it returns -1.
+    """
+    first_index = 0
+    last_index = len(nums) - 1
+    # This uses binary search.  It keeps track of a subarray of nums.
+    # Each iteration, it compares the target to the middle element of
+    # the subarray.  If the target is not found and it is less than the
+    # middle element, the subarray is updated to the left half,
+    # otherwise it is updated to the right half.
+    while first_index <= last_index:
+        middle_index = int((first_index+last_index)/2)
+        if target == nums[middle_index]:
+            return middle_index
+        if target < nums[middle_index]:
+            last_index = middle_index - 1
+        else:
+            first_index = middle_index + 1
+
+    return -1
+
+
+def isBadVersion(version):
+    """
+    This is defined to not cause errors in the function
+    firstBadVersion.
+    """
+    pass
+
+
+def firstBadVersion(n):
+    """
+    278. First Bad Version
+    This takes in an integer representing a list of versions in order
+    from 1 to n.  isBadVersion(int) returns True or False if the int
+    representing the version is good or bad.  All versions after a bad
+    version are also bad.  This returns an integer of the first bad
+    version.
+    """
+    first_version = 1
+    last_version = n
+    # This keeps track of a subarray of n.  Each iteration, it checks
+    # if the middle version of the subarray is good or bad.  If it is
+    # good and the version after it is bad, it returns the bad version.
+    # Otherwise, the subarray is updated to the right half.  If it is
+    # bad and the first version or the version before it is good, it
+    # returns the bad version.  Otherwise, the subarray is updated to
+    # the left half.
+    while first_version <= last_version:
+        middle_version = int((first_version+last_version)/2)
+        if not isBadVersion(middle_version):
+            # The middle version is good.
+            if isBadVersion(middle_version+1):
+                return middle_version + 1
+            first_version = middle_version + 1
+        else:
+            # The middle version is bad.
+            if middle_version == 1:
+                return 1
+            if not isBadVersion(middle_version-1):
+                return middle_version
+            last_version = middle_version - 1
