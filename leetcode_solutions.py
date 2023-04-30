@@ -1519,6 +1519,75 @@ def levelOrder(root):
     return result
 
 
+def isValidBST(root):
+    """
+    98. Validate Binary Search Tree
+    This takes in the root node of a binary tree.  It returns True if
+    the tree is a binary search tree, where every value in a node's
+    left subtree is less than the node's value, every value in a
+    node's right subtree is greater than the node's value, and the
+    subtrees are also binary search trees.  Otherwise, it returns
+    False.
+    """
+    def in_order_traversal(node, values):
+        """
+        This takes in the root node of a binary tree, node, and an
+        empty list, values.  It traverses through the tree using
+        in-order traversal (traverse the left subtree, then perform the
+        operation on the node, then traverse to the right subtree), and
+        for each node it adds the value to the end of the list.
+        """
+        if node is not None:
+            in_order_traversal(node.left, values)
+            values.append(node.val)
+            in_order_traversal(node.right, values)
+
+    # This performs in-order traversal on the root node.
+    values = []
+    in_order_traversal(root, values)
+
+    # In-order traversal on a binary search tree results in all of the
+    # values being in sorted ascending order.  So, this checks if the
+    # list, values, is sorted.
+    previous_value = values[0]
+    # This iterates through the elements of values.  It checks if the
+    # current element is not greater than the previous element.
+    for i in range(1, len(values)):
+        if values[i] <= previous_value:
+            # The list, values, is not in sorted ascending order.  So,
+            # it is not a binary search tree.
+            return False
+        previous_value = values[i]
+
+    # The list, values, is in sorted ascending order.  So, it is a
+    # binary search tree.
+    return True
+
+
+def lowestCommonAncestor(root, p, q):
+    """
+    235. Lowest Common Ancestor of a Binary Search Tree
+    This takes in the root node of a binary search tree, root, and two
+    nodes in the tree, p and q.  It returns the lowest node in the tree
+    that has both p and q as descendants (a node can be a descendant of
+    itself).
+    """
+    current_node = root
+    # This iterates through each level of the tree.  If the values for
+    # p and q are greater than the current node, it moves to the right
+    # child.  If the values are less, it moves to the left child.
+    # Otherwise, p and q are in different subtrees of the current node.
+    # Or, the current node is p or q.  For either scenario, the current
+    # node is the lowest node.
+    while True:
+        if p.val > current_node.val and q.val > current_node.val:
+            current_node = current_node.right
+        elif p.val < current_node.val and q.val < current_node.val:
+            current_node = current_node.left
+        else:
+            return current_node
+
+
 # Algorithms
 def search(nums, target):
     """
