@@ -7,6 +7,7 @@
 # Math
 # Trees
 # Algorithms
+# Graphs
 
 import collections
 
@@ -1655,3 +1656,106 @@ def firstBadVersion(n):
             if not isBadVersion(middle_version-1):
                 return middle_version
             last_version = middle_version - 1
+
+
+# Graphs
+def floodFill(image: list[list[int]], sr: int, sc: int,
+              color: int) -> list[list[int]]:
+    """
+    733. Flood Fill
+    This takes in a 2-D list of integers, image, and integers sr, sc,
+    and color.  sr and sc represent the starting row and column
+    indices.  This updates the starting spot value to the value of
+    color.  If any spot up, down, left, or right of the starting spot
+    has the same value as the original value of the starting spot, it
+    is also updated to color.  This pattern continues for any of those
+    spots that are updated.  Once all possible spots are updated, the
+    new image is returned.
+    """
+    def flood_fill_recursion(image: list[list[int]], row: int, col: int,
+                             starting_color: int, new_color: int) -> None:
+        """
+        This takes in a 2-D list of integers, image, and integers row,
+        col, starting_color, and new_color.  row and col represent the
+        row and column indices of the current spot.  If the current
+        spot value matches starting_color, it is updated to the value
+        of new_color.  It then repeats this process up, down, left, and
+        right of the updated spot.
+        """
+        # This checks if the spot does not exist.
+        if row < 0 or row >= len(image) or col < 0 or col >= len(image[0]):
+            return None
+
+        # The spot exists, so if the value is the same as
+        # starting_color, it is updated to new_color and the process
+        # repeats from the updated spot.
+        if image[row][col] == starting_color:
+            image[row][col] = new_color
+            flood_fill_recursion(image, row-1, col, starting_color, new_color)
+            flood_fill_recursion(image, row+1, col, starting_color, new_color)
+            flood_fill_recursion(image, row, col-1, starting_color, new_color)
+            flood_fill_recursion(image, row, col+1, starting_color, new_color)
+
+    # This is the base case, when the starting spot value already
+    # equals color.
+    if image[sr][sc] == color:
+        return image
+
+    # This updates the starting spot and all connected spots.
+    flood_fill_recursion(image, sr, sc, image[sr][sc], color)
+
+    return image
+
+
+def numIslands(grid: list[list[str]]) -> int:
+    """
+    200. Number of Islands
+    This takes in a 2-D list of strings of either '1' for land or '0'
+    for water.  Islands are formed from land connected vertically or
+    horizontally and surrounded on each side by water or a spot that
+    does not exist.  This returns an integer of the number of islands.
+    """
+    def find_island(grid: list[list[str]], row: int, col: int,
+                    visited: set((int, int))) -> None:
+        """
+        This takes in a 2-D list of strings of either '1' or '0', grid,
+        integers, row and col, and a set, visited.  row and col
+        represent the indices of the current spot in grid.  visited
+        contains tuples of integers row, col representing spots already
+        checked in grid.  This takes the current spot and finds all of
+        connected spots with values of '1'.  It adds them as tuples to
+        visited.
+        """
+        # This checks if the spot does not exist or has already been
+        # visited.
+        if (
+                row < 0
+                or row >= len(grid)
+                or col < 0
+                or col >= len(grid[0])
+                or (row, col) in visited
+        ):
+            return None
+
+        # The spot exists, so if the value is '1' it is added to
+        # visited.  The process repeats for the spots up, down, left,
+        # and right.
+        if grid[row][col] == '1':
+            visited.add((row, col))
+            find_island(grid, row-1, col, visited)
+            find_island(grid, row+1, col, visited)
+            find_island(grid, row, col-1, visited)
+            find_island(grid, row, col+1, visited)
+
+    result = 0
+    visited = set()
+    # This iterates through each spot.  If it has not already been
+    # visited and is not water, it is a new island.
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            if (row, col) not in visited and grid[row][col] != '0':
+                result += 1
+                # This adds all of the spots of the island to visited.
+                find_island(grid, row, col, visited)
+
+    return result
