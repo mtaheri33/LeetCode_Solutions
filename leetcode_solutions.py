@@ -1192,6 +1192,82 @@ def longestPalindrome(s):
     return result
 
 
+def mergeAlternately(word1: str, word2: str) -> str:
+    """
+    1768. Merge Strings Alternately
+    This merges the two strings by putting letters in alternating
+    order, starting with word1.  If the lengths are unequal, the
+    remaining characters from the longer string are added to the end.
+    """
+    result = ''
+    word1_index = 0
+    word2_index = 0
+
+    # This iterates through the strings and adds the next character.
+    while word1_index < len(word1) or word2_index < len(word2):
+        # These add the remaining characters if one string is longer
+        # than the other.
+        if word1_index >= len(word1):
+            result += word2[word2_index]
+            word2_index += 1
+            continue
+        if word2_index >= len(word2):
+            result += word1[word1_index]
+            word1_index += 1
+            continue
+        # This adds the next two characters from the strings.
+        result += word1[word1_index]
+        result += word2[word2_index]
+        word1_index += 1
+        word2_index += 1
+
+    return result
+
+
+def gcdOfStrings(self, str1: str, str2: str) -> str:
+    """
+    1071. Greatest Common Divisor of Strings
+    This returns the largest string that can be concatenated with
+    itself zero or more times to equal both of the given strings.  If
+    there is no possible string, it returns an empty string.
+    """
+    # This finds the smaller and larger of the two given strings.
+    if len(str1) < len(str2):
+        smaller_string = str1
+        larger_string = str2
+    else:
+        smaller_string = str2
+        larger_string = str1
+
+    # The current string starts with the entire smaller string.  This
+    # determines if the current string can be concatenated with itself
+    # to equal both of the given strings.  Each iteration, the current
+    # string loses its last character.
+    for offset in range(len(smaller_string)):
+        current_string = smaller_string[:len(smaller_string)-offset]
+        # This checks if the length of the current string is a multiple
+        # of both of the lengths of the given strings.
+        if (
+            len(smaller_string) % len(current_string) != 0
+            or len(larger_string) % len(current_string) != 0
+        ):
+            continue
+        # This checks if the current string concatenated to the lengths
+        # of the given strings equals them.
+        if (
+            current_string * int(
+                len(smaller_string) / len(current_string)
+            ) == smaller_string
+            and current_string * int(
+                len(larger_string) / len(current_string)
+            ) == larger_string
+        ):
+            return current_string
+
+    # There was no possible largest string.
+    return ''
+
+
 # Linked Lists
 class ListNode:
     def __init__(self, val=0, next=None):
