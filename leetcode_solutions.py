@@ -543,6 +543,61 @@ def pivotIndex(nums):
     return -1
 
 
+def kidsWithCandies(candies: list[int], extraCandies: int) -> list[bool]:
+    """
+    1431. Kids With the Greatest Number of Candies
+    Each element of candies represents the amount of candy a kid has.
+    This creates and then returns a list of booleans.  The ith element
+    is True if the ith element of candies plus extraCandies is greater
+    than or equal to the max number in candies.  Otherwise, it is
+    False.
+    """
+    max_candies = max(candies)
+    result = []
+
+    for i in range(len(candies)):
+        result.append(candies[i] + extraCandies >= max_candies)
+
+    return result
+
+
+def canPlaceFlowers(flowerbed: list[int], n: int) -> bool:
+    """
+    605. Can Place Flowers
+    flowerbed represents plots where a flower is either planted (1) or
+    it is not (0).  Two flowers cannot be planted next to each other.
+    This returns True if n new flowers can be planted in the flowerbed.
+    Otherwise, it returns False.
+    """
+    # This handles the base case.
+    if len(flowerbed) == 1:
+        if flowerbed[0] == 0:
+            # Only 1 or 0 flowers can be planted.
+            return n <= 1
+        # There is already a flower in the plot, so only 0 flowers can
+        # be planted.
+        return n == 0
+
+    # This handles the first element.
+    if flowerbed[0] == 0 and flowerbed[1] == 0:
+        flowerbed[0] = 1
+        n -= 1
+
+    # This iterates through the flowerbed between the first and last
+    # plots.  A new flower can be planted if the plot is empty and the
+    # plots before and after it are empty.
+    for i in range(1, len(flowerbed)-1):
+        if flowerbed[i] == 0 and flowerbed[i-1] == 0 and flowerbed[i+1] == 0:
+            flowerbed[i] = 1
+            n -= 1
+
+    # This handles the last element.
+    if flowerbed[len(flowerbed)-1] == 0 and flowerbed[len(flowerbed)-2] == 0:
+        n -= 1
+
+    return n <= 0
+
+
 # Bits
 def getSum(a, b):
     """
