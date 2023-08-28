@@ -1323,6 +1323,54 @@ def gcdOfStrings(self, str1: str, str2: str) -> str:
     return ''
 
 
+def reverseVowels(s: str) -> str:
+    """
+    345. Reverse Vowels of a String
+    This reverses the upper and lower case vowels in s then returns the
+    resulting string.
+    """
+    vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']
+    left_index = 0
+    right_index = len(s) - 1
+
+    # This iterates from both sides of the string towards the middle.
+    while left_index < right_index:
+        # This moves both pointers until they are on vowels.
+        while left_index < len(s) and s[left_index] not in vowels:
+            left_index += 1
+        while right_index >= 0 and s[right_index] not in vowels:
+            right_index -= 1
+        # The pointers may cross each other and reach vowels that were
+        # already reversed.  In this case, they should not be reversed
+        # again.
+        if left_index >= right_index:
+            continue
+
+        # This reverses the vowels.
+        left_char = s[left_index]
+        s = (s[:left_index] + s[right_index] + s[left_index+1:right_index]
+             + left_char + s[right_index+1:])
+        left_index += 1
+        right_index -= 1
+
+    return s
+
+
+def reverseWords(s: str) -> str:
+    """
+    151. Reverse Words in a String
+    This reverses the words (a group of characters separated by one or
+    more spaces) in s.  It returns a string of the reversed words
+    separated by a single space.
+    """
+    # This creates a list of the words in reverse order.
+    words = s.split()
+    words.reverse()
+
+    # This turns the list of reversed words into a string.
+    return ' '.join(words)
+
+
 # Linked Lists
 class ListNode:
     def __init__(self, val=0, next=None):
