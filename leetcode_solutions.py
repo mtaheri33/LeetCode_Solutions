@@ -119,45 +119,43 @@ def containsDuplicate(nums):
     return False
 
 
-def productExceptSelf(nums):
+def productExceptSelf(nums: list[int]) -> list[int]:
     """
     238. Product of Array Except Self
-    This takes in a list of integers, nums.  It returns a list of
-    integers, answer, where answer[i] is equal to the product of every
-    element in nums except nums[i].
+    This calculates and then returns a list of integers where list[i]
+    is the product of every element in nums except nums[i].
     """
-    # This creates a list, left_to_right_products, where
-    # left_to_right_products[i] is equal to the product of every
-    # element in nums up to and including nums[i].
-    left_to_right_products = [nums[0]]
-    for i in range(1, len(nums)):
-        left_to_right_products.append(left_to_right_products[i - 1] * nums[i])
+    # This creates a separate list of nums in reverse order.
+    reverse_nums = nums[::]
+    reverse_nums.reverse()
 
-    # This creates a list, right_to_left_products, where
-    # right_to_left_products[i] is equal to the product of every
-    # element in nums after and including nums[i].
-    nums_reverse = nums[::]
-    nums_reverse.reverse()
-    right_to_left_products = [nums_reverse[0]]
-    for i in range(1, len(nums_reverse)):
-        right_to_left_products.append(right_to_left_products[i - 1] * nums_reverse[i])
+    # This creates two lists of integers.  One moves through nums from
+    # left to right, where list[i] is the product of every element in
+    # nums up to and including nums[i].  The other moves through nums
+    # from right to left, where list[i] is the product of nums[i] and
+    # every element after it.
+    left_to_right_products = [nums[0]]
+    right_to_left_products = [reverse_nums[0]]
+    for i in range(1, len(nums)):
+        left_to_right_products.append(nums[i] * left_to_right_products[i-1])
+        right_to_left_products.append(reverse_nums[i]
+                                      * right_to_left_products[i-1])
     right_to_left_products.reverse()
 
-    # This creates the result list, answer.  It calculates the value
-    # at index i by multiplying left_to_right_products[i-1] with
-    # right_to_left_products[i+1].  This is equivalent to multiplying
-    # the product of all elements before nums[i] with the product of
-    # all elements after nums[i].
-    # The first element in answer is the product of all elements after
-    # nums[0].
-    answer = [right_to_left_products[1]]
+    # This handles the first element, which is the product of every
+    # element after nums[0].
+    result = [right_to_left_products[1]]
+    # This calculates the value at index i by multiplying the product
+    # of all elements before nums[i] with the product of all elements
+    # after nums[i].
     for i in range(1, len(nums)-1):
-        answer.append(left_to_right_products[i - 1] * right_to_left_products[i + 1])
-    # The last element in answer is the product of all elements before
-    # the last element of nums.
-    answer.append(left_to_right_products[-2])
+        result.append(left_to_right_products[i-1]
+                      * right_to_left_products[i+1])
+    # This handles the last element, which is the product of every
+    # element before nums[-1].
+    result.append(left_to_right_products[-2])
 
-    return answer
+    return result
 
 
 def maxSubArray(nums):
