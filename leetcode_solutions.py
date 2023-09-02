@@ -596,6 +596,48 @@ def canPlaceFlowers(flowerbed: list[int], n: int) -> bool:
     return n <= 0
 
 
+def increasingTriplet(nums: list[int]) -> bool:
+    """
+    334. Increasing Triplet Subsequence
+    This returns True if there are three indicies i, j, and k where
+    i < j < k and nums[i] < nums[j] < nums[k].  Otherwise, it returns False.
+    """
+    # This is a base case when there aren't enough elements for a
+    # triplet subsequence.
+    if len(nums) <= 2:
+        return False
+
+    # The value of s1 will be less than or equal to s2, and most of the
+    # time the index of s1 will be before the index of s2.
+    s1 = nums[0]
+    s2 = 2 ** 31
+
+    # This iterates through all of the elements and updates the values
+    # for s1 and s2.
+    for num in nums:
+        # This checks if there is an element after s2 with a greater
+        # value than s2.
+        if num > s2:
+            return True
+        # The element is less than or equal to s2.  If it is greater
+        # than s1, then s2 is set to the element, because now there is
+        # a smaller value that is still greater than s1 and comes after
+        # s1.
+        if num > s1:
+            s2 = num
+        # The element is less than or equal to s1.  So, set s1 to the
+        # element, because it is a smaller value.  This can cause some
+        # iterations where the index of s1 comes after the index of s2,
+        # until s2 is set to a new value.  That is okay, because the
+        # old s1 value is still less than the s2 value and comes before
+        # s2.
+        else:
+            s1 = num
+
+    # No increasing triplet subsequence exists.
+    return False
+
+
 # Bits
 def getSum(a, b):
     """
