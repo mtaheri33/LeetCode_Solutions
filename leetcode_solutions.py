@@ -638,6 +638,24 @@ def increasingTriplet(nums: list[int]) -> bool:
     return False
 
 
+def moveZeroes(self, nums: list[int]) -> None:
+    """
+    283. Move Zeroes
+    This moves the zeroes in nums to the end of the list.
+    """
+    count = nums.count(0)
+
+    # This removes all of the zeroes from nums.
+    for _ in range(count):
+        nums.remove(0)
+
+    # This adds the zeroes that were removed to the end of the list.
+    for _ in range(count):
+        nums.append(0)
+
+    return None
+
+
 # Bits
 def getSum(a, b):
     """
@@ -1409,6 +1427,62 @@ def reverseWords(s: str) -> str:
 
     # This turns the list of reversed words into a string.
     return ' '.join(words)
+
+
+def compress(chars: list[str]) -> int:
+    """
+    443. String Compression
+    This iterates through the characters in chars.  For every group of
+    characters (consecutive repeating characters) it prepends the
+    group's character to chars.  If the group's length is greater than
+    1, it also prepends characters of the digits of the length.  It
+    then returns the number of characters prepended to chars.
+    """
+    original_length = len(chars)
+    current_char = chars[0]
+    current_length = 1
+    # original_i iterates through the original characters in chars.
+    # new_i is used to keep track of where to insert characters in
+    # chars.
+    original_i = 1
+    new_i = 0
+
+    # This iterates through the original characters in chars.
+    for _ in range(original_length-1):
+        # This checks if the character is part of the current group.
+        if chars[original_i] == current_char:
+            current_length += 1
+            original_i += 1
+
+        # This checks if the character is not part of the current
+        # group.  So, the current group needs to be prepended to chars.
+        else:
+            chars.insert(new_i, current_char)
+            new_i += 1
+            original_i += 1
+            # This adds the characters of the digits of the length if
+            # it is over 1.
+            if current_length != 1:
+                string_length = str(current_length)
+                for char in string_length:
+                    chars.insert(new_i, char)
+                    new_i += 1
+                    original_i += 1
+            # This prepares for the next iteration.
+            current_char = chars[original_i]
+            current_length = 1
+            original_i += 1
+
+    # This prepends the last group to chars.
+    chars.insert(new_i, current_char)
+    new_i += 1
+    if current_length != 1:
+        string_length = str(current_length)
+        for char in string_length:
+            chars.insert(new_i, char)
+            new_i += 1
+
+    return len(chars) - original_length
 
 
 # Linked Lists
