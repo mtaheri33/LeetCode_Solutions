@@ -408,22 +408,22 @@ def threeSum(nums):
     return result
 
 
-def maxArea(height):
+def maxArea(height: list[int]) -> int:
     """
     11. Container With Most Water
-    This takes in a list of integers.  The values represent heights of
-    vertical lines.  This returns an integer that is the maximum area
-    which can be created by connecting two heights with a horizontal
-    line.
+    The elements of height represent heights of vertical lines at x
+    positions equal to the indices of the elements.  This returns the
+    maximum area that can be created by connecting two heights with a
+    horizontal line.
     """
     left_index = 0
     right_index = len(height) - 1
     max_area = 0
 
-    # This starts with the lines at each end.  It calculates the area
-    # to determine if there is a new max.  It then moves inward by
-    # going to the next line left or right of the smaller line and
-    # continues to iterate until the ends meet.
+    # This starts with the lines at each end and moves inward by going
+    # to the next line left or right of the smaller line, until the
+    # ends meet.  Each iteration, it calculates the area to determine
+    # if there is a new max.
     while left_index != right_index:
         # This calculates the current area and compares it to the past
         # max.
@@ -432,6 +432,7 @@ def maxArea(height):
         area = width * smaller_height
         if area > max_area:
             max_area = area
+
         # This moves one end inward.
         if height[right_index] < height[left_index]:
             right_index -= 1
@@ -1242,29 +1243,36 @@ def isIsomorphic(s, t):
     return True
 
 
-def isSubsequence(s, t):
+def isSubsequence(s: str, t: str) -> bool:
     """
     392. Is Subsequence
-    This takes in two strings.  It returns True if s is a subsequence
-    (a string that can be derived from another string by deleting some
-    or no elements without changing the order of the remaining
-    elements) of t.  Otherwise, it returns False.
+    This returns True if s is a subsequence (a string that can be
+    derived from another string by deleting some or no elements without
+    changing the order of the remaining elements) of t.  Otherwise, it
+    returns False.
     """
+    # This is a base case when it is impossible for s to be a
+    # subsequence of t.
+    if len(s) > len(t):
+        return False
+
     s_index = 0
     t_index = 0
 
-    # This continues to iterate through t and sometimes s until it
-    # reaches the end of either string.
+    # This iterates through s and t until it reaches the end of either
+    # string.
     while s_index < len(s) and t_index < len(t):
-        # The current character of s has been found in t.  So, this
-        # iterates to the next character of s.
+        # This checks if the current character of s has been found in
+        # t.
         if s[s_index] == t[t_index]:
             s_index += 1
+
         t_index += 1
 
     if s_index == len(s):
         # All of the characters of s were found in t.
         return True
+
     return False
 
 
