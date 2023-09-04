@@ -657,6 +657,74 @@ def moveZeroes(self, nums: list[int]) -> None:
     return None
 
 
+def maxOperations(nums: list[int], k: int) -> int:
+    """
+    1679. Max Number of K-Sum Pairs
+    This finds the most pairs of elements in nums that sum to k.  Each
+    element can only be used in one pair.
+    """
+    counts = {}
+    # This creates a dictionary of the elements in nums and their
+    # counts.
+    for num in nums:
+        if num in counts:
+            counts[num] += 1
+        else:
+            counts[num] = 1
+
+    operations = 0
+    used_numbers = set()
+    # This iterates through each element of nums to find pairs that sum
+    # to k.
+    for num in nums:
+        # This checks if the element has already been iterated over.
+        if num in used_numbers:
+            continue
+
+        difference = k - num
+        # This checks if the element and its pair are the same.  In
+        # this case, the count should not be added to the number of
+        # operations, because it has to be used twice to sum to k.  So,
+        # half of the count rounded down is added to the number of
+        # operations.
+        if difference == num:
+            operations += counts[num] // 2
+        # This checks if there is a pair element in nums that sums to
+        # k.  If so, it adds the lower count of the element or the pair
+        # element to the number of operations.
+        elif difference in counts:
+            operations += min(counts[num], counts[difference])
+            used_numbers.add(difference)
+        used_numbers.add(num)
+
+    return operations
+
+
+def findMaxAverage(nums: list[int], k: int) -> float:
+    """
+    643. Maximum Average Subarray I
+    This finds a contiguous subarray of nums with length k that has the
+    highest average.  It then returns that average.
+    """
+    # This calculates the average of the subarray starting with the
+    # first element.
+    start_index = 0
+    end_index = start_index + k - 1
+    subarray_sum = sum(nums[start_index:end_index+1])
+    max_avg = subarray_sum / k
+
+    # This uses a sliding window of a k length subarray.  It calculates
+    # the average and checks if it is a new max.
+    while end_index < len(nums) - 1:
+        subarray_sum -= nums[start_index]
+        start_index += 1
+        end_index += 1
+        subarray_sum += nums[end_index]
+        max_avg = max(max_avg, subarray_sum/k)
+
+    return max_avg
+
+
 # Bits
 def getSum(a, b):
     """
