@@ -725,6 +725,41 @@ def findMaxAverage(nums: list[int], k: int) -> float:
     return max_avg
 
 
+def longestOnes(nums: list[int], k: int) -> int:
+    """
+    1004. Max Consecutive Ones III
+    nums is made up of 0s and 1s.  This finds the largest contiguous
+    subarray of 1s if at most k number of 0s can be considered 1s.  It
+    returns the length of the subarray.
+    """
+    max_ones = 0
+    start_index = 0
+    end_index = 0
+
+    # This uses start and end pointers to represent the current
+    # subarray as it iterates through nums.  Each time, it checks if
+    # there is a new largest contiguous subarray.
+    while end_index < len(nums):
+        # This checks if the new element in the subarray is a 0, so k
+        # is decremented since the element is considered a 1.
+        if nums[end_index] == 0:
+            k -= 1
+
+        # This runs when more than k number of 0s in the subarray are
+        # considered 1s.  It increments the start index until k number
+        # of 0s are in it.
+        while k < 0:
+            if nums[start_index] == 0:
+                k += 1
+            start_index += 1
+
+        max_ones = max(max_ones, end_index - start_index + 1)
+
+        end_index += 1
+
+    return max_ones
+
+
 # Bits
 def getSum(a, b):
     """
@@ -1559,6 +1594,47 @@ def compress(chars: list[str]) -> int:
             new_i += 1
 
     return len(chars) - original_length
+
+
+def maxVowels(s: str, k: int) -> int:
+    """
+    1456. Maximum Number of Vowels in a Substring of Given Length
+    This finds a contiguous substring of s with length k that has the
+    most vowels ('a', 'e', 'i', 'o', 'u').  It then returns the number
+    of most vowels.
+    """
+    max_vowels = 0
+    # This uses a set for the vowels so they can be accessed in
+    # constant time.
+    vowels = set()
+    vowels.add('a')
+    vowels.add('e')
+    vowels.add('i')
+    vowels.add('o')
+    vowels.add('u')
+
+    # This calculates the number of vowels in the substring starting
+    # with the first element.
+    start_index = 0
+    end_index = start_index + k - 1
+    for letter in s[:end_index+1]:
+        if letter in vowels:
+            max_vowels += 1
+
+    current_vowels = max_vowels
+    # This uses a sliding window of a k length substring.  It
+    # calculates the number of vowels in it and checks if it is a new
+    # max.
+    while end_index < len(s) - 1:
+        if s[start_index] in vowels:
+            current_vowels -= 1
+        start_index += 1
+        end_index += 1
+        if s[end_index] in vowels:
+            current_vowels += 1
+        max_vowels = max(max_vowels, current_vowels)
+
+    return max_vowels
 
 
 # Linked Lists
