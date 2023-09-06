@@ -757,6 +757,8 @@ def longestOnes(nums: list[int], k: int) -> int:
 
         end_index += 1
 
+    return max_ones
+
 
 def longestSubarray(nums: list[int]) -> int:
     """
