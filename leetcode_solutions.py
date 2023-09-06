@@ -757,7 +757,62 @@ def longestOnes(nums: list[int], k: int) -> int:
 
         end_index += 1
 
-    return max_ones
+
+def longestSubarray(nums: list[int]) -> int:
+    """
+    1493. Longest Subarray of 1's After Deleting One Element
+    nums is made up of 0s and 1s.  This finds the largest contiguous
+    subarray of 1s after one element is deleted.  It returns the length
+    of the subarray.
+    """
+    max_ones = 0
+    start_index = 0
+    end_index = 0
+    # This stores how many 0s can be deleted from the subarray.
+    k = 1
+
+    # This uses start and end pointers to represent the current
+    # subarray as it iterates through nums.  Each time, it checks if
+    # there is a new largest contiguous subarray.
+    while end_index < len(nums):
+        # This checks if the new element in the subarray is a 0, so k
+        # is decremented since the element is deleted.
+        if nums[end_index] == 0:
+            k -= 1
+
+        # This runs when more than one 0 in the subarray has been
+        # deleted.  It increments the start index until only one 0 has
+        # been deleted.
+        while k < 0:
+            if nums[start_index] == 0:
+                k += 1
+            start_index += 1
+
+        max_ones = max(max_ones, end_index - start_index + 1)
+
+        end_index += 1
+
+    # The one element is not actually deleted from nums, so it is
+    # included in the length of the largest subarray.  Therefore, it
+    # needs to be subtracted out.
+    return max_ones - 1
+
+
+def largestAltitude(gain: list[int]) -> int:
+    """
+    1732. Find the Highest Altitude
+    A person starts a trip at altitude 0 with multiple points.  Each
+    element in gain is the change in altitude from the previous point
+    (the previous point of the first element is the start with altitude
+    of 0).  This returns the highest altitude of the points.
+    """
+    altitudes = [0]
+
+    # This calculates the altitudes of the points.
+    for net_gain in gain:
+        altitudes.append(altitudes[-1] + net_gain)
+
+    return max(altitudes)
 
 
 # Bits
