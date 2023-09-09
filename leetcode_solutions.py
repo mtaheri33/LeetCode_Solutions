@@ -509,36 +509,28 @@ def runningSum(nums):
     return result
 
 
-def pivotIndex(nums):
+def pivotIndex(nums: list[int]) -> int:
     """
     724. Find Pivot Index
-    This takes in a list of integers.  It returns an integer that is
-    the leftmost index where the sum of all the elements to the left is
-    equal to the sum of all the elements to the right.  For the first
-    and last indices, the left and right sums are 0 respectively.  If
-    there is no index that satisfies the conditions, it returns -1.
+    This finds the leftmost index of nums where the sum of all the
+    elements to the left equals the sum of all the elements to the
+    right.  If there are no elements to the left or right, the sum is
+    0.  It then returns the index.  If there is no possible index, it
+    returns -1.
     """
-    # This creates a dictionary where dictionary[i] is the sum of
-    # nums[i] and every element to its right.
-    dictionary = dict()
-    # The right sum for the last index is 0.
-    dictionary[len(nums)] = 0
-    # The value for dictionary[0] does not need to be calculated,
-    # because the leftmost index that can be returned is 0, and the
-    # right sum for this index starts at index 1.
-    for i in range(len(nums)-1, 0, -1):
-        dictionary[i] = nums[i] + dictionary[i + 1]
+    # This stores the right sum of each element.
+    right_sums = {len(nums)-1: 0}
+    for i in range(len(nums)-2, -1, -1):
+        right_sums[i] = right_sums[i+1] + nums[i+1]
 
-    # This iterates through nums and keeps track of the left sum.  If
-    # the left sum is equal to the right sum of an index, it returns
-    # that index.
     left_sum = 0
+    # This iterates through each element and finds the left sum.  It
+    # then compares that to the right sum to check if they are equal.
     for i in range(len(nums)):
-        if left_sum == dictionary[i + 1]:
+        if left_sum == right_sums[i]:
             return i
         left_sum += nums[i]
 
-    # There is no index that satisfies the conditions.
     return -1
 
 
@@ -815,6 +807,23 @@ def largestAltitude(gain: list[int]) -> int:
         altitudes.append(altitudes[-1] + net_gain)
 
     return max(altitudes)
+
+
+def findDifference(nums1: list[int], nums2: list[int]) -> list[list[int]]:
+    """
+    2215. Find the Difference of Two Arrays
+    This returns a list with 2 elements.  The first is a list of the
+    distinct integers in nums1 that are not in nums2.  The second is a
+    list of the distinct integers in nums2 that are not in nums1.
+    """
+    return [
+        list(
+            set(nums1).difference(set(nums2))
+        ),
+        list(
+            set(nums2).difference(set(nums1))
+        )
+    ]
 
 
 # Bits
