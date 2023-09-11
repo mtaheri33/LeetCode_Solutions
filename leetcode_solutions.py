@@ -826,6 +826,20 @@ def findDifference(nums1: list[int], nums2: list[int]) -> list[list[int]]:
     ]
 
 
+def uniqueOccurrences(arr: list[int]) -> bool:
+    """
+    1207. Unique Number of Occurrences
+    This returns True if each of the number of occurrences of the
+    values in arr is unique.  Otherwise, it returns False.
+    """
+    occurrences = collections.Counter(arr)
+
+    # This compares the numbers of occurrences with a set of the values
+    # to check if any duplicates were removed.  So, the lengths will
+    # not be equal.
+    return len(list(occurrences.values())) == len(set(occurrences.values()))
+
+
 # Bits
 def getSum(a, b):
     """
@@ -1701,6 +1715,41 @@ def maxVowels(s: str, k: int) -> int:
         max_vowels = max(max_vowels, current_vowels)
 
     return max_vowels
+
+
+def closeStrings(word1: str, word2: str) -> bool:
+    """
+    1657. Determine if Two Strings Are Close
+    You can perform operation 1 on a string by swapping existing
+    characters.  You can perform operation 2 on a string by changing
+    every occurrence of one character to another existing character,
+    and vice versa.  This returns True if the operations can be used
+    any number of times to get word1 and word2 to equal each other.
+    Otherwise, it returns False.
+    """
+    # Based on operation 1, the order of characters doesn't matter as
+    # long as they are the same.
+    # Based on operation 2, the frequencies of specific characters
+    # doesn't matter as long as the frequency values are the same.
+    # So, to get the strings to equal each other, they just need to
+    # have the same characters and frequency values.
+
+    word1_frequencies = collections.Counter(word1).values()
+    word2_frequencies = collections.Counter(word2).values()
+    # This uses the character frequencies to create dictionaries where
+    # the key is the frequency value and its value is the number of
+    # occurrences.  This allows the frequency values to be compared
+    # easily, since it just has to check if each dictionary has the
+    # same keys and if the values for each key are the same.
+    word1_frequency_counts = collections.Counter(word1_frequencies)
+    word2_frequency_counts = collections.Counter(word2_frequencies)
+    
+    return (
+        # This checks if the characters are the same.
+        set(word1) == set(word2)
+        # This checks if the frequency values are the same.
+        and word1_frequency_counts == word2_frequency_counts
+    )
 
 
 # Linked Lists
