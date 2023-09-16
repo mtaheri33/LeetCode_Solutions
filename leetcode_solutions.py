@@ -840,6 +840,37 @@ def uniqueOccurrences(arr: list[int]) -> bool:
     return len(list(occurrences.values())) == len(set(occurrences.values()))
 
 
+def equalPairs(grid: list[list[int]]) -> int:
+    """
+    2352. Equal Row and Column Pairs
+    This takes in a grid.  It counts the number of pairs of a row and
+    column that equal each other by having the same elements in the
+    same order.  It then returns the count.
+    """
+    # This creates a list of tuples for the columns in the grid.
+    columns = []
+    for i in range(len(grid)):
+        column = []
+        for j in range(len(grid)):
+            column.append(grid[j][i])
+        columns.append(tuple(column))
+
+    # This creates a dictionary of the unique columns in the grid.  The
+    # key is a tuple of the elements in the column, and the value is
+    # how many times that column is in the grid.
+    column_counts = collections.Counter(columns)
+
+    # This iterates through each row.  It checks if there is an equal
+    # column, and if so it adds the number of times that column is in
+    # the grid to the count.
+    pairs = 0
+    for i in range(len(grid)):
+        if tuple(grid[i]) in column_counts:
+            pairs += column_counts[tuple(grid[i])]
+    
+    return pairs
+
+
 # Bits
 def getSum(a, b):
     """
@@ -1750,6 +1781,30 @@ def closeStrings(word1: str, word2: str) -> bool:
         # This checks if the frequency values are the same.
         and word1_frequency_counts == word2_frequency_counts
     )
+
+
+def removeStars(s: str) -> str:
+    """
+    2390. Removing Stars From a String
+    s contains the character, *.  The operation that can be performed
+    is removing the * and the closest non-* character to the left of
+    it.  This continually performs the operation until there are no *
+    characters left in s.  It then returns the resulting string.
+    """
+    stack = []
+    # This iterates through the characters in the string.  It adds
+    # non-* characters to the result.  If the element is a *, it
+    # removes the current last character from the result.
+    for char in s:
+        if char == '*':
+            # This doesn't perform the removal from the result if there
+            # is no character to remove.
+            if len(stack) > 0:
+                stack.pop()
+        else:
+            stack.append(char)
+    
+    return ''.join(stack)
 
 
 # Linked Lists
