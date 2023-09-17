@@ -871,6 +871,56 @@ def equalPairs(grid: list[list[int]]) -> int:
     return pairs
 
 
+def asteroidCollision(asteroids: list[int]) -> list[int]:
+    """
+    735. Asteroid Collision
+    asteroids contains elements representing asteroids all moving along
+    the same space at the same speed.  The sign gives the direction of
+    the asteroid, where positive is right and negative is left.  The
+    absolute value of the element is its size.  Eventually, some
+    asteroids collide.  The smaller size asteroid is destroyed.  If
+    they are the same size, both asteroids are destroyed.  This returns
+    a list of asteroids after all of the collisions have occured.
+    """
+    stack = []
+    
+    i = 0
+    # This iterates through the asteroids in order to add the ones that
+    # never collide and remove the ones that will be destroyed in a
+    # collision.
+    while i < len(asteroids):
+        # This checks if the asteroids will collide.  The latest
+        # asteroid has to be moving right, and the current asteroid has
+        # to be moving left.
+        if (
+                len(stack) > 0
+                and stack[-1] > 0
+                and asteroids[i] < 0
+        ):
+            # The asteroids will collide.  This determines which one
+            # will get destroyed.
+            if abs(asteroids[i]) < abs(stack[-1]):
+                # The current asteroid will be destroyed.
+                i += 1
+            elif abs(asteroids[i]) == abs(stack[-1]):
+                # Both asteroids will be destroyed.
+                stack.pop()
+                i += 1
+            else:
+                # The latest asteroid will be destroyed, and the
+                # current asteroid will continue to move left.
+                stack.pop()
+        
+        else:
+            # The asteroids will never collide.  So, the current
+            # asteroid is added to the stack and becomes the latest
+            # asteroid.
+            stack.append(asteroids[i])
+            i += 1
+    
+    return stack
+
+
 # Bits
 def getSum(a, b):
     """
