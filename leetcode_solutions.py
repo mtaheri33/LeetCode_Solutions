@@ -8,6 +8,7 @@
 # Trees
 # Algorithms
 # Graphs
+# Classes
 
 import collections
 
@@ -867,7 +868,7 @@ def equalPairs(grid: list[list[int]]) -> int:
     for i in range(len(grid)):
         if tuple(grid[i]) in column_counts:
             pairs += column_counts[tuple(grid[i])]
-    
+
     return pairs
 
 
@@ -883,7 +884,7 @@ def asteroidCollision(asteroids: list[int]) -> list[int]:
     a list of asteroids after all of the collisions have occured.
     """
     stack = []
-    
+
     i = 0
     # This iterates through the asteroids in order to add the ones that
     # never collide and remove the ones that will be destroyed in a
@@ -910,14 +911,14 @@ def asteroidCollision(asteroids: list[int]) -> list[int]:
                 # The latest asteroid will be destroyed, and the
                 # current asteroid will continue to move left.
                 stack.pop()
-        
+
         else:
             # The asteroids will never collide.  So, the current
             # asteroid is added to the stack and becomes the latest
             # asteroid.
             stack.append(asteroids[i])
             i += 1
-    
+
     return stack
 
 
@@ -1824,7 +1825,7 @@ def closeStrings(word1: str, word2: str) -> bool:
     # same keys and if the values for each key are the same.
     word1_frequency_counts = collections.Counter(word1_frequencies)
     word2_frequency_counts = collections.Counter(word2_frequencies)
-    
+
     return (
         # This checks if the characters are the same.
         set(word1) == set(word2)
@@ -1853,7 +1854,48 @@ def removeStars(s: str) -> str:
                 stack.pop()
         else:
             stack.append(char)
-    
+
+    return ''.join(stack)
+
+
+def decodeString(s: str) -> str:
+    """
+    394. Decode String
+    This takes in an encoded string with the encoding k[substring].
+    This is decoded by multiplying the substring k times.  It then
+    returns the decoded string.
+    """
+    stack = []
+    # This adds each character to the stack, other than ].
+    for i in range(len(s)):
+        # When a ] is reached, the characters at the top of the stack
+        # need to be decoded.  These are the substring characters and k
+        # value preceding the ].
+        if s[i] == ']':
+            # This gets the substring within the brackets.
+            current_string = ''
+            while stack[-1] != '[':
+                current_string = stack[-1] + current_string
+                stack.pop()
+
+            # This removes the [ from the stack.
+            stack.pop()
+
+            # This gets the k value.
+            current_int = ''
+            while len(stack) > 0 and stack[-1].isdigit():
+                current_int = stack[-1] + current_int
+                stack.pop()
+
+            # This creates the string formed by multiplying the
+            # substring k times.  It adds it as a single element back
+            # onto the stack to be used in future iterations.
+            stack.append(int(current_int) * current_string)
+
+        # This adds the character to the stack when it is not ].
+        else:
+            stack.append(s[i])
+
     return ''.join(stack)
 
 
@@ -2424,3 +2466,31 @@ def numIslands(grid: list[list[str]]) -> int:
                 find_island(grid, row, col, visited)
 
     return result
+
+
+# Classes
+class RecentCounter:
+    """
+    933. Number of Recent Calls
+    This class stores and counts recent requests within a certain time
+    frame.
+    """
+
+    def __init__(self):
+        self.request_times = collections.deque()
+
+    def ping(self, t: int) -> int:
+        """
+        This takes in a new request at time t in milliseconds and
+        stores it.  It then returns the number of requests from time
+        [t-3000, t] both inclusive.
+        """
+        # This stores the new request.
+        self.request_times.append(t)
+
+        # This removes the oldest requests until every time is within
+        # the range [t-3000, t].
+        while self.request_times[0] < t - 3000:
+            self.request_times.popleft()
+
+        return len(self.request_times)
