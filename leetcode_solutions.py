@@ -1899,6 +1899,55 @@ def decodeString(s: str) -> str:
     return ''.join(stack)
 
 
+def predictPartyVictory(senate: str) -> str:
+    """
+    649. Dota2 Senate
+    senate represents senators from either the Radiant or Dire party.
+    Each character in the string is either a R or D.  The order of
+    characters represents the voting order.  Each round of voting, a
+    senator can either take away voting rights forever from another
+    senator, or declare his party has won if there are no senators from
+    the other party with voting rights.  This determines which party
+    will win and returns the name of the party, either Radiant or Dire.
+    """
+    # This creates a queue for each party of the index positions of the
+    # senators.
+    R_queue = collections.deque()
+    D_queue = collections.deque()
+    for i in range(len(senate)):
+        if senate[i] == 'R':
+            R_queue.append(i)
+        else:
+            D_queue.append(i)
+
+    # Each iteration, this selects the next senator that still has
+    # voting rights.  This senator will take away voting rights from
+    # the closest senator of the other party.  This continues to happen
+    # until there are only senators from one party remaining.
+    while len(R_queue) > 0 and len(D_queue) > 0:
+        # This finds which senator is voting next.  It removes the
+        # closest senator of the other party and then moves the
+        # selected senator from the front to the end of the queue for
+        # the next voting round.  The index position is incremented by
+        # the number of senators since the senator can only act once
+        # per round.  Otherwise, the senator with index 0 would be able
+        # to remove the closest senator every iteration.
+        if R_queue[0] < D_queue[0]:
+            D_queue.popleft()
+            R_senator_position = R_queue.popleft()
+            R_queue.append(R_senator_position+len(senate))
+        else:
+            R_queue.popleft()
+            D_senator_position = D_queue.popleft()
+            D_queue.append(D_senator_position+len(senate))
+
+    # There are only senators from one party remaining.  This checks
+    # which party won.
+    if len(R_queue) == 0:
+        return 'Dire'
+    return 'Radiant'
+
+
 # Linked Lists
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -2102,6 +2151,40 @@ def detectCycle(head):
     # The iteration reached the tail of the list and there is no next
     # node, which means there is no cycle.
     return None
+
+
+def deleteMiddle(head: ListNode) -> ListNode:
+    """
+    2095. Delete the Middle Node of a Linked List
+    This deletes the middle node in a linked list.  If the length of
+    the list is even and there are two middle nodes, it deletes the
+    right one.  It then returns the head of the modified linked list.
+    """
+    # This is a base case when there is only one element.
+    if head.next is None:
+        return None
+
+    # This finds the length of the linked list.
+    length = 1
+    current_node = head
+    while current_node.next is not None:
+        length += 1
+        current_node = current_node.next
+
+    # This calculates the index of the middle node.
+    middle_index = length // 2
+
+    # This iterates through the nodes until it reaches the middle one.
+    previous_node = None
+    current_node = head
+    for _ in range(middle_index):
+        previous_node = current_node
+        current_node = current_node.next
+
+    # This deletes the middle node.
+    previous_node.next = current_node.next
+
+    return head
 
 
 # Math
