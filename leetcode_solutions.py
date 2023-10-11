@@ -2071,7 +2071,7 @@ def addTwoNumbers(l1, l2):
             return head_node
 
 
-def reverseList(head):
+def reverseList(head: ListNode) -> ListNode:
     """
     206. Reverse Linked List
     This takes in the head node of a linked list.  It creates a new
@@ -2088,13 +2088,14 @@ def reverseList(head):
     while current_node is not None:
         # This saves a reference to the next element in the iteration.
         next_node = current_node.next
+
         # This sets the previous node as the element after the current
-        # node and updates the node variables for the next iteration.
+        # node.
         current_node.next = previous_node
+
+        # This updates the node variables for the next iteration.
         previous_node = current_node
         current_node = next_node
-        if current_node is not None:
-            next_node = current_node.next
 
     return previous_node
 
@@ -2183,6 +2184,51 @@ def deleteMiddle(head: ListNode) -> ListNode:
 
     # This deletes the middle node.
     previous_node.next = current_node.next
+
+    return head
+
+
+def oddEvenList(head: ListNode) -> ListNode:
+    """
+    328. Odd Even Linked List
+    This groups the odd numbered nodes together as well as the even
+    numbered nodes.  The relative order of the nodes in both groups is
+    the same.  It then puts the even group after the odd group.
+    Finally, it returns the head of the new linked list.
+    """
+    # These are the base cases when there are only 0, 1, or 2 nodes.
+    if head is None:
+        return None
+    if head.next is None or head.next.next is None:
+        return head
+
+    even_head = head.next
+    current_odd_node = head
+    current_even_node = head.next
+    current_node = head.next.next
+    i = 3
+    # This iterates through the linked list.  Depending on whether the
+    # current node is odd or even, it adds it to the relevant group.
+    while current_node is not None:
+        if i % 2 != 0:
+            current_odd_node.next = current_node
+            current_odd_node = current_odd_node.next
+        else:
+            current_even_node.next = current_node
+            current_even_node = current_even_node.next
+
+        current_node = current_node.next
+        i += 1
+
+    # This is needed when there are an odd number of nodes.  The next
+    # node of the last node in the even group will point to the last
+    # node of the linked list, which is odd.  The next node of this odd
+    # node will be the head of the even group.  So, a cycle would be
+    # created.
+    current_even_node.next = None
+
+    # This puts the even group after the odd group.
+    current_odd_node.next = even_head
 
     return head
 
