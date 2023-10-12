@@ -2233,6 +2233,50 @@ def oddEvenList(head: ListNode) -> ListNode:
     return head
 
 
+def pairSum(head: ListNode) -> int:
+    """
+    2130. Maximum Twin Sum of a Linked List
+    This takes in a linked list with an even number of nodes.  Each
+    node has a twin with the node on the other half of the list
+    mirrored (first and last, second and second to last, ...).  This
+    finds and returns the maximum sum of the values out of every pair
+    of twin nodes.
+    """
+    # This calculates the length of the list.
+    current_node = head
+    length = 1
+    while current_node.next is not None:
+        current_node = current_node.next
+        length += 1
+
+    # This iterates through the first half of the list in order to
+    # reverse the order.  It keeps track of the current, previous, and
+    # next nodes.  Each iteration, it sets the previous node as the
+    # element after the current node.
+    previous_node = None
+    current_node = head
+    for _ in range(int(length/2)):
+        next_node = current_node.next
+        current_node.next = previous_node
+        previous_node = current_node
+        current_node = next_node
+
+    current_left_half_node = previous_node
+    current_right_half_node = current_node
+    max_twin_sum = 0
+    # This iterates in both directions outward from the middle of the
+    # list.  Each iteration, it checks if there is a new max twin sum.
+    while current_right_half_node is not None:
+        max_twin_sum = max(
+            max_twin_sum,
+            current_left_half_node.val + current_right_half_node.val
+        )
+        current_left_half_node = current_left_half_node.next
+        current_right_half_node = current_right_half_node.next
+
+    return max_twin_sum
+
+
 # Math
 def reverse(x):
     """
@@ -2423,6 +2467,36 @@ def lowestCommonAncestor(root, p, q):
             current_node = current_node.left
         else:
             return current_node
+
+
+def maxDepth(root: TreeNode) -> int:
+    """
+    104. Maximum Depth of Binary Tree
+    This returns the number of nodes in the path from the root to the
+    lowest node.
+    """
+    # This is a base case when the tree is empty.
+    if root is None:
+        return 0
+
+    queue = collections.deque()
+    level = 0
+    queue.append(root)
+    # This uses bread-first traversal on the tree to count the number
+    # of levels.
+    while len(queue) > 0:
+        current_level_length = len(queue)
+        # This iterates through each node in the level.  It adds its
+        # children to the end of the queue.
+        for _ in range(current_level_length):
+            node = queue.popleft()
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+        level += 1
+
+    return level
 
 
 # Algorithms
