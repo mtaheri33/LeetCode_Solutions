@@ -2574,6 +2574,94 @@ def goodNodes(root: TreeNode) -> int:
     return pre_order_traversal_good_nodes(root, root.val)
 
 
+def hasPathSum(root: TreeNode, targetSum: int) -> bool:
+    """
+    112. Path Sum
+    This returns True if there is a path from the root to a leaf where
+    the sum of the node values equals targetSum.  Otherwise, it returns
+    False.
+    """
+    def pre_order_traversal_path_sum(
+            node: TreeNode,
+            target: int,
+            current_path_sum: int = 0
+    ) -> bool:
+        """
+        This takes in the root node of a tree and a target value.  It
+        performs pre-order traversal on the tree to check if there is a
+        path from the root to a leaf where the sum of the node values
+        equals target.  If so, it returns True.  Otherwise, it returns
+        False.
+        """
+        # This performs the operation on the node, then traverses to
+        # the left subtree, and then to the right subtree.
+        if node is not None:
+            # This checks if the node is a leaf, meaning it has no
+            # children.  If so, a comparison can be done between the
+            # path sum and the target.
+            if (
+                    node.left is None
+                    and node.right is None
+                    and current_path_sum + node.val == target
+            ):
+                return True
+            # These check if there is a path from the current node
+            # where the path sum equals the target.  If not, they both
+            # evaluate to False.
+            if pre_order_traversal_path_sum(node.left,
+                                            target,
+                                            current_path_sum+node.val):
+                return True
+            if pre_order_traversal_path_sum(node.right,
+                                            target,
+                                            current_path_sum+node.val):
+                return True
+
+        # There was no path where the path sum equals the target.
+        return False
+
+    return pre_order_traversal_path_sum(root, targetSum)
+
+
+def longestZigZag(root: TreeNode) -> int:
+    """
+    1372. Longest ZigZag Path in a Binary Tree
+    A zig zag path in the tree starts at any node and moves to either
+    the left or right child.  It then moves to the next child in the
+    opposite way of the previous direction.  The zig zag length is the
+    number of nodes in the path minus 1.  This finds and returns the
+    longest zig zag length in the tree.
+    """
+    def zig_zag(
+            node: TreeNode,
+            current_direction: str,
+            current_depth: int = 0
+    ) -> int:
+        """
+        This takes in either the left or right child of the root of a
+        tree and the direction of 'left' or 'right'.  It finds and
+        returns the longest zig zag length in the subtree.
+        """
+        if node is None:
+            return current_depth
+
+        # This uses the current direction and depth to continue zig
+        # zagging.  It also uses the other child to start a new zig
+        # zag.
+        if current_direction == 'left':
+            zig_zag_depth = zig_zag(node.right, 'right', current_depth+1)
+            non_zig_zag_depth = zig_zag(node.left, 'left')
+        else:
+            zig_zag_depth = zig_zag(node.left, 'left', current_depth+1)
+            non_zig_zag_depth = zig_zag(node.right, 'right')
+
+        # This compares the depth reached from zig zagging or starting
+        # a new zig zag.
+        return max(zig_zag_depth, non_zig_zag_depth)
+
+    return max(zig_zag(root.left, 'left'), zig_zag(root.right, 'right'))
+
+
 # Algorithms
 def search(nums, target):
     """
