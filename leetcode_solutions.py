@@ -2499,6 +2499,81 @@ def maxDepth(root: TreeNode) -> int:
     return level
 
 
+def leafSimilar(root1: TreeNode, root2: TreeNode) -> bool:
+    """
+    872. Leaf-Similar Trees
+    The leaf value sequence of a tree is the values of its leaves from
+    left to right.  This compares the sequences of two trees.  It
+    returns True if they are the same.  Otherwise, it returns False.
+    """
+    def pre_order_traversal_leaf_sequence(
+        node: TreeNode,
+        tree_leaf_sequence: list = None
+    ) -> list:
+        """
+        This takes in the root node of a tree.  It performs pre-order
+        traversal on the tree to find the leaf value sequence.  It then
+        returns the sequence.
+        """
+        if tree_leaf_sequence is None:
+            tree_leaf_sequence = []
+
+        # This performs the operation on the node, then traverses to
+        # the left subtree, and then to the right subtree.
+        if node is not None:
+            # This adds the node's value to the sequence when it is
+            # leaf, meaning it has no children.
+            if node.left is None and node.right is None:
+                tree_leaf_sequence.append(node.val)
+            pre_order_traversal_leaf_sequence(node.left, tree_leaf_sequence)
+            pre_order_traversal_leaf_sequence(node.right, tree_leaf_sequence)
+
+        return tree_leaf_sequence
+
+    tree1_leaf_sequence = pre_order_traversal_leaf_sequence(root1)
+    tree2_leaf_sequence = pre_order_traversal_leaf_sequence(root2)
+
+    return tree1_leaf_sequence == tree2_leaf_sequence
+
+
+def goodNodes(root: TreeNode) -> int:
+    """
+    1448. Count Good Nodes in Binary Tree
+    A node is good if there are no values in the path from the node to
+    the root that are greater than the node's value.  This calculates
+    and returns the number of good nodes in a tree.
+    """
+    def pre_order_traversal_good_nodes(node: TreeNode, path_max: int) -> int:
+        """
+        This takes in a node of a tree and the greatest value in the
+        path from the node to the root.  It treats the node as a root
+        and performs pre-order traversal to find the number of good
+        nodes in the subtree.  It then returns the amount.
+        """
+        if node is None:
+            return 0
+
+        # This performs the operation on the node, then traverses to
+        # the left subtree, and then to the right subtree.
+        # The node is not good if the greatest value in the path from
+        # the current node to the root is greater than the node's
+        # value.  Otherwise, it is good, because the node's value is
+        # greater than or equal to the path's max.  For either option,
+        # there is no value in the path greater than the node's value.
+        current_node_good = 0 if path_max > node.val else 1
+        # This checks if there is a new max node value for the path.
+        path_max = max(path_max, node.val)
+        good_nodes = (
+            current_node_good
+            + pre_order_traversal_good_nodes(node.left, path_max)
+            + pre_order_traversal_good_nodes(node.right, path_max)
+        )
+
+        return good_nodes
+
+    return pre_order_traversal_good_nodes(root, root.val)
+
+
 # Algorithms
 def search(nums, target):
     """
