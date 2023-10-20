@@ -2662,6 +2662,84 @@ def longestZigZag(root: TreeNode) -> int:
     return max(zig_zag(root.left, 'left'), zig_zag(root.right, 'right'))
 
 
+def lowestCommonAncestor(
+        root: TreeNode,
+        p: TreeNode,
+        q: TreeNode
+) -> TreeNode:
+    """
+    236. Lowest Common Ancestor of a Binary Tree
+    The lowest common ancestor of two nodes p and q is the lowest node
+    in the tree that has both the nodes as children.  p or q can be the
+    lca if it has the other as its child.  This finds and returns the
+    lca of the two given nodes.
+    """
+    def pre_order_traversal_lca(
+            node: TreeNode,
+            p: TreeNode,
+            q: TreeNode,
+    ) -> TreeNode:
+        """
+        This takes in the root of a tree and two nodes p and q.  It
+        uses pre-order traversal to search through the tree until it
+        finds the lca of the nodes.
+        """
+        if node is not None:
+            if node == p or node == q:
+                return node
+            found_left = pre_order_traversal_lca(node.left, p, q)
+            found_right = pre_order_traversal_lca(node.right, p, q)
+
+            # This checks if the node is the lca, because it has p or q
+            # as its left child and the other as its right child.
+            if found_left and found_right:
+                return node
+
+            # Only one of p or q was found.  That node is the lca,
+            # because the other node was not found in the other side of
+            # the tree.  So, p and q are on the same side of the tree.
+            # This means the other node is a child further down the
+            # tree of the one that was found.
+            if found_left:
+                return found_left
+            if found_right:
+                return found_right
+
+        return None
+
+    return pre_order_traversal_lca(root, p, q)
+
+
+def rightSideView(root: TreeNode) -> list[int]:
+    """
+    199. Binary Tree Right Side View
+    This returns the node values from top to bottom if you are facing a
+    tree from its right side.
+    """
+    # This is the base case when the tree is empty.
+    if root is None:
+        return []
+
+    node_values = []
+    queue = collections.deque()
+    queue.append(root)
+    # This uses bread-first traversal on the tree to find the right
+    # most node in each level.
+    while len(queue) > 0:
+        node_values.append(queue[-1].val)
+        current_level_length = len(queue)
+        # This iterates through each node in the level.  It adds its
+        # children to the end of the queue.
+        for _ in range(current_level_length):
+            node = queue.popleft()
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+
+    return node_values
+
+
 # Algorithms
 def search(nums, target):
     """
