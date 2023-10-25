@@ -11,6 +11,7 @@
 # Classes
 
 import collections
+from typing import Union
 
 
 # Arrays
@@ -2738,6 +2739,61 @@ def rightSideView(root: TreeNode) -> list[int]:
                 queue.append(node.right)
 
     return node_values
+
+
+def maxLevelSum(root: TreeNode) -> int:
+    """
+    1161. Maximum Level Sum of a Binary Tree
+    This finds and returns the level with the greatest sum of node
+    values.  The level of the root is 1.
+    """
+    max_level = 1
+    max_sum = root.val
+    current_level = 1
+    queue = collections.deque()
+    queue.append(root)
+    # This uses bread-first traversal on the tree to calculate the sum
+    # of the nodes in a level.
+    while len(queue) > 0:
+        current_level_length = len(queue)
+        current_level_sum = 0
+        for _ in range(current_level_length):
+            node = queue.popleft()
+            current_level_sum += node.val
+            if node.left is not None:
+                queue.append(node.left)
+            if node.right is not None:
+                queue.append(node.right)
+        # This checks if the current level is a new max.
+        if current_level_sum > max_sum:
+            max_sum = current_level_sum
+            max_level = current_level
+        current_level += 1
+
+    return max_level
+
+
+def searchBST(root: TreeNode, val: int) -> Union[TreeNode, None]:
+    """
+    700. Search in a Binary Search Tree
+    This finds and returns the node with a value equal to the given val
+    in a binary search tree.  If the node does not exist, this returns
+    None.
+    """
+    current_node = root
+    # This traverses through the tree until it finds the node or
+    # reaches the end of the path.
+    while True:
+        if current_node.val == val:
+            return current_node
+        if val < current_node.val:
+            current_node = current_node.left
+        else:
+            current_node = current_node.right
+        # This checks if the end of the path has been reached, so the
+        # node does not exist.
+        if current_node is None:
+            return None
 
 
 # Algorithms
