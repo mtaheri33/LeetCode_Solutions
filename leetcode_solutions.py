@@ -2796,6 +2796,98 @@ def searchBST(root: TreeNode, val: int) -> Union[TreeNode, None]:
             return None
 
 
+def deleteNode(root: TreeNode, key: int) -> Union[TreeNode, None]:
+    """
+    450. Delete Node in a BST
+    This finds and deletes the node with a value equal to the given key
+    in a binary search tree.  It then returns the root of the tree.  If
+    the node does not exist, it returns None.
+    """
+    # This is the base case when the tree is empty.
+    if root is None:
+        return None
+
+    parent_node = None
+    current_node = root
+    # This traverses through the tree until it finds the node or
+    # reaches the end of the path.
+    while True:
+        # This runs when the node has been found.  It deletes the node
+        # and handles any children.
+        if key == current_node.val:
+            # This runs when the node has both a left and right child.
+            if (
+                    current_node.left is not None
+                    and current_node.right is not None
+            ):
+                # This saves a reference to the left child.
+                left_child = current_node.left
+                # This replaces the node with its right child.
+                if parent_node is None:
+                    root = current_node.right
+                else:
+                    if current_node is parent_node.left:
+                        parent_node.left = current_node.right
+                    else:
+                        parent_node.right = current_node.right
+                # This adds the left child somewhere as a descendant of
+                # the right child.
+                parent_node = None
+                current_node = current_node.right
+                # This traverses through the right child subtree until
+                # it finds the appropriate place for the left child.
+                while current_node is not None:
+                    parent_node = current_node
+                    if left_child.val < current_node.val:
+                        current_node = current_node.left
+                    else:
+                        current_node = current_node.right
+                if left_child.val < parent_node.val:
+                    parent_node.left = left_child
+                else:
+                    parent_node.right = left_child
+            # This runs when the node only has a left child.
+            elif current_node.left is not None and current_node.right is None:
+                # This replaces the node with its left child.
+                if parent_node is None:
+                    root = current_node.left
+                else:
+                    if current_node is parent_node.left:
+                        parent_node.left = current_node.left
+                    else:
+                        parent_node.right = current_node.left
+            # This runs when the node only has a right child.
+            elif current_node.left is None and current_node.right is not None:
+                # This replaces the node with its right child.
+                if parent_node is None:
+                    root = current_node.right
+                else:
+                    if current_node is parent_node.left:
+                        parent_node.left = current_node.right
+                    else:
+                        parent_node.right = current_node.right
+            # This runs when the node has no children.
+            else:
+                # This deletes the node.
+                if parent_node is None:
+                    return None
+                if current_node is parent_node.left:
+                    parent_node.left = None
+                else:
+                    parent_node.right = None
+            return root
+
+        parent_node = current_node
+        if key < current_node.val:
+            current_node = current_node.left
+        else:
+            current_node = current_node.right
+        # This checks if the end of the path has been reached, so the
+        # node does not exist.
+        if current_node is None:
+            return root
+
+
 # Algorithms
 def search(nums, target):
     """
@@ -2966,6 +3058,39 @@ def numIslands(grid: list[list[str]]) -> int:
                 find_island(grid, row, col, visited)
 
     return result
+
+
+def canVisitAllRooms(rooms: list[list[int]]) -> bool:
+    """
+    841. Keys and Rooms
+    rooms represents rooms numbered 0 to the length of rooms - 1.  All
+    of the rooms are locked except for room 0.  Each room contains keys
+    to other rooms.  You start at room 0.  This returns True if you can
+    visit every room.  Otherwise, it returns False.
+    """
+    def visit_room(
+            rooms: list[list[int]],
+            room: int,
+            visited: set = None
+    ) -> set:
+        """
+        This adds the given room to the set of visited rooms.  It then
+        iterates through the keys and visits rooms that have not been
+        visited before.
+        """
+        if visited is None:
+            visited = set()
+
+        visited.add(room)
+        for key in rooms[room]:
+            if key not in visited:
+                visit_room(rooms, key, visited)
+
+        return visited
+
+    # This visits every possible room and checks if all rooms have been
+    # visited.
+    return len(visit_room(rooms, 0)) == len(rooms)
 
 
 # Classes
