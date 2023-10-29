@@ -3093,6 +3093,47 @@ def canVisitAllRooms(rooms: list[list[int]]) -> bool:
     return len(visit_room(rooms, 0)) == len(rooms)
 
 
+def findCircleNum(isConnected: list[list[int]]) -> int:
+    """
+    547. Number of Provinces
+    Each element of isConnected represents connections that a city has.
+    Each element in a city's list of connections represents another
+    city.  The element is 1 if the two cities are connected, otherwise
+    it is 0.  A province is a group of cities that are either directly
+    or indirectly connected to each other.  This finds the number of
+    provinces and returns it.
+    """
+    def dfs_cities(
+            connections: list[list[int]],
+            city: int,
+            visited: set
+    ) -> None:
+        """
+        This performs a depth-first search for a province.  It visits
+        every city within the province.
+        """
+        for i in range(len(connections[city])):
+            if connections[city][i] == 1 and i not in visited:
+                visited.add(i)
+                dfs_cities(connections, i, visited)
+
+        return None
+
+    visited = set()
+    provinces = 0
+    # This iterates through each city.  For each city, it visits every
+    # other city in that province.  As the iteration goes on, if the
+    # city has already been visited then it is skipped.  If the city
+    # has not already been visited then it is a new province.
+    for i in range(len(isConnected)):
+        if i not in visited:
+            provinces += 1
+            visited.add(i)
+            dfs_cities(isConnected, i, visited)
+
+    return provinces
+
+
 # Classes
 class RecentCounter:
     """
