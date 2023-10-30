@@ -3134,6 +3134,59 @@ def findCircleNum(isConnected: list[list[int]]) -> int:
     return provinces
 
 
+def minReorder(n: int, connections: list[list[int]]) -> int:
+    """
+    1466. Reorder Routes to Make All Paths Lead to the City Zero
+    Each list in connections represents a one direction road from the
+    city that is the value of the first element to the second element
+    value city.  This finds and returns the number of roads that need
+    to have the direction flipped in order for every city to be able to
+    reach city 0.
+    """
+    def dfs(
+            roads: set((int, int)),
+            neighbors: dict[int, list[int]],
+            visited: set(int),
+            changes: list[int],
+            city: int
+    ) -> None:
+        """
+        This visits every city using depth-first search.  It checks if
+        the city's neighbors can reach it.  If not, the road between
+        the cities needs to be flipped.  
+        """
+        for connected_city in neighbors[city]:
+            if connected_city in visited:
+                continue
+            if (connected_city, city) not in roads:
+                changes[0] += 1
+            visited.add(connected_city)
+            dfs(roads, neighbors, visited, changes, connected_city)
+
+        return None
+
+    # This creates a set of the roads to be able to access them in
+    # constant time.
+    roads = set()
+    for connection in connections:
+        roads.add(tuple(connection))
+
+    # This creates a dictionary of a city's neighbors.  The key is the
+    # city int, and the value is a list of the neighbor ints.
+    neighbors = {}
+    for i in range(n):
+        neighbors[i] = []
+    for a, b in connections:
+        neighbors[a].append(b)
+        neighbors[b].append(a)
+
+    changes = [0]
+    visited = set([0])
+    dfs(roads, neighbors, visited, changes, 0)
+
+    return changes[0]
+
+
 # Classes
 class RecentCounter:
     """
