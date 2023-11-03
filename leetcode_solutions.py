@@ -2483,7 +2483,7 @@ def maxDepth(root: TreeNode) -> int:
     queue = collections.deque()
     level = 0
     queue.append(root)
-    # This uses bread-first traversal on the tree to count the number
+    # This uses breadth-first traversal on the tree to count the number
     # of levels.
     while len(queue) > 0:
         current_level_length = len(queue)
@@ -2724,7 +2724,7 @@ def rightSideView(root: TreeNode) -> list[int]:
     node_values = []
     queue = collections.deque()
     queue.append(root)
-    # This uses bread-first traversal on the tree to find the right
+    # This uses breadth-first traversal on the tree to find the right
     # most node in each level.
     while len(queue) > 0:
         node_values.append(queue[-1].val)
@@ -2752,7 +2752,7 @@ def maxLevelSum(root: TreeNode) -> int:
     current_level = 1
     queue = collections.deque()
     queue.append(root)
-    # This uses bread-first traversal on the tree to calculate the sum
+    # This uses breadth-first traversal on the tree to calculate the sum
     # of the nodes in a level.
     while len(queue) > 0:
         current_level_length = len(queue)
@@ -3185,6 +3185,125 @@ def minReorder(n: int, connections: list[list[int]]) -> int:
     dfs(roads, neighbors, visited, changes, 0)
 
     return changes[0]
+
+
+def calcEquation(
+        equations: list[list[str]],
+        values: list[float],
+        queries: list[list[str]]
+) -> list[float]:
+    """
+    399. Evaluate Division
+    Each element in equations has two elements.  Each element is a
+    variable, and the first is the numerator while the second is the
+    denominator.  values[i] equals the result of division between the
+    variables in equations[i].  queries is structured the same as
+    equations.  This returns a list where list[i] equals the result of
+    division between the variables in queries[i].  If a variable does
+    not exist in equations, the result is -1.
+    """
+    def bfs_equations(
+            start: str,
+            end: str,
+            graph: dict[str, list[tuple[str, float]]]
+    ):
+        """
+        This performs a breadth-first search on a graph connecting the
+        variables.  It begins with the numerator (start) and continues
+        to add neighbors and the amount to reach that neighbor from the
+        start until it finds the denominator (end).
+        """
+        # This runs when the variable does not exist.
+        if start not in graph or end not in graph:
+            return -1
+
+        queue = collections.deque()
+        visited = set([start])
+        queue.append([start, 1])
+
+        while len(queue) > 0:
+            variable, amount_to_variable = queue.popleft()
+            if variable == end:
+                return amount_to_variable
+            for neighbor, weight in graph[variable]:
+                # This does not add neighbors that have already been
+                # visited, otherwise it will cause a cycle.
+                if neighbor not in visited:
+                    queue.append([neighbor, weight * amount_to_variable])
+                    visited.add(neighbor)
+
+        # Both the start and end variables exist, but there is no path
+        # between them.
+        return -1
+
+    # This creates a graph connecting the variables.  The key is a
+    # variable (numerator).  The value is a tuple.  The first element
+    # in the tuple is another variable (denominator).  The second
+    # element is the result of division between the numerator and
+    # denominator variables.
+    graph = collections.defaultdict(list)
+    for i, equation in enumerate(equations):
+        numerator, denominator = equation
+        graph[numerator].append((denominator, values[i]))
+        graph[denominator].append((numerator, 1 / values[i]))
+
+    return [
+        bfs_equations(numerator, denominator, graph)
+        for numerator, denominator in queries
+    ]
+
+
+def nearestExit(maze: list[list[str]], entrance: list[int]) -> int:
+    """
+    1926. Nearest Exit from Entrance in Maze
+    maze is a 2-D list where maze[i] represents rows and the elements
+    of maze[i] represent columns.  A spot is either open with a value
+    of '.' or a wall with a value of '+'.  You start at the row, column
+    spot given by entrance.  You can move up, down, left, or right.
+    This finds and returns the smallest number of moves to reach a spot
+    that is a border of the maze.  If there is no way to the border, it
+    returns -1.
+    """
+    ROWS = len(maze)
+    COLS = len(maze[0])
+
+    distances = [[float('inf')] * COLS for _ in range(ROWS)]
+    queue = collections.deque()
+    distances[entrance[0]][entrance[1]] = 0
+    queue.append((entrance[0], entrance[1], 0))
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    # This uses a breadth-first search starting from the entrance.  The
+    # spots in a level are one move away from the spots in the previous
+    # level.  It skips over invalid spots and spots already in the
+    # queue.
+    while len(queue) > 0:
+        row, col, distance = queue.popleft()
+        # This checks if the border has been reached.
+        if (
+                row == 0
+                or row == ROWS - 1
+                or col == 0
+                or col == COLS - 1
+        ):
+            # This checks that the spot is not the entrance.
+            if not (row == entrance[0] and col == entrance[1]):
+                return distance
+        for row_move, col_move in directions:
+            new_row = row + row_move
+            new_col = col + col_move
+            # This checks if the spot to move to is invalid.  This can
+            # be because it is not in the maze, it is a wall, it has
+            # already been visited, or it is already in the queue.
+            if (
+                0 <= new_row < ROWS
+                and 0 <= new_col < COLS
+                and maze[new_row][new_col] != '+'
+                and distances[new_row][new_col] == float('inf')
+            ):
+                distances[new_row][new_col] = distance + 1
+                queue.append((new_row, new_col, distance+1))
+
+    return -1
 
 
 # Classes
