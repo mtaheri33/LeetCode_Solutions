@@ -3306,6 +3306,66 @@ def nearestExit(maze: list[list[str]], entrance: list[int]) -> int:
     return -1
 
 
+def orangesRotting(grid: list[list[int]]) -> int:
+    """
+    994. Rotting Oranges
+    grid is a 2-D list where grid[i] represents rows and the elements
+    of grid[i] represent columns.  A spot is either empty with a value
+    of 0, a fresh orange with a value of 1, or a rotten orange with a
+    value of 2.  Each minute, a rotten orange can turn a fresh orange
+    in a spot up, down, left, or right from it to rotten.  This
+    calculates and returns the minimum number of minutes it takes to
+    have every orange be rotten.  If not every orange can be rotten, it
+    returns -1.
+    """
+    ROWS = len(grid)
+    COLS = len(grid[0])
+
+    queue = collections.deque()
+    fresh_orange_count = 0
+    # This counts the number of fresh oranges and the locations of
+    # every rotten orange in the grid.
+    for i in range(ROWS):
+        for j in range(COLS):
+            if grid[i][j] == 1:
+                fresh_orange_count += 1
+            elif grid[i][j] == 2:
+                queue.append((i, j))
+
+    minute = 0
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    # This uses a breadth-first search starting from each rotten
+    # orange.  The spots in a level are one direction away from the
+    # spots in the previous level.  It skips over invalid spots and
+    # spots that do not have a fresh orange.
+    while len(queue) > 0 and fresh_orange_count > 0:
+        for _ in range(len(queue)):
+            row, col = queue.popleft()
+            for row_move, col_move in directions:
+                new_row = row + row_move
+                new_col = col + col_move
+                # This checks if the next spot is invalid.  This can be
+                # because it is not in the grid or not a fresh orange.
+                # If so, it is skipped over.
+                if (
+                    new_row < 0
+                    or new_row >= ROWS
+                    or new_col < 0
+                    or new_col >= COLS
+                    or grid[new_row][new_col] != 1
+                ):
+                    continue
+                # The next spot is in the grid and is a fresh orange.
+                grid[new_row][new_col] = 2
+                fresh_orange_count -= 1
+                queue.append((new_row, new_col))
+        minute += 1
+
+    if fresh_orange_count == 0:
+        return minute
+    return -1
+
+
 # Classes
 class RecentCounter:
     """
