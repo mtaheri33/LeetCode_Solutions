@@ -923,6 +923,49 @@ def asteroidCollision(asteroids: list[int]) -> list[int]:
     return stack
 
 
+def findKthLargest(nums: list[int], k: int) -> int:
+    """
+    215. Kth Largest Element in an Array
+    This finds and returns the kth largest element in nums.
+    """
+    # This splits the current subsection of nums into three groups: one
+    # with elements less than the partition value, one with elements
+    # equal, and one with elements greater.  The partition value is the
+    # value of the last element in the current subsection.  It then
+    # determines which group the kth largest element is in and updates
+    # the current subsection to that group.
+    while True:
+        partition_value = nums[-1]
+        less_group = [element for element in nums
+                      if element < partition_value]
+        equal_group = [element for element in nums
+                       if element == partition_value]
+        greater_group = [element for element in nums
+                         if element > partition_value]
+
+        # This runs when the kth largest element is in the greater
+        # group.  k does not need to be updated, because removing the
+        # elements in the equal and less group from the current
+        # subsection has no impact on the kth largest element in the
+        # greater group.
+        if len(greater_group) >= k:
+            nums = greater_group
+            continue
+        # This runs when the kth largest element is in the equal group.
+        # Since all of the elements are the same, the first one can be
+        # returned.
+        if len(equal_group) >= k - len(greater_group):
+            return equal_group[0]
+        # This runs when the kth largest element is in the less group.
+        # k needs to be updated, because the kth largest element in the
+        # current subsection comes after the equal and greater groups
+        # elements.  Those elements will be removed, so k needs to be
+        # reduced in order for it to still point to the same kth
+        # largest element.
+        nums = less_group
+        k = k - len(greater_group) - len(equal_group)
+
+
 # Bits
 def getSum(a, b):
     """
