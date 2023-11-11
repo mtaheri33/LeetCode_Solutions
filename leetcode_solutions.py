@@ -11,6 +11,7 @@
 # Classes
 
 import collections
+import heapq
 from typing import Union
 
 
@@ -966,6 +967,60 @@ def findKthLargest(nums: list[int], k: int) -> int:
         k = k - len(greater_group) - len(equal_group)
 
 
+def maxScore(nums1: list[int], nums2: list[int], k: int) -> int:
+    """
+    2542. Maximum Subsequence Score
+    You must choose a subsequence of indices of k length.  These
+    indices are used to get elements from nums1 and nums2.  The nums1
+    elements are summed together.  The minimum value of the nums2
+    elements is found.  The result is the product of the sum and the
+    min value.  This finds and returns the maximum possible result.
+    """
+    def second_element(pair: tuple) -> int:
+        """
+        This returns the second element in the pair.
+        """
+        return pair[1]
+
+    # This creates a list of tuple pairs.  The first element is from
+    # nums1.  The second element is from nums2 in the same index
+    # position.
+    pairs = [pair for pair in zip(nums1, nums2)]
+    # This sorts the pairs in descending order based on the nums2
+    # value.
+    pairs.sort(key=second_element, reverse=True)
+
+    nums1_sum = 0
+    min_heap = []
+    # This starts from the first element in pairs and iterates through
+    # it in order.  It adds pairs to the current subsequence until it
+    # contains k elements.
+    for i in range(k):
+        nums1_sum += pairs[i][0]
+        heapq.heappush(min_heap, pairs[i][0])
+    # The min of the nums2 values is from the kth element (0-indexed)
+    # in pairs, because it is sorted in descending order.
+    max_score = nums1_sum * pairs[k-1][1]
+
+    # This iterates through each pair after the first k pairs to
+    # determine if there is a new max score.
+    for i in range(k, len(pairs)):
+        # A new pair will be added to the current subsequence.  So, a
+        # pair currently in it needs to be removed.  This removes the
+        # pair with the smallest nums1 value.
+        smallest_nums1 = heapq.heappop(min_heap)
+        nums1_sum -= smallest_nums1
+        # This adds the new pair to the current subsequence.
+        heapq.heappush(min_heap, pairs[i][0])
+        nums1_sum += pairs[i][0]
+        # Since pairs is sorted in descending order based on nums2
+        # values, the nums2 value for the new pair is the min.  This
+        # checks if there is a new max score.
+        max_score = max(max_score, nums1_sum * pairs[i][1])
+
+    return max_score
+
+
 # Bits
 def getSum(a, b):
     """
@@ -1107,7 +1162,8 @@ def climbStairs(n):
     # So, the ways to reach the i step is the sum of the ways to reach
     # the i-1 and i-2 steps.
     for i in range(3, n+1):
-        different_ways_list[i] = different_ways_list[i-1] + different_ways_list[i-2]
+        different_ways_list[i] = different_ways_list[i-1] + \
+            different_ways_list[i-2]
 
     return different_ways_list[n]
 
@@ -1221,7 +1277,8 @@ def longestCommonSubsequence(text1, text2):
             elif text1[row - 1] == text2[col - 1]:
                 matrix[row][col] = 1 + matrix[row - 1][col - 1]
             else:
-                matrix[row][col] = max(matrix[row - 1][col], matrix[row][col - 1])
+                matrix[row][col] = max(
+                    matrix[row - 1][col], matrix[row][col - 1])
 
     return matrix[-1][-1]
 
@@ -3435,3 +3492,30 @@ class RecentCounter:
             self.request_times.popleft()
 
         return len(self.request_times)
+
+
+class SmallestInfiniteSet:
+    """
+    2336. Smallest Number in Infinite Set
+    This class contains a set of all positive integers.
+    """
+
+    def __init__(self):
+        self.set = []
+        for num in range(1, 1001):
+            heapq.heappush(self.set, num)
+
+    def popSmallest(self) -> int:
+        """
+        This removes and returns the smallest value in the set.
+        """
+        return heapq.heappop(self.set)
+
+    def addBack(self, num: int) -> None:
+        """
+        This adds the given value to the set if it is not already in
+        it.
+        """
+        if num not in self.set:
+            heapq.heappush(self.set, num)
+        return None
