@@ -9,6 +9,7 @@
 # Algorithms
 # Graphs
 # Classes
+# Heaps
 
 import collections
 import heapq
@@ -967,58 +968,33 @@ def findKthLargest(nums: list[int], k: int) -> int:
         k = k - len(greater_group) - len(equal_group)
 
 
-def maxScore(nums1: list[int], nums2: list[int], k: int) -> int:
+def guess(x):
     """
-    2542. Maximum Subsequence Score
-    You must choose a subsequence of indices of k length.  These
-    indices are used to get elements from nums1 and nums2.  The nums1
-    elements are summed together.  The minimum value of the nums2
-    elements is found.  The result is the product of the sum and the
-    min value.  This finds and returns the maximum possible result.
+    This is defined to not cause errors in the function guessNumber.
     """
-    def second_element(pair: tuple) -> int:
-        """
-        This returns the second element in the pair.
-        """
-        return pair[1]
+    pass
 
-    # This creates a list of tuple pairs.  The first element is from
-    # nums1.  The second element is from nums2 in the same index
-    # position.
-    pairs = [pair for pair in zip(nums1, nums2)]
-    # This sorts the pairs in descending order based on the nums2
-    # value.
-    pairs.sort(key=second_element, reverse=True)
 
-    nums1_sum = 0
-    min_heap = []
-    # This starts from the first element in pairs and iterates through
-    # it in order.  It adds pairs to the current subsequence until it
-    # contains k elements.
-    for i in range(k):
-        nums1_sum += pairs[i][0]
-        heapq.heappush(min_heap, pairs[i][0])
-    # The min of the nums2 values is from the kth element (0-indexed)
-    # in pairs, because it is sorted in descending order.
-    max_score = nums1_sum * pairs[k-1][1]
-
-    # This iterates through each pair after the first k pairs to
-    # determine if there is a new max score.
-    for i in range(k, len(pairs)):
-        # A new pair will be added to the current subsequence.  So, a
-        # pair currently in it needs to be removed.  This removes the
-        # pair with the smallest nums1 value.
-        smallest_nums1 = heapq.heappop(min_heap)
-        nums1_sum -= smallest_nums1
-        # This adds the new pair to the current subsequence.
-        heapq.heappush(min_heap, pairs[i][0])
-        nums1_sum += pairs[i][0]
-        # Since pairs is sorted in descending order based on nums2
-        # values, the nums2 value for the new pair is the min.  This
-        # checks if there is a new max score.
-        max_score = max(max_score, nums1_sum * pairs[i][1])
-
-    return max_score
+def guessNumber(n: int) -> int:
+    """
+    374. Guess Number Higher or Lower
+    This finds and returns a picked number from 1 to n (both
+    inclusive).
+    """
+    start = 1
+    end = n
+    # This continues to run until it finds the picked number.  It keeps
+    # track of a subsection of the possible numbers.  Each iteration,
+    # the subsection is reduced in length by half.
+    while True:
+        current_guess = int((start + end) / 2)
+        result = guess(current_guess)
+        if result == 0:
+            return current_guess
+        if result == 1:
+            start = current_guess + 1
+        else:
+            end = current_guess - 1
 
 
 # Bits
@@ -3519,3 +3495,100 @@ class SmallestInfiniteSet:
         if num not in self.set:
             heapq.heappush(self.set, num)
         return None
+
+
+# Heaps
+def maxScore(nums1: list[int], nums2: list[int], k: int) -> int:
+    """
+    2542. Maximum Subsequence Score
+    You must choose a subsequence of indices of k length.  These
+    indices are used to get elements from nums1 and nums2.  The nums1
+    elements are summed together.  The minimum value of the nums2
+    elements is found.  The result is the product of the sum and the
+    min value.  This finds and returns the maximum possible result.
+    """
+    def second_element(pair: tuple) -> int:
+        """
+        This returns the second element in the pair.
+        """
+        return pair[1]
+
+    # This creates a list of tuple pairs.  The first element is from
+    # nums1.  The second element is from nums2 in the same index
+    # position.
+    pairs = [pair for pair in zip(nums1, nums2)]
+    # This sorts the pairs in descending order based on the nums2
+    # value.
+    pairs.sort(key=second_element, reverse=True)
+
+    nums1_sum = 0
+    min_heap = []
+    # This starts from the first element in pairs and iterates through
+    # it in order.  It adds pairs to the current subsequence until it
+    # contains k elements.
+    for i in range(k):
+        nums1_sum += pairs[i][0]
+        heapq.heappush(min_heap, pairs[i][0])
+    # The min of the nums2 values is from the kth element (0-indexed)
+    # in pairs, because it is sorted in descending order.
+    max_score = nums1_sum * pairs[k-1][1]
+
+    # This iterates through each pair after the first k pairs to
+    # determine if there is a new max score.
+    for i in range(k, len(pairs)):
+        # A new pair will be added to the current subsequence.  So, a
+        # pair currently in it needs to be removed.  This removes the
+        # pair with the smallest nums1 value.
+        smallest_nums1 = heapq.heappop(min_heap)
+        nums1_sum -= smallest_nums1
+        # This adds the new pair to the current subsequence.
+        heapq.heappush(min_heap, pairs[i][0])
+        nums1_sum += pairs[i][0]
+        # Since pairs is sorted in descending order based on nums2
+        # values, the nums2 value for the new pair is the min.  This
+        # checks if there is a new max score.
+        max_score = max(max_score, nums1_sum * pairs[i][1])
+
+    return max_score
+
+
+def totalCost(costs: list[int], k: int, candidates: int) -> int:
+    """
+    2462. Total Cost to Hire K Workers
+    Each element of costs represents a worker and the cost to hire
+    them.  The workers have an order based on their placement in costs.
+    You hire the cheapest worker k times.  Each time, you can pick from
+    the first or last candidates amount of workers.  Once a worker is
+    picked, they are removed and not available in the next rounds.
+    This returns the total cost you spent.
+    """
+    min_heap = []
+
+    # This adds the workers available to be picked in the first round
+    # to a heap.
+    left_index = 0
+    for _ in range(candidates):
+        heapq.heappush(min_heap, (costs[left_index], 'left'))
+        left_index += 1
+    right_index = len(costs) - 1
+    for _ in range(candidates):
+        if right_index >= left_index:
+            heapq.heappush(min_heap, (costs[right_index], 'right'))
+            right_index -= 1
+
+    total_cost = 0
+    # This picks the cheapest worker k times.  Depending on whether the
+    # worker was from the first or last side, it adds the next worker
+    # to the heap.
+    for _ in range(k):
+        cost, side = heapq.heappop(min_heap)
+        total_cost += cost
+        if left_index <= right_index:
+            if side == 'left':
+                heapq.heappush(min_heap, (costs[left_index], 'left'))
+                left_index += 1
+            else:
+                heapq.heappush(min_heap, (costs[right_index], 'right'))
+                right_index -= 1
+
+    return total_cost
