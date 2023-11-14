@@ -13,6 +13,7 @@
 
 import collections
 import heapq
+import math
 from typing import Union
 
 
@@ -995,6 +996,93 @@ def guessNumber(n: int) -> int:
             start = current_guess + 1
         else:
             end = current_guess - 1
+
+
+def successfulPairs(spells: list[int], potions: list[int],
+                    success: int) -> list[int]:
+    """
+    2300. Successful Pairs of Spells and Potions
+    spells represents strengths of spells and potions represents
+    strengths of potions.  This returns a list where list[i] is equal
+    to the number of potions where its strength can be multiplied with
+    spells[i] to get a value greater than or equal to success.
+    """
+    # This creates a new spells list where each element is (original
+    # index, spells element).  It is sorted desc by spells element
+    # value.
+    sorted_spells = [spell for spell in enumerate(spells)]
+    sorted_spells.sort(key=lambda spell: spell[1], reverse=True)
+    potions.sort()
+
+    pairs = [-1] * len(spells)
+    potions_index = 0
+    # This iterates through each spell.  It calculates the minimum
+    # potion strength needed to have the product be equal to or greater
+    # than success.  It then iterates through potions until it finds
+    # that strength value.  The number of potions that can pair with
+    # the spell is the length of potions minus the index of the current
+    # potion, since potions is sorted ascending.  Spell strength must
+    # iterate in descending order, because this will result in minimum
+    # potion strength targets in ascending order, which matches the
+    # order of elements in potions.
+    for original_index, spell_strength in sorted_spells:
+        # This checks if there are no possible potion strengths that
+        # can be multiplied with the spell strength to be >= success.
+        if potions_index >= len(potions):
+            pairs[original_index] = 0
+            continue
+        target = math.ceil(success / spell_strength)
+        while (
+                potions_index < len(potions)
+                and potions[potions_index] < target
+        ):
+            potions_index += 1
+        pairs[original_index] = len(potions) - potions_index
+
+    return pairs
+
+
+def findPeakElement(nums: list[int]) -> int:
+    """
+    162. Find Peak Element
+    This finds and returns an index position where the element is
+    greater than the element before and after it.  The first element is
+    by default greater than the imaginary element before it, and the
+    last element is by default greater than the imaginary element after
+    it.  An element cannot be the same as the element after it.
+    """
+    # These are the base cases when there are only 1 or 2 elements.
+    if len(nums) == 1 or nums[0] > nums[1]:
+        return 0
+    if nums[-1] > nums[-2]:
+        return len(nums) - 1
+
+    start_index = 0
+    end_index = len(nums) - 1
+    # This keeps track of a subsection of nums.  It checks if the
+    # middle element in the subsection is a peak.  If not, the
+    # subsection moves to the side before or after the middle element
+    # depending on which neighbor is greater than it.  If the neighbor
+    # is less than the middle element, it is possible that all elements
+    # after it are descending.  This means there is no peak on that
+    # side.  However, if the neighbor is greater, then the element
+    # after it may be less, which means the neighbor is the peak.  Or,
+    # every element after the neighbor is ascending, which means the
+    # peak is the last element on that side.  Or, the elements after
+    # the neighbor are ascending until one of them drops.  In any of
+    # the cases, the peak is on that side.
+    while start_index <= end_index:
+        middle_index = int((start_index + end_index) / 2)
+        if (
+                nums[middle_index] > nums[middle_index - 1]
+                and nums[middle_index] > nums[middle_index + 1]
+
+        ):
+            return middle_index
+        if nums[middle_index - 1] > nums[middle_index]:
+            end_index = middle_index - 1
+        else:
+            start_index = middle_index + 1
 
 
 # Bits
