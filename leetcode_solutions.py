@@ -1085,6 +1085,43 @@ def findPeakElement(nums: list[int]) -> int:
             start_index = middle_index + 1
 
 
+def minEatingSpeed(piles: list[int], h: int) -> int:
+    """
+    875. Koko Eating Bananas
+    piles contains the amounts of bananas in piles.  You can eat
+    bananas at a constant rate in hours.  If your rate is higher than
+    the amount of bananas left in a pile, then after finishing the pile
+    you stop eating for that hour.  This calculates and returns the
+    slowest rate you can eat at in order to finish every banana within
+    h hours.
+    """
+    start = 1
+    end = max(piles)
+
+    min_speed = end
+    # The minimum rate you can eat at is 1, and the maximum rate is the
+    # largest value in piles.  So, the result is somewhere in this
+    # range.  This keeps track of a subsection within the range.  It
+    # takes the middle speed and calculates how many hours it will take
+    # to eat every banana.  If this rate is higher than h, you need to
+    # eat faster, so the subsection moves to the right of the middle
+    # speed.  If the rate is lower than or equal to h, there may be an
+    # even slower speed you can eat at, so the subsection moves to the
+    # left of the middle speed.
+    while start <= end:
+        speed = int((start + end) / 2)
+        hours = 0
+        for pile in piles:
+            hours += math.ceil(pile / speed)
+        if hours > h:
+            start = speed + 1
+        else:
+            end = speed - 1
+            min_speed = min(min_speed, speed)
+
+    return min_speed
+
+
 # Bits
 def getSum(a, b):
     """
@@ -2111,6 +2148,60 @@ def predictPartyVictory(senate: str) -> str:
     if len(R_queue) == 0:
         return 'Dire'
     return 'Radiant'
+
+
+def letterCombinations(digits: str) -> list[str]:
+    """
+    17. Letter Combinations of a Phone Number
+    digits contains a phone number where each digit is between 2-9
+    (both inclusive).  This returns a list of all the possible letter
+    combinations that the phone number can be.
+    """
+    def create_letter_combinations(
+            current_digits: str,
+            mapping: dict,
+            current_string: str = '',
+            combinations: list = None,
+    ) -> list:
+        """
+        This uses recursion to come up with all possible letter
+        combinations for a phone number.  Each iteration, it adds a
+        letter to the combination and moves onto the next digit.  It
+        then returns a list of all the possibilities.
+        """
+        if combinations is None:
+            combinations = []
+
+        if len(current_digits) == 0:
+            combinations.append(current_string)
+            return combinations
+
+        for letter in mapping[current_digits[0]]:
+            create_letter_combinations(
+                current_digits[1:],
+                mapping,
+                current_string + letter,
+                combinations,
+            )
+
+        return combinations
+
+    # This is the base case when there is no phone number.
+    if len(digits) == 0:
+        return []
+
+    mapping = {
+        '2': 'abc',
+        '3': 'def',
+        '4': 'ghi',
+        '5': 'jkl',
+        '6': 'mno',
+        '7': 'pqrs',
+        '8': 'tuv',
+        '9': 'wxyz',
+    }
+
+    return create_letter_combinations(digits, mapping)
 
 
 # Linked Lists
