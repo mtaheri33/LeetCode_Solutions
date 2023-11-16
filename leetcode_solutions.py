@@ -2608,6 +2608,31 @@ def reverse(x):
     return result
 
 
+def tribonacci(n: int) -> int:
+    """
+    1137. N-th Tribonacci Number
+    T0 = 0, T1 = 1, and T2 = 1.
+    Tn = Tn-3 + Tn-2 + Tn-1 for all n >= 3.
+    This returns the value of Tn using the given value for n.
+    """
+    # These are the base cases.
+    if n == 0:
+        return 0
+    if n == 1 or n == 2:
+        return 1
+
+    past_three = collections.deque([0, 1, 1])
+    # This keeps track of the past three T values.  Each iteration, it
+    # adds the next T value and removes the oldest T value.  It does
+    # this until it finds the value for Tn.
+    for _ in range(n-2):
+        current_sum = sum(past_three)
+        past_three.append(current_sum)
+        past_three.popleft()
+
+    return past_three[-1]
+
+
 # Trees
 class Node:
     def __init__(self, val=None, children=None):
