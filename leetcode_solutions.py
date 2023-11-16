@@ -1122,6 +1122,48 @@ def minEatingSpeed(piles: list[int], h: int) -> int:
     return min_speed
 
 
+def combinationSum3(k: int, n: int) -> list[list[int]]:
+    """
+    216. Combination Sum III
+    This finds and returns every combination of k numbers that sum to
+    n.  A number has to be between 1-9 (both inclusive) and can only be
+    used in a combination once.  Combinations with identical numbers in
+    different orders are considered the same.
+    """
+    def find_combinations(current_numbers: list, k: int,
+                          n: int, combinations: list) -> list:
+        """
+        current_numbers takes in a list with one starting element.  It
+        then finds the combinations using the starting element and
+        numbers greater than it with a length of k that sum to n.
+        """
+        # This iterates through each possible number greater than the
+        # last element in the current list of numbers.
+        for next_number in range(current_numbers[-1]+1, 10):
+            new_numbers = current_numbers + [next_number]
+            if len(new_numbers) == k:
+                if sum(new_numbers) == n:
+                    combinations.append(new_numbers)
+                    return combinations
+                # This stops iterating through subsequent numbers if
+                # the sum is already over n.
+                if sum(new_numbers) > n:
+                    return combinations
+            # This uses recursion to continue to add numbers to the
+            # current list.
+            if len(new_numbers) < k and sum(new_numbers) < n:
+                find_combinations(new_numbers, k, n, combinations)
+
+        return combinations
+
+    combinations = []
+    for start in range(1, 10):
+        if start < n:
+            find_combinations([start], k, n, combinations)
+
+    return combinations
+
+
 # Bits
 def getSum(a, b):
     """
