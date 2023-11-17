@@ -1485,33 +1485,36 @@ def combinationSum4(nums, target):
     return result[-1]
 
 
-def rob(nums):
+def rob(nums: list[int]) -> int:
     """
     198. House Robber
-    This takes in a list of integers, nums, that represent the amount
-    of money in houses on a street.  Two adjacent houses cannot be
-    robbed.  This returns an integer of the max amount of money that
-    can be stolen from the street.
+    nums contains the amounts of money from robbing houses on a street.
+    Two adjacent houses cannot be robbed.  This calculates and returns
+    the max amount of money that can be stolen.
     """
-    # This uses the bottom up approach and tabulation.
-    result = [0] * (len(nums)+1)
-    result[0] = 0
-    result[1] = nums[0]
+    # This is the base case when there is only one house.
+    if len(nums) == 1:
+        return nums[0]
 
-    # This iterates through nums.  For each current num, there are two
-    # options.  One option is to rob the house, so the thief gets the
-    # money from the house plus the max amount of money from robbing
-    # houses up to the previous house (not inclusive).  This is
-    # result[current index - 2].  The other option is to not rob the
-    # house, so the thief gets the max amount of money from robbing
-    # houses up to the previous house (inclusive).  This is
-    # result[current index - 1].  The larger amount of money is the max
-    # amount of money from robbing houses up to that point.
-    for i in range(2, len(nums)+1):
-        money = max(nums[i-1]+result[i-2], result[i-1])
-        result[i] = money
+    # The ith element of this list represents the most money you can
+    # steal from the start to the ith house.
+    max_money = [0] * len(nums)
+    max_money[0] = nums[0]
+    max_money[1] = max(nums[0], nums[1])
 
-    return result[-1]
+    # This iterates from the third house to the last.  Each time, it
+    # calculates the most money you can steal up to that house.
+    for i in range(2, len(nums)):
+        # For the current house, there are two options for the most
+        # money: you can rob the house and get its money + the most
+        # money from the house 2 behind.  Or, you can not rob it and
+        # get the most money from the house 1 behind.  This picks the
+        # greater of the two options.
+        rob_house_max_money = nums[i] + max_money[i-2]
+        dont_rob_house_max_money = max_money[i-1]
+        max_money[i] = max(rob_house_max_money, dont_rob_house_max_money)
+
+    return max_money[-1]
 
 
 def rob(nums):
@@ -1615,6 +1618,37 @@ def numDecodings(s):
             results[i] = result
 
     return results[0]
+
+
+def minCostClimbingStairs(cost: list[int]) -> int:
+    """
+    746. Min Cost Climbing Stairs
+    cost contains costs to travel from a step.  You can travel either 1
+    or 2 steps ahead.  This returns the minimum cost to go past the
+    last step if you start on either the first or second step.
+    """
+    # The ith element of this list represents the minimum cost to reach
+    # past the last step if you start from the ith step.
+    costs = [0] * len(cost)
+    costs[-1] = cost[-1]
+    costs[-2] = cost[-2]
+
+    # This iterates from the third to last step to the first step.
+    # Each time, it calculates the minimum cost to reach past the last
+    # step if you start from that step.
+    for i in range(len(cost)-3, -1, -1):
+        current_cost = cost[i]
+        # You can move one or two steps ahead from the current step.
+        # So, there are two cost options to reach past the last step:
+        # the cost of the current step + the total cost of the step one
+        # ahead, or the cost of the current step + the total cost of
+        # the step two ahead.  This picks the minimum of those two
+        # options.
+        costs[i] = min(current_cost+costs[i+1], current_cost+costs[i+2])
+
+    # This picks the lower total cost out of starting from either the
+    # first or second step.
+    return min(costs[0], costs[1])
 
 
 # Strings
