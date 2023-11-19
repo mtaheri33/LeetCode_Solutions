@@ -1651,6 +1651,37 @@ def minCostClimbingStairs(cost: list[int]) -> int:
     return min(costs[0], costs[1])
 
 
+def uniquePaths(m: int, n: int) -> int:
+    """
+    62. Unique Paths
+    There is a grid with m rows and n columns.  You start at the top
+    left spot.  This finds and returns the number of unique paths you
+    can take to the bottom right spot if you only move right or down.
+    """
+    grid = []
+    for row in range(m):
+        grid.append([None] * n)
+    # The number of unique paths for each spot in the last row and last
+    # column is 1, because you can only move right or down every time.
+    for col in range(n):
+        grid[m-1][col] = 1
+    for row in range(m):
+        grid[row][n-1] = 1
+
+    # This iterates through each row from the second to last to the
+    # first.
+    for row in range(m-2, -1, -1):
+        # This iterates through each spot in the current row from the
+        # second to rightmost to the leftmost.
+        for col in range(n-2, -1, -1):
+            # The number of unique paths for a spot is the number of
+            # unique paths for the spot to the right plus the number of
+            # unique paths for the spot below.
+            grid[row][col] = grid[row][col+1] + grid[row+1][col]
+
+    return grid[0][0]
+
+
 # Strings
 def reverseString(s):
     """
