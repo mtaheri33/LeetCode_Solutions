@@ -1164,6 +1164,49 @@ def combinationSum3(k: int, n: int) -> list[list[int]]:
     return combinations
 
 
+def maxProfit(prices: list[int], fee: int) -> int:
+    """
+    714. Best Time to Buy and Sell Stock with Transaction Fee
+    prices represents stock prices each day.  You can buy a stock one
+    day and sell it on a different day in the future.  The fee will be
+    subtracted from your profit.  You can only hold onto one stock at a
+    time, but you can perform as many transactions as you want.  This
+    calculates and returns the max profit you can make.  If no profit
+    is possible, it returns 0.
+    """
+    # The ith element of the lists represents the max profit you can
+    # achieve from the first day to the ith day (0-indexed).  One list
+    # is for when you own stock on the end of the ith day, and the
+    # other list is for when you don't own stock on the end of the day.
+    do_own = [-prices[0]]
+    dont_own = [0]
+
+    # This iterates from the second day to the last and calculates the
+    # max profit for each list.
+    for i in range(1, len(prices)):
+        # In order to own stock at the end of the day, you either owned
+        # stock the previous day and didn't sell it, or you didn't own
+        # stock the previous day and you bought today's stock.  The max
+        # profit of the former is the same as the previous day's do own
+        # stock max profit.  The max profit of the latter is the
+        # previous day's don't own stock max profit minus the price of
+        # today's stock since you bought the stock.
+        do_own_value = max(do_own[-1], dont_own[-1] - prices[i])
+        # In order to not own stock at the end of the day, you either
+        # didn't own stock the previous day and didn't buy anything
+        # today, or you did own stock the previous day and you sold it
+        # today.  The max profit of the former is the same as the
+        # previous day's don't own stock max profit.  The max profit of
+        # the latter is the previous day's do own stock max profit plus
+        # the price of today's stock since you sold your stock minus
+        # the fee.
+        dont_own_value = max(dont_own[-1], do_own[-1] + prices[i] - fee)
+        do_own.append(do_own_value)
+        dont_own.append(dont_own_value)
+
+    return dont_own[-1]
+
+
 # Bits
 def getSum(a, b):
     """
@@ -1381,7 +1424,7 @@ def lengthOfLIS(nums):
     return max(longest_lengths)
 
 
-def longestCommonSubsequence(text1, text2):
+def longestCommonSubsequence(text1: str, text2: str) -> int:
     """
     1143. Longest Common Subsequence
     This takes in two strings of all lowercase letters.  It returns an
@@ -1389,39 +1432,50 @@ def longestCommonSubsequence(text1, text2):
     out of both strings.  If there is no common subsequence, it returns
     0.
     """
-    # This uses the bottom up approach and tabulation with a 2D matrix
-    # (each element of the list is an inner list that is one of the
-    # rows).  The rows of the matrix represent 0 (empty string) and
-    # then the letters of the first string, text1.  The columns
-    # represent 0 and then the letters of the other string, text2.
+    ROWS = len(text1)
+    COLS = len(text2)
+    # This creates a 2-D matrix.  Each row represents a letter in
+    # text1, and each column represents a letter in text2.
     matrix = []
-    for _ in range(len(text1)+1):
-        matrix.append([None] * (len(text2)+1))
+    for _ in range(ROWS):
+        matrix.append([None] * COLS)
 
-    # This iterates through the first string, text1.  For each of these
-    # iterations, it then iterates through the second string, text2.
-    # For both iterations, the substring is the current character and
-    # everything before it.  If the current characters equal each
-    # other, the length of the common subsequence is 1 + the length of
-    # the common subsequence for the substrings before the current
-    # characters.  This is 1 + matrix[row-1][col-1].  If the characters
-    # do not equal each other, there are two options.  It can be the
-    # length of the common subsequence between the substring before
-    # text1's current character and the current text2 substring.  Or,
-    # it can be the length of the common subsequence between the
-    # current text1 substring and the substring before text2's current
-    # character.  This is the max of matrix[row-1][col] and
-    # matrix[row][col-1].
-    for row in range(len(matrix)):
-        for col in range(len(matrix[0])):
-            if row == 0 or col == 0:
-                # Any string and an empty string has no common subsequence.
-                matrix[row][col] = 0
-            elif text1[row - 1] == text2[col - 1]:
-                matrix[row][col] = 1 + matrix[row - 1][col - 1]
+    # This sets the values for the first row and column.  It is 0 until
+    # the current letter of one string is found in the other string.
+    current_amount = 0
+    for col in range(COLS):
+        if current_amount == 0 and text1[0] == text2[col]:
+            current_amount = 1
+        matrix[0][col] = current_amount
+    current_amount = 0
+    for row in range(ROWS):
+        if current_amount == 0 and text2[0] == text1[row]:
+            current_amount = 1
+        matrix[row][0] = current_amount
+
+    # This iterates from the second row to the last row.  Within each
+    # iteration, it iterates from the second column to the last column.
+    # It checks if the current row and col characters equal each other.
+    # If so, the longest common subsequence is the lcs of
+    # text1[:current row char] and text2[:current col char] plus one,
+    # because if you take those strings and add the current row and col
+    # chars then the subsequence increases by 1.  If they don't equal
+    # each other, the value can be two options.  The first is the lcs
+    # of text1 up to and including the current row char and
+    # text2[:current col char], since adding the current col char to
+    # text2 does nothing.  Or, it can be the lcs of
+    # text1[:current row char] and text2 up to and including the
+    # current col char, since adding the current row char to text1 does
+    # nothing.  This picks the greater of the two options.
+    for row in range(1, ROWS):
+        for col in range(1, COLS):
+            if text1[row] == text2[col]:
+                matrix[row][col] = matrix[row-1][col-1] + 1
             else:
                 matrix[row][col] = max(
-                    matrix[row - 1][col], matrix[row][col - 1])
+                    matrix[row][col-1],
+                    matrix[row-1][col],
+                )
 
     return matrix[-1][-1]
 
