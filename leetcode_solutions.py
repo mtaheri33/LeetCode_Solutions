@@ -1255,53 +1255,35 @@ def hammingWeight(n):
     return count
 
 
-def countBits(n):
+def countBits(n: int) -> list[int]:
     """
     338. Counting Bits
-    This takes in an integer.  It returns an array of integers of
-    length n + 1.  The elements of the array are the number of 1 bits
-    in the integers from 0 to n.
+    This returns a list where the elements are the number of 1 bits in
+    the integers from 0 to n (both inclusive).
     """
-    result = []
-
-    # offset is used to index the result array by subtracting it from
-    # the current element.
+    result = [0]
     offset = 0
-    # The offset value needs to change whenever the current element is
-    # the result of 2 to the power of a number.
-    next_offset = 1
-    # This iterates through the integers from 0 to n (including n).  It
-    # uses dynamic programming to find the number of 1 bits in each
-    # element.
-    for num in range(n+1):
-        # This is the base case.
-        if num == 0:
-            result.append(0)
-            continue
-        # This runs whenever the current offset reaches the new offset
-        # and needs to be updated.
-        if num == next_offset:
-            offset = next_offset
-            next_offset = offset * 2
-        # Whenever the current element is the result of 2 to the power
-        # of a number (1, 2, 4, 8, 16, ...), the leftmost bit (without
-        # padding) is 1 and all of the remaining bits are 0 (1, 10,
-        # 100, 1000, 10000, ...).  All of these elements have a single
-        # 1 bit.  They are the offset values, because all of the
-        # elements between them can be made by adding the offset value
-        # bits with the bits of the previous elements starting from 0
-        # (4 100 = 4 100 + 0 0, 5 101 = 4 100 + 1 1, 6 110 = 4 100 + 2
-        # 10, 7 111 = 4 100 + 3 11, 8 1000 = 8 1000 + 0 0, 9 1001 = 8
-        # 1000 + 1 1, 10 1010 = 8 1000 + 2 10, 11 1011 = 8 1000 + 3 11,
-        # ...).  This means the number of 1 bits for an integer = 1 +
-        # number of 1 bits in the integer current element - current
-        # offset.  These were calculated in previous elements, so it is
-        # the same as 1 + result[current element - current offset].
-        # The current offset is updated in the if block above whenever
-        # the current element is the result of 2 to the power of a
-        # number (offset 2 for elements 2-3; offset 4 for elements 4-7,
-        # offset 8 for elements 8-15, ...).
-        result.append(1+result[num-offset])
+
+    # This iterates through each number from 1 to n (both inclusive).
+    # When the current number is the result of 2 to the power of an
+    # integer, the leftmost bit (without padding) is 1 and all of the
+    # remaining bits are 0.  All of these numbers have a single 1 bit.
+    # These are the offset values, because all of the numbers between
+    # them can be made by adding the first offset value less than the
+    # current number with the difference of the current number minus
+    # the offset (ex: 7 = 4 + (7-4) = 4 + 3).  So, the number of 1 bits
+    # in the current number is the number of 1 bits in the offset (1)
+    # plus the number of 1 bits in the remainder.
+    for num in range(1, n+1):
+        log_base_2 = math.log2(num)
+        # The current number is an offset if its log base 2 is an
+        # integer.
+        if log_base_2 - int(log_base_2) == 0:
+            result.append(1)
+            offset = num
+        else:
+            remainder = num - offset
+            result.append(1 + result[remainder])
 
     return result
 
@@ -1734,6 +1716,104 @@ def uniquePaths(m: int, n: int) -> int:
             grid[row][col] = grid[row][col+1] + grid[row+1][col]
 
     return grid[0][0]
+
+
+def minDistance(word1: str, word2: str) -> int:
+    """
+    72. Edit Distance
+    For one operation, you can insert, delete, or replace a character
+    in word1.  This calculates and returns the minimum number of
+    operations to make word1 the same as word2.
+    """
+    # These are the base cases.  If word1 is empty, you just insert
+    # every character in word2.  If word2 is empty, you just delete
+    # every character in word1.
+    if len(word1) == 0:
+        return len(word2)
+    if len(word2) == 0:
+        return len(word1)
+
+    # Each row represents a character in word1.  Each column represents
+    # a character in word2.  The intersection is the minimum number of
+    # operations to make the characters up to and including the current
+    # character of word1 the same as the characters up to and including
+    # the current character of word2.
+    ROWS = len(word1)
+    COLS = len(word2)
+    matrix = []
+    for _ in range(ROWS):
+        matrix.append([None] * COLS)
+
+    # This fills in the values for the first column and row.
+    # This checks if the first characters equal each other.  If so, no
+    # operations are needed.  Otherwise, 1 replace operation is needed.
+    if word1[0] == word2[0]:
+        matrix[0][0] = 0
+    else:
+        matrix[0][0] = 1
+    # If the current word1 row character equals the first character of
+    # word2, then all of the characters before it need to be deleted to
+    # make them the same.  Otherwise, you have to make the word1
+    # characters up to and including the current character equal to the
+    # first character of word2.  This is the same as the number of
+    # operations to make the word1 characters up to but not including
+    # the current character equal to the first character of word2, plus
+    # one 1 delete operation to remove the current word1 character.
+    # This equals the value in the row above and same column + 1.  The
+    # same applies for the column characters and the first character of
+    # word1, but you use the value in the same row and column to the
+    # left + 1.
+    for row in range(1, ROWS):
+        if word1[row] == word2[0]:
+            matrix[row][0] = row
+        else:
+            matrix[row][0] = matrix[row-1][0] + 1
+    for col in range(1, COLS):
+        if word1[0] == word2[col]:
+            matrix[0][col] = col
+        else:
+            matrix[0][col] = matrix[0][col-1] + 1
+
+    # This iterates through each row from the second to the last.  For
+    # each iteration, it iterates from the second column to the last.
+    # If the current row and col characters equal each other, then the
+    # value is the same as the value up and to the left.  That
+    # represents the min operations for the word1 and 2 substrings up
+    # to but not including the current characters.  You then add the
+    # same character to both substrings, so no operation is needed to
+    # make the new strings the same.  If the current characters do not
+    # equal each other, you need to perform one of the operations.  You
+    # can delete the current row character from the word1 substring,
+    # and now you have the min operations to make the word1 substring
+    # up to but not including the current row character the same as the
+    # word2 substring up to and including the current col character + 1
+    # for the deletion.  This is the value above the current
+    # intersection + 1.  You can insert the current col character at
+    # the end of the word1 substring, and now you have the min
+    # operations to make the word1 substring up to and including the
+    # current row character the same as the word2 substring up to but
+    # not including the current col character + 1 for the insertion.
+    # This is the value left of the current intersection + 1.  Finally,
+    # you can replace the current row character from the word1
+    # substring and make it the same as the current col character.  Now
+    # you have the min operations to make the word1 substring up to but
+    # not including the current row character the same as the word2
+    # substring up to but not including the current col character + 1
+    # for the replacement.  This is the value above and to the left of
+    # the current intersection + 1.  This uses the minimum of the three
+    # options.
+    for row in range(1, ROWS):
+        for col in range(1, COLS):
+            if word1[row] == word2[col]:
+                matrix[row][col] = matrix[row-1][col-1]
+            else:
+                matrix[row][col] = min(
+                    matrix[row-1][col],
+                    matrix[row][col-1],
+                    matrix[row-1][col-1],
+                ) + 1
+
+    return matrix[-1][-1]
 
 
 # Strings
