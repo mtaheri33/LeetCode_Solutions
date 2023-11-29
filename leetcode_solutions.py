@@ -1307,6 +1307,25 @@ def reverseBits(n):
     return result
 
 
+def singleNumber(nums: list[int]) -> int:
+    """
+    136. Single Number
+    nums must have at least 1 element, and each distinct element must
+    be present in the list exactly 2 times, except for one value that
+    is only present 1 time.  This returns that one value.
+    """
+    result = 0
+    # Exclusive or (^) between bits equals 0 when the bits are the same
+    # (1^1, 0^0) and 1 when the bits are different (1^0, 0^1).  So, a
+    # number exclusive or itself is 0.  This uses exclusive or between
+    # each element of nums.  The duplicates cancel out, and the result
+    # will be the nonduplicate number.
+    for num in nums:
+        result = result ^ num
+
+    return result
+
+
 # Dynamic Programming
 def climbStairs(n):
     """
