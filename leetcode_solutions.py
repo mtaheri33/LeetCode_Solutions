@@ -1207,6 +1207,104 @@ def maxProfit(prices: list[int], fee: int) -> int:
     return dont_own[-1]
 
 
+def suggestedProducts(products: list[str],
+                      searchWord: str) -> list[list[str]]:
+    """
+    1268. Search Suggestions System
+    This uses each substring of searchWord that starts from the first
+    character, up to and including the last character.  For each of
+    those substrings, it finds at most 3 strings in products that start
+    with the substring as its prefix.  If there are more than 3
+    options, it uses the 3 lexicographical minimums.  Those strings are
+    put in a list, and that list is then added to the returned list.
+    """
+    products.sort()
+
+    results = []
+    left_index = 0
+    right_index = len(products) - 1
+    # This iterates through each character of searchWord.  Each time,
+    # it finds the 3 or less min strings that have the searchWord
+    # substring as a prefix.
+    for i in range(len(searchWord)):
+        current_letter = searchWord[i]
+        # This iterates the left pointer forward until it points at the
+        # min string that has the substring as a prefix.
+        while (
+                left_index <= right_index
+                and (
+                    # If the substring is longer than the current
+                    # string, or the current searchWord character does
+                    # not match the current string character in the
+                    # same spot, then it does not have the substring as
+                    # a prefix.
+                    i >= len(products[left_index])
+                    or products[left_index][i] != current_letter
+                )
+        ):
+            left_index += 1
+        # This iterates the right pointer backwards until it points at
+        # the max string that has the substring as a prefix.
+        while (
+                left_index <= right_index
+                and (
+                    i >= len(products[right_index])
+                    or products[right_index][i] != current_letter
+                )
+        ):
+            right_index -= 1
+        result = []
+        # This adds the 3 or less min strings to the returned list.
+        for j in range(min(3, right_index - left_index + 1)):
+            result.append(products[left_index+j])
+        results.append(result)
+
+    return results
+
+
+def eraseOverlapIntervals(intervals: list[list[int]]) -> int:
+    """
+    435. Non-overlapping Intervals
+    Each element in intervals represents an interval.  It starts at the
+    value of the first element and ends at the value of the second
+    element.  This calculates and returns the minimum number of
+    intervals that need to be removed so that no intervals overlap.
+    """
+    def first_element(interval: list[int]) -> int:
+        """
+        This returns the first element in an interval.
+        """
+        return interval[0]
+    # This sorts intervals based on the value of the first element in
+    # each interval.
+    intervals.sort(key=first_element)
+
+    result = 0
+    end = intervals[0][1]
+    # This iterates through each interval and keeps track of the end of
+    # a non-overlapping group of intervals.
+    for i in range(1, len(intervals)):
+        # This checks if the current interval starts before the end of
+        # the group.  If so, it is overlapping.
+        if intervals[i][0] < end:
+            # The start of the interval in the group containing the end
+            # is unknown.  However, the current interval must start at
+            # the same spot or after it since they were sorted by the
+            # first element.  So, either the interval containing the
+            # end or the current interval need to be deleted to remove
+            # the overlap.  This picks the one with the smaller end
+            # value, because then there is less chance of an overlap in
+            # future iterations.
+            result += 1
+            end = min(end, intervals[i][1])
+        else:
+            # The current interval does not overlap with the group.
+            # This updates the end of the group.
+            end = intervals[i][1]
+
+    return result
+
+
 # Bits
 def getSum(a, b):
     """
