@@ -1326,6 +1326,43 @@ def singleNumber(nums: list[int]) -> int:
     return result
 
 
+def minFlips(a: int, b: int, c: int) -> int:
+    """
+    1318. Minimum Flips to Make a OR b Equal to c
+    a, b, and c must be positive integers.  This calculates and returns
+    the minimum number of bits that need to be changed in a and b to
+    make a bitwise or b equal to c.
+    """
+    flips = 0
+    # This iterates through each bit in a, b, and c from right to left.
+    # Each iteration, it checks if any bits in a or b need to be
+    # changed.
+    for i in range(30):
+        # This checks whether the current bit is 0 or 1.
+        a_bit = 1 if (a >> i) % 2 == 1 else 0
+        b_bit = 1 if (b >> i) % 2 == 1 else 0
+        c_bit = 1 if (c >> i) % 2 == 1 else 0
+        # When the bit in c is 0, a or b needs to equal 0.  Otherwise,
+        # it needs to equal 1.
+        if c_bit == 0:
+            # In order for a or b to equal 0, both a and b need to be
+            # 0.
+            if (
+                a_bit == 0 and b_bit == 1
+                or a_bit == 1 and b_bit == 0
+            ):
+                flips += 1
+            elif a_bit == 1 and b_bit == 1:
+                flips += 2
+        else:
+            # In order for a or b to equal 1, either a, b, or both need
+            # to be 1.
+            if a_bit == 0 and b_bit == 0:
+                flips += 1
+
+    return flips
+
+
 # Dynamic Programming
 def climbStairs(n):
     """
@@ -3959,6 +3996,86 @@ class SmallestInfiniteSet:
         if num not in self.set:
             heapq.heappush(self.set, num)
         return None
+
+
+class TrieNode:
+    """
+    These are nodes used for the class Trie.
+    """
+
+    def __init__(self):
+        self.children = {}
+        self.end_of_word = False
+
+
+class Trie:
+    """
+    208. Implement Trie (Prefix Tree)
+    This class stores and retrieves keys.
+    """
+
+    def __init__(self):
+        """
+        This uses a tree where each node is a character.
+        """
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        """
+        This adds a new key to the tree.
+        """
+        i = 0
+        node = self.root
+        # This checks if part of word is already in the tree.
+        while i < len(word) and word[i] in node.children:
+            node = node.children[word[i]]
+            i += 1
+        # This adds the remaining characters of word to the tree.
+        for j in range(i, len(word)):
+            new_node = TrieNode()
+            node.children[word[j]] = new_node
+            node = new_node
+        # This marks the node that is the last character in word.
+        node.end_of_word = True
+        return None
+
+    def search(self, word: str) -> bool:
+        """
+        This checks if word is a key that has been added to the tree.
+        """
+        i = 0
+        node = self.root
+        # This iterates through each character in word and the tree.
+        # For each character, it checks if it is one of the next nodes
+        # in the tree.
+        while i < len(word):
+            if word[i] not in node.children:
+                return False
+            node = node.children[word[i]]
+            i += 1
+        # All of the characters in word are in the tree.  However, word
+        # can be a substring of one of the keys, in which case it has
+        # not been added.  So, the node for the last character in word
+        # has to be marked as the end of a key.
+        return node.end_of_word
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        This checks if prefix is a substring of a key in the tree
+        starting at index 0.
+        """
+        i = 0
+        node = self.root
+        # This iterates through each character in prefix and the tree.
+        # For each character, it checks if it is one of the next nodes
+        # in the tree.
+        while i < len(prefix):
+            if prefix[i] not in node.children:
+                return False
+            node = node.children[prefix[i]]
+            i += 1
+        # All of the characters in prefix are in the tree.
+        return True
 
 
 # Heaps
