@@ -1305,6 +1305,76 @@ def eraseOverlapIntervals(intervals: list[list[int]]) -> int:
     return result
 
 
+def findMinArrowShots(points: list[list[int]]) -> int:
+    """
+    452. Minimum Number of Arrows to Burst Balloons
+    Each element of points represents a balloon against a wall.  The
+    start is the first value and the end is the second value.  This
+    calculates and returns the minimum number of arrows to pop every
+    balloon if they are shot upwards through them.  Two balloons next
+    to each other but not overlapping can both be shot by 1 arrow at
+    the point of contact.
+    """
+    def first_element(point: list[int]) -> int:
+        """
+        This returns the first element in a point.
+        """
+        return point[0]
+
+    # This sorts points based on the value of the first element in each
+    # point.
+    points.sort(key=first_element)
+
+    arrows = 1
+    shot_at = points[0][1]
+    # This iterates through each balloon and checks if it can be shot
+    # by the current arrow.
+    for i in range(1, len(points)):
+        # This checks if the current balloon will be shot by the
+        # current arrow.
+        if points[i][0] <= shot_at <= points[i][1]:
+            continue
+        # The current arrow is not in the range of the current balloon.
+        # This checks if the arrow is before the balloon range.  If so,
+        # there is no way to hit the current balloon.  So, a new arrow
+        # is shot.  If not, the arrow is after the balloon range.  The
+        # current arrow can be moved back to also be able to shoot the
+        # current balloon.  It will still hit every balloon before it,
+        # because the ranges were sorted by the start.  So, the current
+        # balloon starts at the same spot or after every balloon before
+        # it.
+        if shot_at < points[i][0]:
+            arrows += 1
+        shot_at = points[i][1]
+
+    return arrows
+
+
+def dailyTemperatures(temperatures: list[int]) -> list[int]:
+    """
+    739. Daily Temperatures
+    temperatures contains daily temperatures.  This creates and returns
+    a list where list[i] is the number of days it takes from the ith
+    day to have a warmer temperature.  If there is never a warmer
+    temperature, the number of days is 0.
+    """
+    results = [0] * len(temperatures)
+    # The stack will contain indices of the argument, temperatures.  If
+    # you replace the indices with their values from the list, it will
+    # be in decreasing order and can have repeat values.
+    stack = [0]
+    # This iterates through each temperature.  If it is higher than any
+    # values at the top of the stack, it calculates the days since that
+    # value and stores it.
+    for i in range(1, len(temperatures)):
+        while len(stack) > 0 and temperatures[i] > temperatures[stack[-1]]:
+            past_i = stack.pop()
+            results[past_i] = i - past_i
+        stack.append(i)
+
+    return results
+
+
 # Bits
 def getSum(a, b):
     """
