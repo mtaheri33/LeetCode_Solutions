@@ -1,23 +1,9 @@
-# TOC:
-# Arrays
-# Bits
-# Dynamic Programming
-# Strings
-# Linked Lists
-# Math
-# Trees
-# Algorithms
-# Graphs
-# Classes
-# Heaps
-
 import collections
 import heapq
 import math
 from typing import Union
 
 
-# Arrays
 def missingNumber(nums):
     """
     268. Missing Number
@@ -1375,7 +1361,6 @@ def dailyTemperatures(temperatures: list[int]) -> list[int]:
     return results
 
 
-# Bits
 def getSum(a, b):
     """
     371. Sum of Two Integers
@@ -1531,7 +1516,6 @@ def minFlips(a: int, b: int, c: int) -> int:
     return flips
 
 
-# Dynamic Programming
 def climbStairs(n):
     """
     70. Climbing Stairs
@@ -2040,7 +2024,6 @@ def minDistance(word1: str, word2: str) -> int:
     return matrix[-1][-1]
 
 
-# Strings
 def reverseString(s):
     """
     344. Reverse String
@@ -2669,7 +2652,6 @@ def letterCombinations(digits: str) -> list[str]:
     return create_letter_combinations(digits, mapping)
 
 
-# Linked Lists
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -2998,7 +2980,6 @@ def pairSum(head: ListNode) -> int:
     return max_twin_sum
 
 
-# Math
 def reverse(x):
     """
     7. Reverse Integer
@@ -3056,7 +3037,6 @@ def tribonacci(n: int) -> int:
     return past_three[-1]
 
 
-# Trees
 class Node:
     def __init__(self, val=None, children=None):
         self.val = val
@@ -3633,7 +3613,6 @@ def deleteNode(root: TreeNode, key: int) -> Union[TreeNode, None]:
             return root
 
 
-# Algorithms
 def search(nums, target):
     """
     704. Binary Search
@@ -3702,7 +3681,6 @@ def firstBadVersion(n):
             last_version = middle_version - 1
 
 
-# Graphs
 def floodFill(image: list[list[int]], sr: int, sc: int,
               color: int) -> list[list[int]]:
     """
@@ -4111,7 +4089,6 @@ def orangesRotting(grid: list[list[int]]) -> int:
     return -1
 
 
-# Classes
 class RecentCounter:
     """
     933. Number of Recent Calls
@@ -4246,7 +4223,44 @@ class Trie:
         return True
 
 
-# Heaps
+class StockSpanner:
+    """
+    901. Online Stock Span
+    This class stores daily stock prices.
+    """
+
+    def __init__(self):
+        self.stack = []
+
+    def next(self, price: int) -> int:
+        """
+        This takes in the price of a stock on a day.  It returns the
+        number of consecutive days the previous stock prices were less
+        than or equal to the current price, plus one for the current
+        day.
+        """
+        span = 1
+        # This stores previous stock prices and spans in a stack.  It
+        # continues to pop off the stack while the current price is
+        # greater than or equal to the top of the stack.  Each pop
+        # contains the span for the stock from that day.  This previous
+        # span is then added to the current price's span.  The current
+        # price is greater than or equal to the previous price.  So,
+        # the span for the current stock will include all of the days
+        # that were part of the span of the previous stock.
+        while len(self.stack) > 0 and price >= self.stack[-1][0]:
+            _, previous_span = self.stack.pop()
+            span += previous_span
+
+        # This runs once all of the past lower stocks have been popped
+        # off the stack, the stack is empty, or the current price is
+        # less than the previous price.  It adds the current price and
+        # its span to the top of the stack.
+        self.stack.append((price, span))
+
+        return span
+
+
 def maxScore(nums1: list[int], nums2: list[int], k: int) -> int:
     """
     2542. Maximum Subsequence Score
