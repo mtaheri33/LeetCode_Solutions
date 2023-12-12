@@ -4355,3 +4355,39 @@ def totalCost(costs: list[int], k: int, candidates: int) -> int:
                 right_index -= 1
 
     return total_cost
+
+
+def merge(nums1: list[int], m: int, nums2: list[int], n: int) -> None:
+    """
+    88. Merge Sorted Array
+    This takes in two sorted ascending lists.  It modifies nums1 to
+    contain all of the elements from both lists in ascending order.
+    """
+    nums1_index = m - 1
+    nums2_index = n - 1
+    insert_index = m + n - 1
+
+    # nums1 contains its elements and then nums2 length 0s.  This
+    # iterates from the last 0 in nums1 to the start.  It uses pointers
+    # that move from the last elements in nums1 and nums2 to the starts
+    # of the lists.  Each iteration, it moves the larger pointer
+    # element to the current iteration index.
+    while nums1_index >= 0 and nums2_index >= 0:
+        if nums1[nums1_index] >= nums2[nums2_index]:
+            nums1[insert_index] = nums1[nums1_index]
+            nums1_index -= 1
+        else:
+            nums1[insert_index] = nums2[nums2_index]
+            nums2_index -= 1
+        insert_index -= 1
+
+    # This moves any remaining elements from nums2 to nums1.  If the
+    # opposite occurs and there are no remaining elements in nums2 but
+    # there are some remaining in nums1, they do not need to be moved
+    # since they are already in their correct spots.
+    while nums2_index >= 0:
+        nums1[insert_index] = nums2[nums2_index]
+        nums2_index -= 1
+        insert_index -= 1
+
+    return None
