@@ -4391,3 +4391,82 @@ def merge(nums1: list[int], m: int, nums2: list[int], n: int) -> None:
         insert_index -= 1
 
     return None
+
+
+def removeDuplicates(nums: list[int]) -> int:
+    """
+    80. Remove Duplicates from Sorted Array II
+    This takes in a sorted ascending list.  It alters the list in-place
+    so that the first i elements are the unique elements still in
+    ascending order.  If the unique element was present two or more
+    times in the list, it is present only twice in the first i
+    elements.  If it was present only once, it is still present only
+    once.  It then returns i.
+    """
+    # This is the base case when there is only one element.
+    if len(nums) == 1:
+        return 1
+
+    left_index = 0
+    right_index = 1
+    modifier_index = 0
+    # This iterates through the list and modifies it in-place.
+    while left_index < len(nums):
+        current_num = nums[left_index]
+        # This uses two pointers that are next to each other.  If the
+        # pointer elements are not the same, the current element (left
+        # pointer) is present in the list only once.  So, the current
+        # spot to be modified is changed to the current element.
+        if right_index >= len(nums) or nums[left_index] != nums[right_index]:
+            nums[modifier_index] = current_num
+            modifier_index += 1
+        # If the pointer elements are the same, the current element is
+        # present in the list two or more times.  So, the current spot
+        # to be modified and the spot after it are both changed to the
+        # current element.
+        else:
+
+            nums[modifier_index] = current_num
+            nums[modifier_index + 1] = current_num
+            modifier_index += 2
+        # This increments the two pointers until the left pointer is on
+        # a new element.
+        while left_index < len(nums) and nums[left_index] == current_num:
+            left_index += 1
+            right_index += 1
+
+    return modifier_index
+
+
+def majorityElement(nums: list[int]) -> int:
+    """
+    169. Majority Element
+    The majority element is the element that is in the list more than
+    the length / 2 times.  This takes in a list that does contain a
+    majority element.  It finds and returns that element.
+    """
+    result = nums[0]
+    count = 1
+    # This iterates through the second element to the last.  It keeps
+    # track of a stored element and compares it to the current element
+    # each iteration.  If they are the same, the element's count is
+    # incremented.  If they are different, the element's count is
+    # decremented.  If the count ever reaches 0, the stored element is
+    # updated to the current element.  Since there has to be a majority
+    # element, once it becomes the stored element its count may always
+    # stay above 0.  Or, it may reach a count of 0 and be set later
+    # again as the stored element multiple times.  In this case, all of
+    # the other elements that are stored will reach a count of 0.
+    # Eventually, the majority element will be stored and the count
+    # will stay above 0, or it will be the last element in the list and
+    # set in the last iteration.
+    for i in range(1, len(nums)):
+        if nums[i] == result:
+            count += 1
+        else:
+            count -= 1
+        if count == 0:
+            result = nums[i]
+            count = 1
+
+    return result
