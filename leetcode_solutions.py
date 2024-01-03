@@ -47,40 +47,27 @@ def twoSum(nums, target):
             mydict[current_number] = i
 
 
-def maxProfit(prices):
+def maxProfit(prices: list[int]) -> int:
     """
     121. Best Time to Buy and Sell Stock
     This takes in a list of prices that represent stock prices each
-    day.  It returns an integer of the maximum profit that can be
+    day.  It calculates and returns the maximum profit that can be
     achieved if someone buys a stock one day and sells it on a
     different day in the future.  If no profit is possible, it returns
     0.
     """
-    # The lowest price
-    lowest_price = prices[0]
     max_profit = 0
+    min_price = prices[0]
 
-    # This iterates through each price, and as it does so it keeps
-    # track of the maximum profit as well as lowest price up to that
-    # point.
-    # For the price each day, it subtracts the past lowest price in
-    # order to calculate the profit of selling on that day.  If this
-    # value is greater than a previously calculated profit amount, a
-    # new maximum has been found.  In addition, it checks if the price
-    # that day is a new lowest price.
-    for price in prices:
-        profit = price - lowest_price
-        if profit > max_profit:
-            # Selling on this day is a new maximum profit.
-            max_profit = profit
-        if price < lowest_price:
-            # The price on this day is a new lowest price.
-            lowest_price = price
+    # This iterates from the second to the last price.  For the current
+    # price, it subtracts the past lowest price in order to calculate
+    # the profit of selling on that day.  It then checks if this is a
+    # new max profit.  It also checks if the current price is a new
+    # lowest price.
+    for i in range(1, len(prices)):
+        max_profit = max(max_profit, prices[i] - min_price)
+        min_price = min(min_price, prices[i])
 
-    # If no profit was possible because the profit each day was 0 or
-    # lower, the variable max_profit was never changed from its initial
-    # value of 0.  In this case, 0 is returned.  Otherwise, the maximum
-    # profit is returned.
     return max_profit
 
 
@@ -4470,3 +4457,47 @@ def majorityElement(nums: list[int]) -> int:
             count = 1
 
     return result
+
+
+def rotate(nums: list[int], k: int) -> None:
+    """
+    189. Rotate Array
+    This rotates every element in the list to the right k times.  It
+    modifies the list in-place and does not return anything.
+    """
+    # k may be greater than the length of the list.  In this case, the
+    # rotation would just start to repeat.  So, this changes k to a
+    # value less than the length that results in the same final
+    # rotation.
+    k = k % len(nums)
+
+    # In the original list, the last k elements will be the starting
+    # elements of the new rotated list.  So, by reversing the original
+    # list, those last k elements are now the starting elements.
+    # However, they are in reverse order.  After them are the remaining
+    # elements that are also in reverse order.
+    nums.reverse()
+
+    # This reverses the first k elements to put them in their proper
+    # order.
+    left_index = 0
+    right_index = k - 1
+    while left_index < right_index:
+        left_element = nums[left_index]
+        nums[left_index] = nums[right_index]
+        nums[right_index] = left_element
+        left_index += 1
+        right_index -= 1
+
+    # This reverses the elements after the first k elements to put them
+    # in their proper order.
+    left_index = k
+    right_index = len(nums) - 1
+    while left_index < right_index:
+        left_element = nums[left_index]
+        nums[left_index] = nums[right_index]
+        nums[right_index] = left_element
+        left_index += 1
+        right_index -= 1
+
+    return None
