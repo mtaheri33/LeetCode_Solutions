@@ -4501,3 +4501,48 @@ def rotate(nums: list[int], k: int) -> None:
         right_index -= 1
 
     return None
+
+
+def maxProfit(prices: list[int]) -> int:
+    """
+    122. Best Time to Buy and Sell Stock II
+    This takes in a list of stock prices each day.  You can only hold
+    one stock at a time.  You can buy and sell as many times as you
+    want.  This calculates and returns the maximum profit you can
+    achieve.
+    """
+    max_profit = 0
+
+    # This iterates from the second to the last price.  If the price is
+    # greater than the previous day, you can make a profit, because you
+    # buy on the previous day and sell on the current day.  If the
+    # price is less than or equal to the previous day, you do nothing.
+    for i in range(1, len(prices)):
+        if prices[i] > prices[i - 1]:
+            max_profit += prices[i] - prices[i - 1]
+
+    return max_profit
+
+
+def canJump(nums: list[int]) -> bool:
+    """
+    55. Jump Game
+    You start at the first element of nums.  The value for each element
+    is the maximum number of elements you can jump ahead to.  This
+    returns True if you can reach the last element, otherwise it
+    returns False.
+    """
+    target_index = len(nums) - 1
+
+    # This iterates from the second to last element to the first.  The
+    # initial target is the last element.  If you can reach the target
+    # from the current element, then the current element becomes the
+    # new target, because if you can reach it then you can reach the
+    # last element.
+    for i in range(len(nums)-2, -1, -1):
+        if i + nums[i] >= target_index:
+            target_index = i
+
+    if target_index == 0:
+        return True
+    return False
