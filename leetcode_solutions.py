@@ -4546,3 +4546,62 @@ def canJump(nums: list[int]) -> bool:
     if target_index == 0:
         return True
     return False
+
+
+def jump(nums: list[int]) -> int:
+    """
+    45. Jump Game II
+    You start at the first element of nums.  The value for each element
+    is the maximum number of elements you can jump ahead to.  It is guaranteed that
+    you can reach the last element.  This calculates and returns the minimum number of jumps
+    to reach the last element.
+    """
+    jumps = 0
+    left_index = 0
+    right_index = 0
+
+    # This uses 2 indices to track a subsection of the list.  Each iteration, the subsection
+    # makes a jump.  The left end moves to the element after the right end of the current subsection.  The right end
+    # moves to the furthest element that can be reached based on the possible jumps from
+    # the current subsection.
+    while right_index < len(nums) - 1:
+        new_right_index = 0
+        for i in range(left_index, right_index+1):
+            new_right_index = max(new_right_index, i + nums[i])
+        left_index = right_index + 1
+        right_index = new_right_index
+        jumps += 1
+
+    return jumps
+
+
+def hIndex(citations: list[int]) -> int:
+    """
+    274. H-Index
+    This takes in a list that represents papers.  The ith paper has
+    citations[i] number of citations.  The h-index is the maximum
+    number of papers, h, that all have at least h citations.  This
+    calculates and returns the h-index.
+    """
+    # This creates a count of citations ranging from 0 to the number of
+    # papers, n, both inclusive.  If a paper has more citations than n,
+    # it is counted in the n citations group.
+    citation_counts = {}
+    for i in range(len(citations)+1):
+        citation_counts[i] = 0
+    for citation in citations:
+        if citation >= len(citations):
+            citation_counts[len(citations)] += 1
+        else:
+            citation_counts[citation] += 1
+
+    # This iterates from the n citations group to the 0 group.  It
+    # keeps track of the sum of paper counts.  If the sum ever equals
+    # or is greater than the number of citations for the group, then
+    # the h-index is the group number.  This is because there are
+    # h-index or more papers that all have at least h-index citations.
+    count = 0
+    for i in range(len(citations), -1, -1):
+        count += citation_counts[i]
+        if count >= i:
+            return i
