@@ -1,6 +1,7 @@
 import collections
 import heapq
 import math
+import random
 from typing import Union
 
 
@@ -100,38 +101,27 @@ def containsDuplicate(nums):
 def productExceptSelf(nums: list[int]) -> list[int]:
     """
     238. Product of Array Except Self
-    This calculates and then returns a list of integers where list[i]
-    is the product of every element in nums except nums[i].
+    This calculates and returns a list where list[i] is the product of
+    every element in nums except nums[i].
     """
-    # This creates a separate list of nums in reverse order.
-    reverse_nums = nums[::]
-    reverse_nums.reverse()
-
-    # This creates two lists of integers.  One moves through nums from
-    # left to right, where list[i] is the product of every element in
-    # nums up to and including nums[i].  The other moves through nums
-    # from right to left, where list[i] is the product of nums[i] and
-    # every element after it.
-    left_to_right_products = [nums[0]]
-    right_to_left_products = [reverse_nums[0]]
+    # This creates two lists.  Each element i of the first list is the
+    # product of all the elements in nums from the start to i both
+    # inclusive.  Each element i of the second list is the product of
+    # all of the elements in nums from the end to i both inclusive.
+    left_to_right = [nums[0]]
     for i in range(1, len(nums)):
-        left_to_right_products.append(nums[i] * left_to_right_products[i-1])
-        right_to_left_products.append(reverse_nums[i]
-                                      * right_to_left_products[i-1])
-    right_to_left_products.reverse()
+        left_to_right.append(nums[i] * left_to_right[-1])
+    right_to_left = [nums[-1]]
+    for i in range(len(nums)-2, -1, -1):
+        right_to_left.append(nums[i] * right_to_left[-1])
+    right_to_left.reverse()
 
-    # This handles the first element, which is the product of every
-    # element after nums[0].
-    result = [right_to_left_products[1]]
-    # This calculates the value at index i by multiplying the product
-    # of all elements before nums[i] with the product of all elements
-    # after nums[i].
+    # For each element of nums, this multiplies the product of all the
+    # elements before it with the product of all the elements after it.
+    result = [right_to_left[1]]
     for i in range(1, len(nums)-1):
-        result.append(left_to_right_products[i-1]
-                      * right_to_left_products[i+1])
-    # This handles the last element, which is the product of every
-    # element before nums[-1].
-    result.append(left_to_right_products[-2])
+        result.append(left_to_right[i-1] * right_to_left[i+1])
+    result.append(left_to_right[-2])
 
     return result
 
@@ -4605,3 +4595,55 @@ def hIndex(citations: list[int]) -> int:
         count += citation_counts[i]
         if count >= i:
             return i
+
+
+class RandomizedSet:
+    """
+    380. Insert Delete GetRandom O(1)
+    This class stores elements.  It can add, remove, and return a
+    random element in constant time.
+    """
+
+    def __init__(self):
+        self.dict = {}
+        self.list = []
+
+    def insert(self, val: int) -> bool:
+        """
+        If the value is not already present, it adds it to the
+        dictionary and list.  Then it returns True.  Otherwise, it
+        returns False.
+        """
+        if val in self.dict:
+            return False
+        # This adds the element to the dictionary and to the end of the
+        # list.
+        self.dict[val] = len(self.list)
+        self.list.append(val)
+        return True
+
+    def remove(self, val: int) -> bool:
+        """
+        If the value is already present, it removes it from the
+        dictionary and list.  Then it returns True.  Otherwise, it
+        returns False.
+        """
+        if val not in self.dict:
+            return False
+        # This removes the element from the dictionary and from the
+        # list by replacing it with the last element.
+        remove_index = self.dict[val]
+        last_element = self.list[-1]
+        self.list[remove_index] = last_element
+        self.dict[last_element] = remove_index
+        del (self.dict[val])
+        self.list.pop()
+        return True
+
+    def getRandom(self) -> int:
+        """
+        This returns a randon element.
+        """
+        # For a list of length n, the random number r will be
+        # 0 <= r <= n-1.
+        return self.list[random.randint(0, len(self.list)-1)]
