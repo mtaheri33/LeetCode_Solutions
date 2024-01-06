@@ -4647,3 +4647,79 @@ class RandomizedSet:
         # For a list of length n, the random number r will be
         # 0 <= r <= n-1.
         return self.list[random.randint(0, len(self.list)-1)]
+
+
+def canCompleteCircuit(gas: list[int], cost: list[int]) -> int:
+    """
+    134. Gas Station
+    There is a circular path with gas stations on it.  gas[i]
+    represents how much gas you can fill up at the ith station.
+    cost[i] represents how much gas you use traveling from the ith
+    station to the i+1th station.  If you can make a full loop, there
+    is only one possible gas station, g, that you can start from.
+    Then, this finds and returns the index of g.  If you cannot make a
+    full loop from any station, this returns -1.
+    """
+    # This checks if there's enough gas to make a full loop from any
+    # station.
+    if sum(cost) > sum(gas):
+        return -1
+
+    start = 0
+    net_gas = 0
+    # There is one single station you can leave from to make a full
+    # loop.  This iterates through each station from the start.  It
+    # tracks the net amount of gas you have, which is the amount of gas
+    # you had when you arrived at the station, plus the gas you can
+    # fill up, minus the gas you use to travel to the next station.  If
+    # this amount ever drops below 0, you cannot start at the current
+    # gas station or any of the ones before it, because eventually you
+    # will run out of gas and not be able to continue traveling
+    # forward.  In this case, the start moves to the next station and
+    # the net gas amount is reset.  Since there has to be a result, it
+    # is the station you started from once the iteration is finished.
+    # Call this station g.  It cannot be any station before it, because
+    # those resulted in running out of gas.  It cannot be any station
+    # after it, h, because that means you traveled from h > g > h.
+    # Since the net gas never dropped below 0, you are able to travel
+    # from g > h.  If you reach h, you can then travel from h > g.
+    # This means you can also complete a full loop starting at g.
+    # However, this is a contradiction, because there can only be one
+    # solution.
+    for i in range(len(gas)):
+        net_gas += (gas[i] - cost[i])
+        if net_gas < 0:
+            net_gas = 0
+            start = i + 1
+
+    return start
+
+
+def candy(ratings: list[int]) -> int:
+    """
+    135. Candy
+    There are children standing in a line.  ratings[i] represents the
+    rating of the ith child.  Each child must get at least one candy.
+    In addition, children with a higher rating than their neighbors
+    must get more candy than their neighbor(s) with the lower rating.
+    """
+    # This ensures that each child gets at least one candy.
+    candies = [1] * len(ratings)
+    # This compares each child to their left neighbor to ensure they
+    # get more candy if they have a higher rating.
+    for i in range(1, len(ratings)):
+        if ratings[i] > ratings[i-1]:
+            candies[i] = candies[i-1] + 1
+    # This compares each child to their right neighbor to ensure they
+    # get more candy if they have a higher rating.  Changing an amount
+    # does not affect the condition that higher rated children have
+    # more candy than their left neighbor, because the left neighbor's
+    # candy will only change if their rating is higher (than the right
+    # neighbor).
+    for i in range(len(ratings)-2, -1, -1):
+        if ratings[i] > ratings[i+1]:
+            # The child may already have a higher candy amount based on
+            # their left neighbor.
+            candies[i] = max(candies[i], candies[i+1] + 1)
+
+    return sum(candies)
