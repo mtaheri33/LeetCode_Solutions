@@ -4723,3 +4723,94 @@ def candy(ratings: list[int]) -> int:
             candies[i] = max(candies[i], candies[i+1] + 1)
 
     return sum(candies)
+
+
+def trap(height: list[int]) -> int:
+    """
+    42. Trapping Rain Water
+    height[i] is the height of a bar at the ith position.  Water can be
+    trapped between bars.  This calculates and returns the amount of
+    water that can be trapped.
+    """
+    # This is the base case when there is only one bar, so no water can
+    # be trapped.
+    if len(height) == 1:
+        return 0
+
+    # This creates two lists.  For the first list, the ith element is
+    # the max bar height out of the bars to the left of it (not
+    # inclusive).  For the second list, the ith element is the max bar
+    # height out of the bars to the right of it (not inclusive).
+    max_to_the_left = [0, height[0]]
+    for i in range(1, len(height)-1):
+        max_to_the_left.append(max(max_to_the_left[-1], height[i]))
+    max_to_the_right = [0, height[-1]]
+    for i in range(len(height)-2, 0, -1):
+        max_to_the_right.append(max(max_to_the_right[-1], height[i]))
+    max_to_the_right.reverse()
+
+    result = 0
+    # This iterates through each element.  The amount of water that can
+    # be trapped is the lower of the max bar to the left and max bar to
+    # the right, minus the height of the bar at the current spot.  If
+    # the bar at the current spot is equal to or greater than that
+    # lower amount, then no water can be trapped.
+    for i in range(len(height)):
+        water = min(max_to_the_left[i], max_to_the_right[i]) - height[i]
+        result += water if water > 0 else 0
+
+    return result
+
+
+def romanToInt(s: str) -> int:
+    """
+    13. Roman to Integer
+    This takes in a roman numeral up to 3,999 (inclusive).  It converts
+    it to an integer and returns the value.
+    """
+    result = 0
+    i = 0
+    # This iterates through each numeral and adds its value to the
+    # result.  If the numeral and the one after it are a pair, it adds
+    # the pair value and then iterates through both numerals in the
+    # pair.
+    while i < len(s):
+        match s[i]:
+            case 'V':
+                result += 5
+            case 'L':
+                result += 50
+            case 'D':
+                result += 500
+            case 'M':
+                result += 1000
+            case 'I':
+                if i+1 < len(s) and s[i+1] == 'V':
+                    result += 4
+                    i += 1
+                elif i+1 < len(s) and s[i+1] == 'X':
+                    result += 9
+                    i += 1
+                else:
+                    result += 1
+            case 'X':
+                if i+1 < len(s) and s[i+1] == 'L':
+                    result += 40
+                    i += 1
+                elif i+1 < len(s) and s[i+1] == 'C':
+                    result += 90
+                    i += 1
+                else:
+                    result += 10
+            case 'C':
+                if i+1 < len(s) and s[i+1] == 'D':
+                    result += 400
+                    i += 1
+                elif i+1 < len(s) and s[i+1] == 'M':
+                    result += 900
+                    i += 1
+                else:
+                    result += 100
+        i += 1
+
+    return result
