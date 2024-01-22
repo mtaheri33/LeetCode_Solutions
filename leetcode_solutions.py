@@ -4814,3 +4814,91 @@ def romanToInt(s: str) -> int:
         i += 1
 
     return result
+
+
+def intToRoman(num: int) -> str:
+    """
+    12. Integer to Roman
+    This takes in an integer from 1 to 3,999 (both inclusive).  It
+    returns the roman numeral version of the integer.
+    """
+    roman = ''
+    multiplier = 1
+    current_num = 0
+    # This iterates through each digit from back to front.  It then
+    # multiplies it by its place value to get the number that needs to
+    # be added to the roman numeral.
+    for i in range(len(str(num))-1, -1, -1):
+        current_num = int(str(num)[i]) * multiplier
+        # This determines the roman numeral(s) for the current number.
+        # 1-3
+        if current_num <= 3:
+            current_roman = 'I' * current_num
+        # 4
+        elif current_num == 4:
+            current_roman = 'IV'
+        # 5-8
+        elif current_num <= 8:
+            current_roman = 'V'
+            current_roman += 'I' * (current_num-5)
+        # 9
+        elif current_num == 9:
+            current_roman = 'IX'
+        # 10-30
+        elif current_num <= 30:
+            current_roman = 'X' * int(current_num/10)
+        # 40
+        elif current_num == 40:
+            current_roman = 'XL'
+        # 50-80
+        elif current_num <= 80:
+            current_roman = 'L'
+            current_roman += 'X' * int((current_num-50) / 10)
+        # 90
+        elif current_num == 90:
+            current_roman = 'XC'
+        # 100-300
+        elif current_num <= 300:
+            current_roman = 'C' * int(current_num/100)
+        # 400
+        elif current_num == 400:
+            current_roman = 'CD'
+        # 500-800
+        elif current_num <= 800:
+            current_roman = 'D'
+            current_roman += 'C' * int((current_num-500) / 100)
+        # 900
+        elif current_num == 900:
+            current_roman = 'CM'
+        # 1000-3000
+        elif current_num <= 3000:
+            current_roman = 'M' * int(current_num/1000)
+        roman = current_roman + roman
+        multiplier *= 10
+
+    return roman
+
+
+def lengthOfLastWord(s: str) -> int:
+    """
+    58. Length of Last Word
+    This takes in a string that contains letters and spaces.  A word is
+    a substring of letters with no spaces.  This finds and returns the
+    length of the last word.
+    """
+    # The index starts at the last character in the string.
+    i = len(s) - 1
+
+    # This iterates backwards through all of the spaces at the end of
+    # the string.
+    while s[i] == ' ':
+        i -= 1
+
+    length = 0
+    # This starts at the last character of the last word in the string.
+    # It iterates backwards to count its length.
+    while i >= 0 and s[i] != ' ':
+        length += 1
+        i -= 1
+
+    return length
