@@ -4902,3 +4902,24 @@ def lengthOfLastWord(s: str) -> int:
         i -= 1
 
     return length
+
+
+def longestCommonPrefix(strs: list[str]) -> str:
+    """
+    14. Longest Common Prefix
+    This finds and returns the longest prefix common to every string in the list.
+    If there is no common prefix, it returns an empty string.
+    """
+    common_prefix = ''
+    i = 0
+    # This starts at index position 0 and moves to the next one each
+    # iteration.  It checks the characters for each string at the
+    # current index position.  If the position is outside of the string
+    # length, or the characters are not all the same, it returns the
+    # longest common prefix found up to that point.
+    while True:
+        for string in strs:
+            if i >= len(string) or string[i] != strs[0][i]:
+                return common_prefix
+        common_prefix += strs[0][i]
+        i += 1
