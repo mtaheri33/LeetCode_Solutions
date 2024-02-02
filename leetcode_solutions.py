@@ -4923,3 +4923,74 @@ def longestCommonPrefix(strs: list[str]) -> str:
                 return common_prefix
         common_prefix += strs[0][i]
         i += 1
+
+
+def convert(s: str, numRows: int) -> str:
+    """
+    6. Zigzag Conversion
+    This separates s into a zigzag pattern with numRows amount of rows.
+    It then moves through each row from top to bottom and gets the
+    row's characters.  Each row's characters are then combined together
+    and returned.
+    """
+    # This is the base case when there is no zigzag pattern.
+    if numRows == 1:
+        return s
+
+    result = ''
+
+    # This determines the characters in the first row.  Starting from
+    # the first character in s, it is every 2 * (numRows-1) character,
+    # since it takes numRows-1 characters to reach the bottom, and the
+    # same number of characters to then reach the top again.
+    i = 0
+    while i < len(s):
+        result += s[i]
+        i += 2 * (numRows - 1)
+
+    # This determines the characters in the rows between the first and
+    # last.  Starting from the current row character in s, it is every
+    # 2 * (numRows-row-1) character and then every 2 * row character,
+    # since it takes numRows-row-1 characters to reach the bottom, and
+    # the same number of characters to then reach the row again.  After
+    # that, it takes row number of characters to reach the top, and the
+    # same number to then reach the row again.
+    for row in range(1, numRows-1):
+        i = row
+        top_to_bottom = True
+        while i < len(s):
+            result += s[i]
+            if top_to_bottom:
+                i += 2 * (numRows - row - 1)
+                top_to_bottom = False
+            else:
+                i += 2 * row
+                top_to_bottom = True
+
+    # This determines the characters in the last row.  Starting from
+    # the last row character in s, it is every 2 * (numRows-1)
+    # character, since it takes numRows-1 characters to reach the top,
+    # and the same number of characters to then reach the bottom again.
+    i = numRows - 1
+    while i < len(s):
+        result += s[i]
+        i += 2 * (numRows - 1)
+
+    return result
+
+
+def strStr(haystack: str, needle: str) -> int:
+    """
+    28. Find the Index of the First Occurrence in a String
+    This returns the index of the first occurence of needle in
+    haystack.  If it is not in haystack, it returns -1.
+    """
+    # This iterates through each character in haystack.  It checks if
+    # the substring starting at the current character is equal to
+    # needle.
+    for i in range(len(haystack)):
+        if haystack[i: i+len(needle)] == needle:
+            return i
+
+    # needle is not in haystack.
+    return -1
