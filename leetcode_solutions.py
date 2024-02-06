@@ -4994,3 +4994,89 @@ def strStr(haystack: str, needle: str) -> int:
 
     # needle is not in haystack.
     return -1
+
+
+def fullJustify(words: list[str], maxWidth: int) -> list[str]:
+    """
+    68. Text Justification
+    This combines the strings from words into left and right justified
+    lines.  Each line has a length equal to maxWidth.  To reach this
+    length, each string in a line is separated by at least 1 space.
+    Extra spaces are added from left to right in order to reach the
+    required length.  The last line is only left justified with 1 space
+    between words.  The resulting lines are then returned in a list.
+    """
+    result = []
+    current_words = []
+    current_words_length = 0
+    i = 0
+    # This iterates through each word.  If there is space, it adds the
+    # word to a list of the current words for a line.  Otherwise, it
+    # uses the current words to create the line.
+    while i < len(words):
+        # This checks if there is space for the next word.  The length
+        # including the next word is the lengths of the current words
+        # + 1 space between each of the current words + 1 space before
+        # the next word + the length of the next word.  This is the
+        # lengths of the current words
+        # + (the number of current words - 1) + 1 + the length of the
+        # next word.
+        if (
+                (current_words_length
+                 + len(current_words) + len(words[i])) <= maxWidth
+        ):
+            # There is space for the next word, so it is added to the
+            # current words.
+            current_words.append(words[i])
+            current_words_length += len(words[i])
+            i += 1
+        else:
+            # There is no space for the next word, so the current words
+            # need to be turned into a line.
+            extra_spaces = 0
+            current_string = ''
+            # This iterates through each of the current words.  It adds
+            # the word and then the required number of spaces to the
+            # line.
+            for j in range(len(current_words)):
+                current_string += current_words[j]
+                # This determines how many spaces to add.
+                if len(current_words) == 1:
+                    # There is only one word in the line, so the rest
+                    # of it needs to be spaces.
+                    current_string += ' ' * (maxWidth - current_words_length)
+                else:
+                    # There are multiple words in the line.  So, there
+                    # needs to be remaining characters
+                    # / (number of words - 1) spaces between them.  If
+                    # there is a remainder, one extra space needs to be
+                    # added until the remainder is 0.
+                    spaces = (
+                        (maxWidth - current_words_length - extra_spaces)
+                        // (len(current_words) - 1)
+                    )
+                    if (
+                            (maxWidth - current_words_length - extra_spaces)
+                            % (len(current_words) - 1) != 0
+                    ):
+                        spaces += 1
+                        extra_spaces += 1
+                # This checks that spaces are not added after the last
+                # word.
+                if j != len(current_words) - 1:
+                    current_string += ' ' * spaces
+            result.append(current_string)
+            current_words = []
+            current_words_length = 0
+
+    # This turns the remaining current words into the last line.
+    current_string = ''
+    for j in range(len(current_words)):
+        current_string += current_words[j]
+        if j != len(current_words) - 1:
+            current_string += ' '
+    while len(current_string) < maxWidth:
+        current_string += ' '
+    result.append(current_string)
+
+    return result
