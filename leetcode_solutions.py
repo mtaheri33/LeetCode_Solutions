@@ -2,6 +2,7 @@ import collections
 import heapq
 import math
 import random
+import string
 from typing import Union
 
 
@@ -5080,3 +5081,37 @@ def fullJustify(words: list[str], maxWidth: int) -> list[str]:
     result.append(current_string)
 
     return result
+
+
+def isPalindrome(s: str) -> bool:
+    """
+    125. Valid Palindrome
+    s can contain any character.  This returns True if s is the same
+    left to right as right to left, ignoring the case of letters as
+    well as characters that are neither letters or numbers.  Otherwise,
+    it returns False.
+    """
+    s = s.lower()
+    # This creates a set of the allowed characters, which are all
+    # lowercase letters and digits.
+    allowed_characters = set(string.ascii_lowercase).union(set(string.digits))
+
+    left_index = 0
+    right_index = len(s) - 1
+    # This iterates from the ends of s inwards.  It checks if each of
+    # the characters are the same.  If not, then s is not a palindrome.
+    while left_index <= right_index:
+        # This checks if the current left and right characters are
+        # valid.  If not, it skips over it.
+        if s[left_index] not in allowed_characters:
+            left_index += 1
+            continue
+        if s[right_index] not in allowed_characters:
+            right_index -= 1
+            continue
+        if s[left_index] != s[right_index]:
+            return False
+        left_index += 1
+        right_index -= 1
+
+    return True
