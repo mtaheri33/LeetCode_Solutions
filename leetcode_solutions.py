@@ -294,18 +294,15 @@ def search(nums, target):
                 end_index = middle_index - 1
 
 
-def twoSum(numbers, target):
+def twoSum(numbers: list[int], target: int) -> list[int]:
     """
     167. Two Sum II - Input Array Is Sorted
-    This takes in an sorted ascending array of integers, numbers, and a
-    single integer, target.  It returns a list of two integers that are
-    the indices plus 1 of values in numbers which sum to target.  The
-    lesser index is the first element, and the greater index is the
-    second element.  The same index cannot be used twice.
+    numbers needs to be sorted ascending.  This finds two distinct
+    elements in numbers that sum to target.  It returns the indices + 1
+    of the elements in a list.
     """
     left_index = 0
     right_index = len(numbers) - 1
-
     # This continues to iterate until the target is found.  It adds the
     # left and right elements of the array.  It checks if the value
     # equals target, and if so the indices plus 1 are returned.  If the
@@ -314,10 +311,10 @@ def twoSum(numbers, target):
     # sum is greater than the target, the value needs to decrease.  So,
     # the right element is updated to the element to its left.
     while True:
-        sum = numbers[left_index] + numbers[right_index]
-        if sum == target:
+        total = numbers[left_index] + numbers[right_index]
+        if total == target:
             return [left_index+1, right_index+1]
-        if sum < target:
+        if total < target:
             left_index += 1
         else:
             right_index -= 1
@@ -2144,14 +2141,8 @@ def isSubsequence(s: str, t: str) -> bool:
     changing the order of the remaining elements) of t.  Otherwise, it
     returns False.
     """
-    # This is a base case when it is impossible for s to be a
-    # subsequence of t.
-    if len(s) > len(t):
-        return False
-
     s_index = 0
     t_index = 0
-
     # This iterates through s and t until it reaches the end of either
     # string.
     while s_index < len(s) and t_index < len(t):
@@ -2159,14 +2150,10 @@ def isSubsequence(s: str, t: str) -> bool:
         # t.
         if s[s_index] == t[t_index]:
             s_index += 1
-
         t_index += 1
 
-    if s_index == len(s):
-        # All of the characters of s were found in t.
-        return True
-
-    return False
+    # This is True when all of the characters of s were found in t.
+    return s_index == len(s)
 
 
 def longestPalindrome(s):
