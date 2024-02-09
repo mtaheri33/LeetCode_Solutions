@@ -3703,7 +3703,7 @@ def numIslands(grid: list[list[str]]) -> int:
     does not exist.  This returns an integer of the number of islands.
     """
     def find_island(grid: list[list[str]], row: int, col: int,
-                    visited: set((int, int))) -> None:
+                    visited: set[(int, int)]) -> None:
         """
         This takes in a 2-D list of strings of either '1' or '0', grid,
         integers, row and col, and a set, visited.  row and col
@@ -3832,9 +3832,9 @@ def minReorder(n: int, connections: list[list[int]]) -> int:
     reach city 0.
     """
     def dfs(
-            roads: set((int, int)),
+            roads: set[(int, int)],
             neighbors: dict[int, list[int]],
-            visited: set(int),
+            visited: set[int],
             changes: list[int],
             city: int
     ) -> None:
