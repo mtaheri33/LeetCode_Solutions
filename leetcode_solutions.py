@@ -320,56 +320,62 @@ def twoSum(numbers: list[int], target: int) -> list[int]:
             right_index -= 1
 
 
-def threeSum(nums):
+def threeSum(nums: list[int]) -> list[list[int]]:
     """
     15. 3Sum
-    This takes in a list of integers, nums.  It returns a list where
-    each element is a list of three different elements from nums that
-    sum to 0.  The result list does not contain duplicate triplets.
+    This returns a list where each element is a list of three different
+    elements from nums that sum to 0.  The result list does not contain
+    duplicate triplets.
     """
     result = []
     nums.sort()
 
-    # For each element of nums, this uses a subarray of every element
-    # after the current element.  It finds all pairs of elements that
-    # when combined with the current element sum to 0.  This triplet is
-    # then added to the result list.
+    # This is a base case when there are only negative elements, so any
+    # triplet will sum to a negative number.
+    if nums[-1] < 0:
+        return result
+
+    # This iterates through each element up to and including the third
+    # to last one, or to the first positive element, whichever comes
+    # first.  It finds all pairs after the current element that when
+    # combined with the current element sum to 0.
     for i in range(len(nums)-2):
-        left_index = i + 1
-        # If the new current element equals the previous current
-        # element, it will result in duplicate triplets.  So, this
-        # continues to iterate until a different current element is
-        # found.
-        if i > 0 and nums[i] == nums[i - 1]:
+        # This stops at the first positive element, because any triplet
+        # will sum to a positive number.
+        if nums[i] > 0:
+            return result
+        # This skips over elements that are the same as the previous
+        # element, because it will result in duplicate triplets.
+        if i > 0 and nums[i] == nums[i-1]:
             continue
+        left_index = i + 1
         right_index = len(nums) - 1
-        target = -1 * nums[i]
-        # This finds all pairs that sum to the opposite of the current
-        # element.  It uses the method from 167. Two Sum II - Input
-        # Array Is Sorted.  However, since it needs to find all pairs,
-        # when a solution is found it continues to iterate.
-        while left_index != right_index:
-            sum = nums[left_index] + nums[right_index]
-            if sum == target:
-                result.append([nums[i], nums[left_index], nums[right_index]])
-                left_index += 1
-                # If the new left element equals the previous left
-                # element, it will result in a duplicate pair.  So,
-                # this continues to iterate until a different left
-                # element is found.
-                while (
-                    nums[left_index] == nums[left_index - 1]
-                    and left_index != right_index
+        # This starts at the ends of the subsection coming after the
+        # current element.  It moves inward until the ends meet and
+        # searches for pairs that when combined with the current
+        # element sum to 0.  If the pair sum is too large, then it
+        # needs to decrease, so the right end moves inward to the left,
+        # which is a smaller value.  If the pair sum is too small, then
+        # it needs to increase, so the left end moves inward to the
+        # right, which is a larger value.  If the pair sum is the
+        # target amount, the left end moves inward in order to continue
+        # searching for more pairs.
+        while left_index < right_index:
+            if nums[i] + nums[left_index] + nums[right_index] == 0:
+                # This checks to make sure duplicate triplets are not
+                # added again.
+                if (
+                        len(result) == 0
+                        or [nums[i], nums[left_index],
+                            nums[right_index]] != result[-1]
                 ):
-                    left_index += 1
-            elif sum < target:
-                # The sum of the pair is too small.  So, to increase
-                # the value this moves one end to a larger value.
-                left_index += 1
-            else:
-                # The sum of the pair is too large.  So, to decrease
-                # the value this moves one end to a smaller value.
+                    result.append(
+                        [nums[i], nums[left_index], nums[right_index]]
+                    )
+            if nums[i] + nums[left_index] + nums[right_index] > 0:
                 right_index -= 1
+            else:
+                left_index += 1
 
     return result
 
@@ -378,32 +384,26 @@ def maxArea(height: list[int]) -> int:
     """
     11. Container With Most Water
     The elements of height represent heights of vertical lines at x
-    positions equal to the indices of the elements.  This returns the
-    maximum area that can be created by connecting two heights with a
-    horizontal line.
+    positions equal to the indices + 1 of the elements.  This returns
+    the maximum area that can be created by connecting two heights with
+    a horizontal line.
     """
+    max_area = 0
     left_index = 0
     right_index = len(height) - 1
-    max_area = 0
-
     # This starts with the lines at each end and moves inward by going
     # to the next line left or right of the smaller line, until the
-    # ends meet.  Each iteration, it calculates the area to determine
-    # if there is a new max.
-    while left_index != right_index:
-        # This calculates the current area and compares it to the past
-        # max.
-        width = right_index - left_index
-        smaller_height = min(height[left_index], height[right_index])
-        area = width * smaller_height
-        if area > max_area:
-            max_area = area
-
-        # This moves one end inward.
-        if height[right_index] < height[left_index]:
-            right_index -= 1
-        else:
+    # ends meet.  Each iteration, it checks if there is a new max area.
+    while left_index < right_index:
+        max_area = max(
+            max_area,
+            (right_index-left_index) * min(height[left_index],
+                                           height[right_index])
+        )
+        if height[left_index] <= height[right_index]:
             left_index += 1
+        else:
+            right_index -= 1
 
     return max_area
 
