@@ -2050,6 +2050,30 @@ def lengthOfLongestSubstring(s):
     return max_length
 
 
+def lengthOfLongestSubstring(s: str) -> int:
+    """
+    3. Longest Substring Without Repeating Characters
+    This finds and returns the length of the longest substring from s
+    that does not contain duplicate characters.
+    """
+    max_length = 0
+    substring_set = set()
+    first_char_index = 0
+    # This iterates through each character of s.  It continues to
+    # remove the first character of the current substring until it does
+    # not contain the current character.  It then adds the current
+    # character to the end of the substring and checks if there is a
+    # new max length.
+    for char in s:
+        while char in substring_set:
+            substring_set.remove(s[first_char_index])
+            first_char_index += 1
+        substring_set.add(char)
+        max_length = max(max_length, len(substring_set))
+
+    return max_length
+
+
 def longestPalindrome(s):
     """
     5. Longest Palindromic Substring
@@ -5102,3 +5126,39 @@ def isPalindrome(s: str) -> bool:
         right_index -= 1
 
     return True
+
+
+def minSubArrayLen(target: int, nums: list[int]) -> int:
+    """
+    209. Minimum Size Subarray Sum
+    This finds and returns the length of the smallest subarray from
+    nums with a sum greater than or equal to target.  If there is no
+    subarray that meets the criteria, it returns 0 instead.
+    """
+    min_length = float('inf')
+    subarray_sum = 0
+    subarray_length = 0
+    first_element_index = 0
+    # This iterates through each element of nums.  It adds the current
+    # element to the current subarray and checks if the subarray sum is
+    # greater than or equal to the target in order to determine if
+    # there is a new minimum length.  Then, it continues to remove the
+    # first element in the subarray until the sum is less than target.
+    # Each time, it again checks if there is a new minimum length.
+    for num in nums:
+        subarray_sum += num
+        subarray_length += 1
+        if subarray_sum >= target:
+            min_length = min(min_length, subarray_length)
+        while subarray_sum >= target:
+            subarray_sum -= nums[first_element_index]
+            subarray_length -= 1
+            first_element_index += 1
+            if subarray_sum >= target:
+                min_length = min(min_length, subarray_length)
+
+    # This checks if there was no subarray with a sum greater than or
+    # equal to target.
+    if min_length == float('inf'):
+        return 0
+    return min_length
