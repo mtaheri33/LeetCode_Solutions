@@ -5162,3 +5162,96 @@ def minSubArrayLen(target: int, nums: list[int]) -> int:
     if min_length == float('inf'):
         return 0
     return min_length
+
+
+def findSubstring(s: str, words: list[str]) -> list[int]:
+    """
+    30. Substring with Concatenation of All Words
+    This finds all of the substrings of s that are permutations of
+    words combined into a string.  It returns a list containing the
+    start indices of the substrings.  If no substrings are found, it
+    returns an empty list instead.
+    """
+    result = []
+    words_counts = collections.Counter(words)
+
+    i = 0
+    # This iterates through each character in s until the remaining
+    # characters are less than the total length of the permutation
+    # string.
+    while i <= (len(s) - len(words)*len(words[0])):
+        s_counts = {}
+        j = i
+        # This starts at the current character.  It continues to get
+        # the words and their counts until it has iterated through the
+        # same number of words as the length of the argument words.
+        for _ in range(len(words)):
+            current_word = s[j:j+len(words[0])]
+            s_counts[current_word] = s_counts.get(current_word, 0) + 1
+            j += len(words[0])
+        # This compares the substring's words and counts to the
+        # argument words' words and counts.  If they are all the same,
+        # then the current character is the start of a substring that
+        # is a permutation of words.
+        if s_counts == words_counts:
+            result.append(i)
+        i += 1
+
+    return result
+
+
+def minWindow(s: str, t: str) -> str:
+    """
+    76. Minimum Window Substring
+    This finds and returns the smallest substring of s that contains
+    every letter of t, including duplicates.  If there is no applicable
+    substring, it returns an empty string instead.
+    """
+    result = None
+    # This creates two dictionaries with the same keys, which are the
+    # distinct characters of t.  The values for the first dict are the
+    # counts of the keys in t, while the values for the second dict are
+    # all 0.
+    t_counts = collections.Counter(t)
+    s_counts = {}
+    for char in set(t):
+        s_counts[char] = 0
+
+    found_t_chars = 0
+    left_index = 0
+    right_index = 0
+    # This iterates through s and keeps track of a substring using two
+    # pointers.  It continues to iterate until the right pointer is out
+    # of bounds.
+    while right_index < len(s):
+        # This increments the count of the current character in s and
+        # checks if the new count is now equal to the count in t.  If
+        # so, all instances of that character have now been found.  It
+        # ignores characters not in t.
+        current_char = s[right_index]
+        if current_char in s_counts:
+            s_counts[current_char] += 1
+            if s_counts[current_char] == t_counts[current_char]:
+                # This should only increment the found t chars when the
+                # s count goes from less than to equal the t count,
+                # because after this the same character may continue to
+                # be found in s, so its count can continue to increase.
+                found_t_chars += 1
+        right_index += 1
+        # This continues while all instances of every character in t
+        # have been found in the current substring.  It checks if the
+        # current substring is a new minimum and then removes the first
+        # character.
+        while found_t_chars == len(t_counts):
+            if result is None or right_index - left_index < len(result):
+                result = s[left_index:right_index]
+            current_char = s[left_index]
+            if current_char in s_counts:
+                s_counts[current_char] -= 1
+                if s_counts[current_char] < t_counts[current_char]:
+                    found_t_chars -= 1
+            left_index += 1
+
+    if result is None:
+        return ''
+    return result
