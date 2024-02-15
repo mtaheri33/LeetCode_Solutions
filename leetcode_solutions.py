@@ -1,3 +1,4 @@
+import tracemalloc
 import collections
 import heapq
 import math
@@ -5255,3 +5256,54 @@ def minWindow(s: str, t: str) -> str:
     if result is None:
         return ''
     return result
+
+
+def isValidSudoku(board: list[list[str]]) -> bool:
+    """
+    36. Valid Sudoku
+    This checks if a completed or not filled in sudoku board is valid.
+    """
+    row_digits = set()
+    col_digits = set()
+    # This checks if each of the rows and columns is valid.
+    for i in range(9):
+        for j in range(9):
+            current_row_element = board[i][j]
+            if current_row_element != '.':
+                if current_row_element in row_digits:
+                    return False
+                row_digits.add(current_row_element)
+            current_col_element = board[j][i]
+            if current_col_element != '.':
+                if current_col_element in col_digits:
+                    return False
+                col_digits.add(current_col_element)
+        row_digits.clear()
+        col_digits.clear()
+
+    # This checks if each 3x3 square is valid.
+    square_digits = set()
+    starting_row = 0
+    # This iterates through each row of squares.
+    for _ in range(3):
+        starting_col = 0
+        # This iterates through each square in a row of squares.
+        for _ in range(3):
+            current_row = starting_row
+            # This iterates through each row in a square.
+            for _ in range(3):
+                current_col = starting_col
+                # This iterates through each spot in a row.
+                for _ in range(3):
+                    current_element = board[current_row][current_col]
+                    if current_element != '.':
+                        if current_element in square_digits:
+                            return False
+                        square_digits.add(current_element)
+                    current_col += 1
+                current_row += 1
+            square_digits.clear()
+            starting_col += 3
+        starting_row += 3
+
+    return True
