@@ -5307,3 +5307,73 @@ def isValidSudoku(board: list[list[str]]) -> bool:
         starting_row += 3
 
     return True
+
+
+def spiralOrder(matrix: list[list[int]]) -> list[int]:
+    """
+    54. Spiral Matrix
+    This returns a list of the elements in order traversing through
+    matrix in spiral order.
+    """
+    LAST_ROW = len(matrix) - 1
+    LAST_COL = len(matrix[0]) - 1
+    current_row = 0
+    current_col = 0
+    visited = set()
+    direction = 'right'
+    result = []
+    # This iterates through matrix in spiral order until it has visited
+    # every element.
+    while len(result) < len(matrix)*len(matrix[0]):
+        result.append(matrix[current_row][current_col])
+        visited.add((current_row, current_col))
+        # This comes up with the next position to visit based on the
+        # current direction.
+        match direction:
+            case 'right':
+                next_row = current_row
+                next_col = current_col + 1
+            case 'down':
+                next_row = current_row + 1
+                next_col = current_col
+            case 'left':
+                next_row = current_row
+                next_col = current_col - 1
+            case 'up':
+                next_row = current_row - 1
+                next_col = current_col
+        # This checks if the next position is out of bounds or has
+        # already been visited.  If so, the direction needs to change.
+        if (
+                next_col > LAST_COL
+                or next_row > LAST_ROW
+                or next_col < 0
+                or (next_row, next_col) in visited
+        ):
+            match direction:
+                case 'right':
+                    direction = 'down'
+                    current_row += 1
+                case 'down':
+                    direction = 'left'
+                    current_col -= 1
+                case 'left':
+                    direction = 'up'
+                    current_row -= 1
+                case 'up':
+                    direction = 'right'
+                    current_col += 1
+        else:
+            # The next position is valid and the current direction
+            # should stay the same.
+            match direction:
+                case 'right':
+                    current_col += 1
+                case 'down':
+                    current_row += 1
+                case 'left':
+                    current_col -= 1
+                case 'up':
+                    current_row -= 1
+
+    return result
