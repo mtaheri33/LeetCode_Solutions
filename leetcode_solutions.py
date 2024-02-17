@@ -5377,3 +5377,95 @@ def spiralOrder(matrix: list[list[int]]) -> list[int]:
                     current_row -= 1
 
     return result
+
+
+def rotate(matrix: list[list[int]]) -> None:
+    """
+    48. Rotate Image
+    This rotates the 2D list 90 degrees clockwise in place.
+    """
+    left_col_index = 0
+    right_col_index = len(matrix) - 1
+    top_row_index = 0
+    bottom_row_index = len(matrix) - 1
+    # This starts with the elements in the outer ring and rotates them.
+    # It then moves the ring to the next level inward and performs the
+    # rotation on those elements.  It continues to do this for each
+    # level.
+    while left_col_index < right_col_index:
+        # Every row/column of the current ring contains n number of
+        # elements.  Since the end element in a row/col is the start of
+        # the next row/col, there are n-1 elements in a row/col that
+        # need to be rotated.
+        rotations = right_col_index - left_col_index
+        # This starts with the first element in each of the top row,
+        # right col, bottom row, and left col of the current ring.  It
+        # rotates each one to its new spot.  It then moves onto the
+        # next element and performs the rotation again.  It continues
+        # to do this for the needed number of rotations.
+        for i in range(rotations):
+            top_row_value = matrix[top_row_index][left_col_index+i]
+            right_col_value = matrix[top_row_index+i][right_col_index]
+            bottom_row_value = matrix[bottom_row_index][right_col_index-i]
+            left_col_value = matrix[bottom_row_index-i][left_col_index]
+            # The right column spot becomes the top row value.
+            matrix[top_row_index+i][right_col_index] = top_row_value
+            # The bottom row spot becomes the right column value.
+            matrix[bottom_row_index][right_col_index-i] = right_col_value
+            # The left column spot becomes the bottom row value.
+            matrix[bottom_row_index-i][left_col_index] = bottom_row_value
+            # The top row spot becomes the left column value.
+            matrix[top_row_index][left_col_index+i] = left_col_value
+        left_col_index += 1
+        right_col_index -= 1
+        top_row_index += 1
+        bottom_row_index -= 1
+
+    return None
+
+
+def setZeroes(matrix: list[list[int]]) -> None:
+    """
+    73. Set Matrix Zeroes
+    This modifies the 2D list in place.  If an element is 0, all of the
+    elements in that row and column are set to 0.
+    """
+    ROWS = len(matrix)
+    COLS = len(matrix[0])
+    first_row = matrix[0][0]
+    # This iterates through each spot.  If an element is 0, the spot in
+    # the element's row and the left column is set to 0.  Also, the
+    # spot in the top row and the element's column is set to 0.
+    for row in range(ROWS):
+        for col in range(COLS):
+            if matrix[row][col] == 0:
+                # This uses a separate variable to represent the first
+                # row, because the spot at matrix[0][0] also represents
+                # the first column.
+                if row == 0:
+                    first_row = 0
+                else:
+                    matrix[row][0] = 0
+                matrix[0][col] = 0
+
+    # This iterates through each spot except for ones the first row and
+    # first column.  If the value at the element's row and left column
+    # is 0, then the spot is set to 0, because that means the entire
+    # row needs to be 0.  Or, if the value at the top row and element's
+    # column is 0, then the spot is set to 0, because that means the
+    # entire column needs to be 0.
+    for row in range(1, ROWS):
+        for col in range(1, COLS):
+            if matrix[row][0] == 0 or matrix[0][col] == 0:
+                matrix[row][col] = 0
+
+    # This checks if the first column needs to be all 0.
+    if matrix[0][0] == 0:
+        for row in range(ROWS):
+            matrix[row][0] = 0
+    # This checks if the first row needs to be all 0.
+    if first_row == 0:
+        for col in range(COLS):
+            matrix[0][col] = 0
+
+    return None
