@@ -1,4 +1,3 @@
-import tracemalloc
 import collections
 import heapq
 import math
@@ -5469,3 +5468,109 @@ def setZeroes(matrix: list[list[int]]) -> None:
             matrix[0][col] = 0
 
     return None
+
+
+def gameOfLife(board: list[list[int]]) -> None:
+    """
+    289. Game of Life
+    This goes through every spot and modifies the argument board in
+    place based on if it is alive or dead and its neighbors (the 8
+    adjacent spots).  If it is alive (value of 1) and has exactly 2 or
+    3 alive neighbors, it stays alive.  Otherwise, it dies.  If it is
+    dead (value of 0) and has exactly 3 alive neighbors, it becomes
+    alive.  Otherwise, it stays dead. 
+    """
+    ROWS = len(board)
+    COLS = len(board[0])
+
+    # This iterates through each spot in the board.  It modifies the
+    # value based on the following table:
+    # original    new    modified value
+    # 0           0      0
+    # 1           0      1
+    # 0           1      2
+    # 1           1      3
+    for row in range(ROWS):
+        for col in range(COLS):
+            sum = 0
+            modified_values = True
+            # This iterates through the current spot and the eight
+            # adjacent spots from it.
+            for row_offset in range(-1, 2):
+                for col_offset in range(-1, 2):
+                    neighbor_row = row + row_offset
+                    neighbor_col = col + col_offset
+                    # This checks if the adjacent spot is out of
+                    # bounds.
+                    if (
+                        neighbor_row < 0
+                        or neighbor_row >= ROWS
+                        or neighbor_col < 0
+                        or neighbor_col >= COLS
+                    ):
+                        continue
+                    # This checks if it has reached the current spot.
+                    # Before this, the adjacent spots had modified
+                    # values.  Now, the remaining adjacent spots have
+                    # their original values.
+                    if neighbor_row == row and neighbor_col == col:
+                        modified_values = False
+                        continue
+                    if modified_values:
+                        # This checks if the original adjacent spot
+                        # value was a 1.
+                        if (
+                            board[neighbor_row][neighbor_col] == 1
+                            or board[neighbor_row][neighbor_col] == 3
+                        ):
+                            sum += 1
+                    else:
+                        # The adjacent spot value is its original
+                        # value, either a 0 or 1.
+                        sum += board[neighbor_row][neighbor_col]
+            modified_values = True
+            # This updates the current spot to its modified value based
+            # on the rules and table.
+            if board[row][col] == 0:
+                if sum == 3:
+                    board[row][col] = 2
+            else:
+                if sum == 2 or sum == 3:
+                    board[row][col] = 3
+                else:
+                    board[row][col] = 1
+
+    # This iterates through each spot in the board, which contains the
+    # modified values.  It changes the value to the new value that it
+    # should be based on the table.
+    for row in range(ROWS):
+        for col in range(COLS):
+            if board[row][col] == 1:
+                board[row][col] = 0
+            elif board[row][col] == 2 or board[row][col] == 3:
+                board[row][col] = 1
+
+    return None
+
+
+def canConstruct(ransomNote: str, magazine: str) -> bool:
+    """
+    383. Ransom Note
+    This returns True if the argument ransomNote can be made using the
+    characters of the argument magazine.  Each character can only be
+    used once.  Otherwise, it returns False.
+    """
+    # This creates a dictionary where the keys are the characters in
+    # magazine and the values are the count of the character.
+    magazine_char_counts = collections.Counter(magazine)
+    # This iterates through the characters in ransomNote.  It checks if
+    # the character is in magazine and has not been used already.
+    for char in ransomNote:
+        if char in magazine_char_counts:
+            if magazine_char_counts[char] == 0:
+                return False
+            magazine_char_counts[char] -= 1
+        else:
+            return False
+
+    return True
