@@ -2121,38 +2121,36 @@ def longestPalindrome(s):
     return result
 
 
-def isIsomorphic(s, t):
+def isIsomorphic(s: str, t: str) -> bool:
     """
     205. Isomorphic Strings
-    This takes in two strings.  It returns True if the characters in s
-    can be replaced to form t.  All occurrences of the character must
-    be replaced with the same character.  Also, multiple characters
-    cannot be replaced with the same character.  If t cannot be formed,
-    it returns False.
+    This returns True if the characters in s can be replaced to form t.
+    All occurrences of the character must be replaced with the same
+    character.  Also, multiple characters cannot be replaced with the
+    same character.  If t cannot be formed, it returns False.
     """
-    mapping = dict()
-    replacement_characters = dict()
-
+    mapping = {}
+    mapped_chars = set()
+    i = 0
     # This iterates through the characters of s.  It either creates or
     # checks the mapping to the corresponding character in t.
-    for i in range(len(s)):
+    while i < len(s):
+        # This checks if the character has not already been mapped.
         if s[i] not in mapping:
-            # It is a new character.
-            if t[i] in replacement_characters:
-                # The character is new, but the replacement character has
-                # already been used.
+            # This checks if the mapped character in the new mapping
+            # between s and t has already been used.
+            if t[i] in mapped_chars:
                 return False
-            # The replacement character has not been used, so this
-            # creates the mapping between s and t.  It also stores the
-            # character from t in order for future iterations to check
-            # if multiple characters are being replaced by the same
-            # character.
+            # This creates the mapping.
             mapping[s[i]] = t[i]
-            replacement_characters[t[i]] = 1
-        elif mapping[s[i]] != t[i]:
-            # It is not a new character, so the character from s must be
-            # replaced by the mapped character from t.
-            return False
+            mapped_chars.add(t[i])
+        else:
+            # This checks if the current character can be replaced with
+            # its mapped character to become the corresponding t
+            # character.
+            if mapping[s[i]] != t[i]:
+                return False
+        i += 1
 
     return True
 
@@ -5572,5 +5570,42 @@ def canConstruct(ransomNote: str, magazine: str) -> bool:
             magazine_char_counts[char] -= 1
         else:
             return False
+
+    return True
+
+
+def wordPattern(pattern: str, s: str) -> bool:
+    """
+    290. Word Pattern
+    This checks if the words in s separated by spaces follow the same
+    pattern as the characters of the argument pattern.
+    """
+    words = s.split()
+    # This checks if there are too many characters in pattern or too
+    # many words in s.
+    if len(pattern) != len(words):
+        return False
+
+    mapping = {}
+    mapped_words = set()
+    # This iterates through each pattern character and its associated
+    # word in s.  It checks if the mapping is the same, or if a new
+    # mapping needs to be created.
+    for i in range(len(pattern)):
+        pattern_char = pattern[i]
+        word = words[i]
+        # This checks if the char has already been mapped.
+        if pattern_char in mapping:
+            # This checks if the word is the same as the mapped word
+            # for the char.
+            if mapping[pattern_char] != word:
+                return False
+        else:
+            # This checks if the word has already been mapped to a
+            # different char.
+            if word in mapped_words:
+                return False
+            mapping[pattern_char] = word
+            mapped_words.add(word)
 
     return True
