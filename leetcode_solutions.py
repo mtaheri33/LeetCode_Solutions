@@ -5609,3 +5609,51 @@ def wordPattern(pattern: str, s: str) -> bool:
             mapped_words.add(word)
 
     return True
+
+
+def isAnagram(s: str, t: str) -> bool:
+    """
+    242. Valid Anagram
+    This returns True if it contains the same characters the same
+    number of times as s in any order.  Otherwise, it returns False.
+    """
+    s_counts = collections.Counter(s)
+    t_counts = collections.Counter(t)
+
+    return s_counts == t_counts
+
+
+def groupAnagrams(strs: list[str]) -> list[list[str]]:
+    """
+    49. Group Anagrams
+    This returns a 2D list.  Each inner list contains a group of
+    anagrams from the strings in strs.  An anagram contains the same
+    characters the same number of times.
+    """
+    # This creates a mapping of the letters a-z to the numbers 0-25.
+    mapping = {}
+    i = 0
+    for char in string.ascii_lowercase:
+        mapping[char] = i
+        i += 1
+
+    anagrams = {}
+    # This iterates through each string.  It creates a list of 26
+    # elements all initially 0.  For each character in the string, it
+    # uses the mapping to index the list and increment the value.  That
+    # list then becomes the key (as a tuple) representing the anagram.
+    # If the anagram has already been found, it adds the string to the
+    # anagram's group.  Otherwise, it starts a new group with the
+    # string.
+    for word in strs:
+        counts = [0] * 26
+        for char in word:
+            counts[mapping[char]] += 1
+        counts = tuple(counts)
+        if counts in anagrams:
+            anagrams[counts].append(word)
+        else:
+            anagrams[counts] = [word]
+
+    # This returns the groups of each anagram.
+    return list(anagrams.values())
