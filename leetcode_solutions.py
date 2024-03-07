@@ -18,35 +18,27 @@ def missingNumber(nums):
     return sum(range(len(nums)+1)) - sum(nums)
 
 
-def twoSum(nums, target):
+def twoSum(nums: list[int], target: int) -> list[int]:
     """
     1. Two Sum
-    This takes in a list of integers, nums, and a single integer,
-    target.  It returns a list of two integers that are the indices of
-    values in nums which sum to target.  The two indices in the list
-    can be in any order.  The same index cannot be used twice.
+    This returns a list of two indices from nums where the elements sum
+    to target.  The same index is not used twice.
     """
-    # The format of the dictionary is number: index.
-    mydict = {}
-
-    # This iterates through nums.  For each value, it calculates the
-    # difference that is target - value.  It checks if that difference
-    # was a previous value in nums.  If it was, then the solution is
-    # the indices of the current number and the previous value.  If it
-    # was not, then the current value is added to the dictionary and
-    # the loop continues.
+    # The key is an element from nums, and the value is the index of
+    # that element.
+    past_nums = {}
+    # This iterates through each element of nums.  It checks if there
+    # has been a previous element that when summed with the current
+    # element equals target.  If so it returns the two indices.
+    # Otherwise, it stores the current element and its index in the
+    # dictionary.
     for i in range(len(nums)):
-        current_number = nums[i]
-        difference = target - current_number
-        if difference in mydict:
-            # The difference was a previous value in nums.  This
-            # returns the current index and the index of the previous
-            # value.
-            return [i, mydict[difference]]
+        num = nums[i]
+        difference = target - num
+        if difference in past_nums:
+            return [i, past_nums[difference]]
         else:
-            # The difference was not a previous value in nums.  This
-            # adds the number and its index to the dictionary.
-            mydict[current_number] = i
+            past_nums[num] = i
 
 
 def maxProfit(prices: list[int]) -> int:
@@ -5657,3 +5649,28 @@ def groupAnagrams(strs: list[str]) -> list[list[str]]:
 
     # This returns the groups of each anagram.
     return list(anagrams.values())
+
+
+def isHappy(n: int) -> bool:
+    """
+    202. Happy Number
+    This takes each digit of n and squares it.  It then sums those
+    numbers.  If the sum is 1, it returns True.  Otherwise, it replaces
+    n with the sum and repeats the process.  If the sums are a cycle,
+    it returns False.
+    """
+    sums = set()
+    # This calculates the sum.  It checks if it is 1 or has been
+    # encountered before, meaning there is a cycle.  If not, it repeats
+    # the process.
+    while True:
+        str_n = str(n)
+        sum = 0
+        for digit in str_n:
+            sum += int(digit)**2
+        if sum == 1:
+            return True
+        if sum in sums:
+            return False
+        sums.add(sum)
+        n = sum
