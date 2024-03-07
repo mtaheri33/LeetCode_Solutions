@@ -5674,3 +5674,51 @@ def isHappy(n: int) -> bool:
             return False
         sums.add(sum)
         n = sum
+
+
+def containsNearbyDuplicate(nums: list[int], k: int) -> bool:
+    """
+    219. Contains Duplicate II
+    This returns True if for any element there is a duplicate value
+    within k indices (inclusive).  Otherwise, it returns False.
+    """
+    window = set()
+    # This iterates through each element.  It uses a sliding window of
+    # nums of length k.  If the current element is already in the
+    # window, then there is a duplicate.  Otherwise, it adds the
+    # current element and removes the leftmost element in the window.
+    for i in range(len(nums)):
+        if nums[i] in window:
+            return True
+        window.add(nums[i])
+        # This does not remove the leftmost element for the first k
+        # iterations, because the window is not length k yet.
+        if i >= k:
+            window.remove(nums[i-k])
+
+    return False
+
+
+def longestConsecutive(nums: list[int]) -> int:
+    """
+    128. Longest Consecutive Sequence
+    This returns the length of the largest group made up of elements of
+    nums that are consecutive integers.
+    """
+    elements = set(nums)
+    max_length = 0
+    # This iterates through each element.  It checks if it is the start
+    # of a new group when the element minus one is not in the set.  If
+    # so, it continues to check if the next integer that should be in
+    # the group is in the set.  Once it cannot find the next value, it
+    # checks if the length of the current group is a new max.
+    for num in nums:
+        if num - 1 not in elements:
+            current_length = 1
+            current_num = num
+            while current_num + 1 in elements:
+                current_length += 1
+                current_num += 1
+            max_length = max(max_length, current_length)
+
+    return max_length
