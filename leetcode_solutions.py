@@ -5722,3 +5722,87 @@ def longestConsecutive(nums: list[int]) -> int:
             max_length = max(max_length, current_length)
 
     return max_length
+
+
+def summaryRanges(nums: list[int]) -> list[str]:
+    """
+    228. Summary Ranges
+    nums should be in sorted ascending order without duplicates.  This
+    returns all of the ranges that cover each element.
+    """
+    # This is the base case when there are no elements in nums.
+    if len(nums) == 0:
+        return []
+
+    ranges = []
+    starting_num = nums[0]
+    last_num = nums[0]
+    # This iterates through each element in nums.  It checks if the
+    # current range is ongoing.  If not, it adds the range to the
+    # output and starts a new range with the current element.
+    for i in range(1, len(nums)):
+        # This checks if the range is ongoing, which is when the
+        # current element is one greater than the previous element.
+        if nums[i] == last_num + 1:
+            last_num = nums[i]
+            continue
+        # The current element is the start of a new range.  So, this
+        # saves the previous range.  If the previous range is only one
+        # number, it just saves the single number.  If it is longer, it
+        # saves both the start and end of the range.
+        if starting_num == last_num:
+            ranges.append(f'{starting_num}')
+        else:
+            ranges.append(f'{starting_num}->{last_num}')
+        # This resets the range with the current element.
+        starting_num = nums[i]
+        last_num = nums[i]
+
+    # This saves the last range after nums has been iterated through.
+    if starting_num == last_num:
+        ranges.append(f'{starting_num}')
+    else:
+        ranges.append(f'{starting_num}->{last_num}')
+
+    return ranges
+
+
+def merge(intervals: list[list[int]]) -> list[list[int]]:
+    """
+    56. Merge Intervals
+    This combines all of the overlapping intervals and returns every
+    interval.
+    """
+    def first_element(interval):
+        """
+        This returns the first element in an interval.
+        """
+        return interval[0]
+
+    # This sorts ascending the intervals based on the start.
+    intervals.sort(key=first_element)
+
+    result = []
+    interval_start = intervals[0][0]
+    interval_end = intervals[0][1]
+    # This iterates through each interval.  If it is overlapping with
+    # the current interval, then the current interval is updated.
+    # Otherwise, it saves the current interval and starts a new one.
+    for i in range(1, len(intervals)):
+        interval = intervals[i]
+        # This checks if the interval is overlapping.
+        if interval[0] <= interval_end:
+            # The interval end may be less than the current interval's
+            # end.
+            interval_end = max(interval_end, interval[1])
+        # The interval is not overlapping.
+        else:
+            result.append([interval_start, interval_end])
+            interval_start = interval[0]
+            interval_end = interval[1]
+
+    # This saves the last interval after intervals has been iterated
+    # through.
+    result.append([interval_start, interval_end])
+
+    return result
