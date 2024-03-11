@@ -1265,40 +1265,43 @@ def findMinArrowShots(points: list[list[int]]) -> int:
     start is the first value and the end is the second value.  This
     calculates and returns the minimum number of arrows to pop every
     balloon if they are shot upwards through them.  Two balloons next
-    to each other but not overlapping can both be shot by 1 arrow at
-    the point of contact.
+    to each other can both be shot by 1 arrow at the point of contact.
     """
-    def first_element(point: list[int]) -> int:
+    def first_element(point):
         """
-        This returns the first element in a point.
+        This returns the first element of a point.
         """
         return point[0]
 
-    # This sorts points based on the value of the first element in each
-    # point.
+    # This sorts the balloons by their starts.
     points.sort(key=first_element)
 
-    arrows = 1
-    shot_at = points[0][1]
-    # This iterates through each balloon and checks if it can be shot
-    # by the current arrow.
+    arrows = 0
+    start = points[0][0]
+    end = points[0][1]
+    # This iterates through each balloon.  It checks if the current
+    # balloon is overlapping with the current balloon interval.  If so,
+    # the interval is updated so that an arrow shot anywhere within it
+    # can pierce every balloon.  If not, an arrow needs to be shot to
+    # pierce the balloons in the current interval, and a new interval
+    # starts with the current balloon.
     for i in range(1, len(points)):
-        # This checks if the current balloon will be shot by the
-        # current arrow.
-        if points[i][0] <= shot_at <= points[i][1]:
-            continue
-        # The current arrow is not in the range of the current balloon.
-        # This checks if the arrow is before the balloon range.  If so,
-        # there is no way to hit the current balloon.  So, a new arrow
-        # is shot.  If not, the arrow is after the balloon range.  The
-        # current arrow can be moved back to also be able to shoot the
-        # current balloon.  It will still hit every balloon before it,
-        # because the ranges were sorted by the start.  So, the current
-        # balloon starts at the same spot or after every balloon before
-        # it.
-        if shot_at < points[i][0]:
+        point = points[i]
+        if point[0] <= end:
+            # The new interval becomes the overlapping part of the
+            # current interval and current balloon.  An arrow shot
+            # anywhere outside of this will not pierce every balloon.
+            start = max(start, point[0])
+            end = min(end, point[1])
+        else:
+            # The current balloon is outside of the current interval.
             arrows += 1
-        shot_at = points[i][1]
+            start = point[0]
+            end = point[1]
+
+    # This shoots a final arrow to pierce the balloons in the last
+    # interval.
+    arrows += 1
 
     return arrows
 
@@ -5790,6 +5793,55 @@ def merge(intervals: list[list[int]]) -> list[list[int]]:
     # Otherwise, it saves the current interval and starts a new one.
     for i in range(1, len(intervals)):
         interval = intervals[i]
+        # This checks if the interval is overlapping.
+        if interval[0] <= interval_end:
+            # The interval end may be less than the current interval's
+            # end.
+            interval_end = max(interval_end, interval[1])
+        # The interval is not overlapping.
+        else:
+            result.append([interval_start, interval_end])
+            interval_start = interval[0]
+            interval_end = interval[1]
+
+    # This saves the last interval after intervals has been iterated
+    # through.
+    result.append([interval_start, interval_end])
+
+    return result
+
+
+def insert(intervals: list[list[int]],
+           newInterval: list[int]) -> list[list[int]]:
+    """
+    57. Insert Interval
+    This adds newInterval to intervals.  It then combines all of the
+    overlapping intervals and returns every interval.
+    """
+    # This is the base case when there is only the new interval.
+    if len(intervals) == 0:
+        return [newInterval]
+
+    # This adds the new interval to intervals.  It keeps it sorted
+    # ascending by the interval start.
+    new_intervals = []
+    inserted_new_interval = False
+    for interval in intervals:
+        if not inserted_new_interval and newInterval[0] <= interval[0]:
+            new_intervals.append(newInterval)
+            inserted_new_interval = True
+        new_intervals.append(interval)
+    if not inserted_new_interval:
+        new_intervals.append(newInterval)
+
+    result = []
+    interval_start = new_intervals[0][0]
+    interval_end = new_intervals[0][1]
+    # This iterates through each interval.  If it is overlapping with
+    # the current interval, then the current interval is updated.
+    # Otherwise, it saves the current interval and starts a new one.
+    for i in range(1, len(new_intervals)):
+        interval = new_intervals[i]
         # This checks if the interval is overlapping.
         if interval[0] <= interval_end:
             # The interval end may be less than the current interval's
