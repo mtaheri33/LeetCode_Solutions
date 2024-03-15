@@ -5858,3 +5858,73 @@ def insert(intervals: list[list[int]],
     result.append([interval_start, interval_end])
 
     return result
+
+
+def isValid(s: str) -> bool:
+    """
+    20. Valid Parentheses
+    This checks if every open bracket in s is properly closed.  If so,
+    it returns True, otherwise it returns False.
+    """
+    open_brackets = set(['(', '[', '{'])
+    stack = []
+    i = 0
+    # This iterates through each character in s.  If it is an open
+    # bracket, it adds it to a stack, since it will need to be closed
+    # eventually.  If it is a closed bracket, it checks if it is the
+    # proper one for the last open bracket, which is the character at
+    # the top of the stack.
+    while i < len(s):
+        if s[i] in open_brackets:
+            stack.append(s[i])
+        else:
+            close_bracket = s[i]
+            # This checks if there is a close bracket that was never
+            # opened.
+            if len(stack) == 0:
+                return False
+            open_bracket = stack.pop()
+            # This checks if the close bracket is not the proper one
+            # for the last open bracket.
+            if (
+                open_bracket == '(' and close_bracket != ')'
+                or open_bracket == '[' and close_bracket != ']'
+                or open_bracket == '{' and close_bracket != '}'
+            ):
+                return False
+        i += 1
+
+    # There may still be open brackets that were never closed.
+    return len(stack) == 0
+
+
+def simplifyPath(path: str) -> str:
+    """
+    71. Simplify Path
+    This takes an absolute path and returns the simplified canonical
+    path.
+    """
+    stack = []
+    current_directory = ''
+    # This iterates through each character in path.  If the char is
+    # part of a directory, it adds it to the current directory string.
+    # If the char is a '/', then the current directory is over.  If the
+    # current directory is a name, then it is added to the top of a
+    # stack.  If it is '..', then the top of the stack is popped since
+    # the path needs to move back one directory.  The path may not end
+    # in a '/'.  This adds it so that anything left in the current
+    # directory can be handled.
+    for char in path + '/':
+        if char == '/':
+            if current_directory == '..':
+                if len(stack) > 0:
+                    stack.pop()
+            # This checks if the current directory is a file/folder
+            # name.
+            elif current_directory != '' and current_directory != '.':
+                stack.append(current_directory)
+            current_directory = ''
+        else:
+            current_directory += char
+
+    return '/' + '/'.join(stack)
