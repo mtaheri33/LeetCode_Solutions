@@ -5928,3 +5928,96 @@ def simplifyPath(path: str) -> str:
             current_directory += char
 
     return '/' + '/'.join(stack)
+
+
+class MinStack:
+    """
+    155. Min Stack
+    This class contains methods for a stack and getting the minimum
+    value in the stack.
+    """
+
+    def __init__(self):
+        self.stack = []
+        # This uses a separate stack to keep track of the current
+        # minimum, which is always the value at the top of the stack.
+        # Previous minimums are below this top value.
+        self.min_stack = []
+
+    def push(self, val: int) -> None:
+        """
+        This adds val to the top of the stack.
+        """
+        # This checks if there is no current minimum.
+        if len(self.min_stack) == 0:
+            self.min_stack.append(val)
+        else:
+            # This checks if there is a new minimum.
+            current_min = self.min_stack[-1]
+            if val <= current_min:
+                self.min_stack.append(val)
+
+        self.stack.append(val)
+
+    def pop(self) -> None:
+        """
+        This removes the value at the top of the stack.
+        """
+        top_element = self.stack[-1]
+        current_min = self.min_stack[-1]
+        # This checks if the element at the top of the stack that is
+        # being removed is the current minimum.  If so, it needs to be
+        # removed as well from the separate stack.  The new minimum
+        # will be the previous one.
+        if top_element == current_min:
+            self.min_stack.pop()
+
+        self.stack.pop()
+
+    def top(self) -> int:
+        """
+        This returns the value at the top of the stack.
+        """
+        return self.stack[-1]
+
+    def getMin(self) -> int:
+        """
+        This returns the minimum value in the stack.
+        """
+        # The minimum value is the value at the top of the separate
+        # stack.
+        return self.min_stack[-1]
+
+
+def evalRPN(tokens: list[str]) -> int:
+    """
+    150. Evaluate Reverse Polish Notation
+    This returns the result of an expression in reverse polish
+    notation.
+    """
+    stack = []
+    operands = set(['+', '-', '*', '/'])
+    # This iterates through each character in tokens.  If it is an
+    # integer, it adds it to the top of a stack.  If it is an operand,
+    # it removes the two top values from the stack.  The top value is
+    # int2 and the second to last value is int1.  It then evaluates
+    # int1 operand int2 (if the operand is '/' it also removes any
+    # decimals).  The result is then added to the top of the stack.
+    for token in tokens:
+        if token not in operands:
+            stack.append(int(token))
+        else:
+            second_value = stack.pop()
+            first_value = stack.pop()
+            match token:
+                case '+':
+                    stack.append(first_value+second_value)
+                case '-':
+                    stack.append(first_value-second_value)
+                case '*':
+                    stack.append(first_value*second_value)
+                case '/':
+                    stack.append(int(first_value/second_value))
+
+    # The stack only contains the final resulting value.
+    return stack[-1]
