@@ -6021,3 +6021,68 @@ def evalRPN(tokens: list[str]) -> int:
 
     # The stack only contains the final resulting value.
     return stack[-1]
+
+
+def calculate(s: str) -> int:
+    """
+    224. Basic Calculator
+    This takes in a string of an expression with addition and/or
+    subtraction.  It returns the result of the expression.
+    """
+    result = 0
+    current_num = '0'
+    sign = '+'
+    stack = []
+    # This iterates through each character in s.  It handles the
+    # possible values: a digit, +, -, (, or ).  It then does one final
+    # iteration to combine any leftover current number to the result.
+    for char in s + '+':
+        # If it is a number (or a multi-digit number made up of
+        # multiple characters in a row) then it is stored as the
+        # current number.
+        if char.isdigit():
+            current_num += char
+        # If it is an addition or subtraction sign, it adds or
+        # subtracts the result so far with the current number, based on
+        # the previous sign.  It then resets the current number and
+        # sets the sign to the current char.
+        elif char == '+' or char == '-':
+            if sign == '+':
+                result += int(current_num)
+            else:
+                result -= int(current_num)
+            current_num = '0'
+            sign = char
+        # If it is the start of parenthesis, it stores the current
+        # result and sign in a stack to be used when the end
+        # parenthesis is reached.  They are then reset.  The current
+        # number does not need to be reset, because it already has
+        # been.  A parenthesis must come after a +, -, or (.  If it
+        # comes after a + or -, then it was just reset in the previous
+        # iteration.  If it comes after a (, then it was already reset
+        # based on the previous statement and has not changed.
+        elif char == '(':
+            stack.append(result)
+            stack.append(sign)
+            result = 0
+            sign = '+'
+        # If it is the end of parenthesis, it combines the current
+        # result and number.  It then resets the current number and
+        # sign.  After this, it takes the old result and sign from the
+        # stack.  It then evaluates oldresult sign currentresult.  This
+        # value becomes the new current result.
+        elif char == ')':
+            if sign == '+':
+                result += int(current_num)
+            else:
+                result -= int(current_num)
+            current_num = '0'
+            sign = '+'
+            old_sign = stack.pop()
+            if old_sign == '-':
+                result *= -1
+            old_result = stack.pop()
+            result += old_result
+        # For any other characters, such as ' ', it is skipped over.
+
+    return result
