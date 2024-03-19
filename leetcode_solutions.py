@@ -2698,62 +2698,40 @@ def mergeTwoLists(list1, list2):
             current_node = current_node.next
 
 
-def addTwoNumbers(l1, l2):
+def addTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
     """
     2. Add Two Numbers
-    This takes in two non-empty linked lists.  Each list represents the
-    digits of a non-negative integer in reverse order.  This adds the
-    integers together and stores the digits in reverse order in a new
-    linked list.  It returns the head of the new list.
+    The nodes in each list represent the digits of numbers in reverse
+    order.  This sums the numbers and puts the digits in reverse order
+    in a new list.  It then returns the new list.
     """
-    head_node = None
-    current_node = None
-    l1_current_node = l1
-    l2_current_node = l2
-    remainder = 0
+    # This gets the two numbers.
+    l1_num = ''
+    current_node = l1
+    while current_node is not None:
+        l1_num += str(current_node.val)
+        current_node = current_node.next
+    l1_num = l1_num[::-1]
+    l2_num = ''
+    current_node = l2
+    while current_node is not None:
+        l2_num += str(current_node.val)
+        current_node = current_node.next
+    l2_num = l2_num[::-1]
 
-    # This iterates through the digits of the integers in reverse
-    # order.  It performs addition, carries over any remainder, and
-    # adds the sum digit to the result linked list.
-    while True:
-        # This sets the l1 and 2 digits.
-        if l1_current_node is None:
-            l1_digit = 0
-        else:
-            l1_digit = l1_current_node.val
-            l1_current_node = l1_current_node.next
-        if l2_current_node is None:
-            l2_digit = 0
-        else:
-            l2_digit = l2_current_node.val
-            l2_current_node = l2_current_node.next
+    # This sums the two numbers and stores the digits in reverse order.
+    list_sum = str(int(l1_num)+int(l2_num))
+    list_sum = list_sum[::-1]
 
-        # This performs the addition to get the sum digit and carries
-        # over any remainder.
-        current_digit = l1_digit + l2_digit + remainder
-        if current_digit >= 10:
-            new_node = ListNode(val=current_digit-10)
-            remainder = 1
-        else:
-            new_node = ListNode(val=current_digit)
-            remainder = 0
+    # This creates the new list.
+    head_node = ListNode(val=int(list_sum[0]))
+    current_node = head_node
+    for i in range(1, len(list_sum)):
+        next_node = ListNode(val=int(list_sum[i]))
+        current_node.next = next_node
+        current_node = current_node.next
 
-        # This sets the digit as a new node in the result linked list.
-        if head_node is None:
-            head_node = new_node
-            current_node = head_node
-        else:
-            current_node.next = new_node
-            current_node = current_node.next
-
-        # The loop has iterated through both l1 and l2, and there is no
-        # remainder to add as the last digit.
-        if (
-                l1_current_node is None
-                and l2_current_node is None
-                and remainder == 0
-        ):
-            return head_node
+    return head_node
 
 
 def reverseList(head: ListNode) -> ListNode:
@@ -6086,3 +6064,35 @@ def calculate(s: str) -> int:
         # For any other characters, such as ' ', it is skipped over.
 
     return result
+
+
+def hasCycle(head: ListNode) -> bool:
+    """
+    141. Linked List Cycle
+    This returns True if there is a cycle in the linked list, otherwise
+    it returns False.
+    """
+    # These are the base cases, when the list is empty or there is only
+    # one node without any next node.
+    if head is None or head.next is None:
+        return False
+
+    slow_node = head
+    fast_node = head
+    # This continues to iterate through the linked list until it finds
+    # a cycle or reaches the end.  One pointer moves by 1 node each
+    # iteration.  The other pointer moves by 2 nodes each iteration.
+    # If the faster pointer reaches the end of the list, there is no
+    # cycle.  However, if the faster pointer reaches the slower
+    # pointer, then there is a cycle.  This is because it reached the
+    # end of the list, moved through the cycle to a node behind the
+    # slow pointer, and then caught up to it.
+    while fast_node is not None:
+        slow_node = slow_node.next
+        for _ in range(2):
+            if fast_node is not None:
+                fast_node = fast_node.next
+        if slow_node == fast_node:
+            return True
+
+    return False
