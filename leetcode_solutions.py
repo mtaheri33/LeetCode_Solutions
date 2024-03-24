@@ -2640,62 +2640,51 @@ class ListNode:
         self.next = next
 
 
-def mergeTwoLists(list1, list2):
+def mergeTwoLists(list1: ListNode, list2: ListNode) -> ListNode:
     """
     21. Merge Two Sorted Lists
-    This takes in the head nodes of two sorted linked lists.  It merges
-    them into a single sorted linked list and returns the head node.
+    This merges two sorted ascending linked lists and maintains the
+    sorted order.  It then returns the head of the new list.
     """
-    # These are the base cases.
-    if list1 is None:
-        return list2
-    if list2 is None:
-        return list1
-
-    head_node = None
-    current_node = None
-    list1_current_node = list1
-    list2_current_node = list2
-
-    # This iterates through the two linked lists.  Each iteration, it
-    # adds the smaller value to the result linked list.
-    while True:
-        if list1_current_node is None and list2_current_node is None:
-            # The loop has iterated through both of the linked lists,
-            # so the merging is finished.
-            return head_node
-
-        if list1_current_node is None:
-            # The loop has iterated through list1, but list2 still has
-            # remaining values.
-            new_node = ListNode(val=list2_current_node.val)
-            list2_current_node = list2_current_node.next
-        elif list2_current_node is None:
-            # The loop has iterated through list2, but list1 still has
-            # remaining values.
-            new_node = ListNode(val=list1_current_node.val)
-            list1_current_node = list1_current_node.next
-        elif list1_current_node.val < list2_current_node.val:
-            # The list1 value is less than the list2 value, so it
-            # should be added to the result linked list.
-            new_node = ListNode(val=list1_current_node.val)
-            list1_current_node = list1_current_node.next
+    head = None
+    # This continues to iterate until it has gone through all of the
+    # nodes in both list1 and list2.  First, it determines which value
+    # to use out of the current list1 and list2 nodes.  It then creates
+    # the new node with that value and iterates to the next node of the
+    # current node that was used.  Finally, it attaches the new node to
+    # the end of the new list.
+    while list1 is not None or list2 is not None:
+        if list1 is None:
+            # This runs when all of the nodes in list1 have been
+            # iterated through, but there are still nodes remaining in
+            # list2.
+            new_node = ListNode(val=list2.val)
+            list2 = list2.next
+        elif list2 is None:
+            # This runs when all of the nodes in list2 have been
+            # iterated through, but there are still nodes remaining in
+            # list1.
+            new_node = ListNode(val=list1.val)
+            list1 = list1.next
+        # This compares the values of the current list1 and list2
+        # nodes.
+        elif list1.val <= list2.val:
+            new_node = ListNode(val=list1.val)
+            list1 = list1.next
         else:
-            # The list2 value is less than or equal to the list1 value,
-            # so it should be added to the result linked list.
-            new_node = ListNode(val=list2_current_node.val)
-            list2_current_node = list2_current_node.next
-
-        if head_node is None:
-            # This runs for the first element added to the result
-            # linked list.
-            head_node = new_node
-            current_node = head_node
+            new_node = ListNode(val=list2.val)
+            list2 = list2.next
+        if head is None:
+            # This only runs during the first iteration when the new
+            # list is empty.
+            head = new_node
+            current_node = head
         else:
-            # This runs every time after the first element has been
-            # added to the result linked list.
+            # This runs everytime after the first iteration.
             current_node.next = new_node
             current_node = current_node.next
+
+    return head
 
 
 def addTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
