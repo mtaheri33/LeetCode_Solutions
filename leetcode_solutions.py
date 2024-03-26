@@ -6085,3 +6085,51 @@ def hasCycle(head: ListNode) -> bool:
             return True
 
     return False
+
+
+def copyRandomList(head):
+    """
+    138. Copy List with Random Pointer
+    This makes a deep copy of the linked list.  It returns the head of
+    the new list.
+    """
+    new_head = None
+    previous_new_node = None
+    i = 0
+    # This stores nodes in the new list.  The key is its index
+    # position, and the value is the new node object.
+    new_nodes_mapping = {}
+    # This stores nodes from the original list.  The key is the node
+    # object, and the value is its index position.
+    nodes_mapping = {}
+    current_node = head
+    # This iterates through each node in the original list.  It creates
+    # a new node with the same value as the current node and attaches
+    # it to the end of the new list.
+    while current_node is not None:
+        new_node = Node(x=current_node.val)
+        if new_head is None:
+            new_head = new_node
+        else:
+            previous_new_node.next = new_node
+        previous_new_node = new_node
+        # This stores the original node and new node mappings.
+        new_nodes_mapping[i] = new_node
+        nodes_mapping[current_node] = i
+        i += 1
+        current_node = current_node.next
+
+    current_new_node = new_head
+    current_node = head
+    # This iterates through each node in both of the lists.  It gets
+    # the index of the random node for the current original node.  It
+    # then finds the equivalent new node based on that index and
+    # attaches it to the current new node.
+    while current_node is not None:
+        if current_node.random is not None:
+            random_index = nodes_mapping[current_node.random]
+            current_new_node.random = new_nodes_mapping[random_index]
+        current_new_node = current_new_node.next
+        current_node = current_node.next
+
+    return new_head
